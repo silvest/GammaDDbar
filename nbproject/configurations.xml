@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>CorrelatedGaussianObservables.h</itemPath>
+      <itemPath>MixingModel.h</itemPath>
+      <itemPath>dato.h</itemPath>
+      <itemPath>histo.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>CorrelatedGaussianObservables.cpp</itemPath>
+      <itemPath>MixingModel.cpp</itemPath>
+      <itemPath>histo.cpp</itemPath>
+      <itemPath>main.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>true</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <incDir>
+            <pElem>../HEPfit/BAT/include</pElem>
+            <pElem>/usr/include/root</pElem>
+          </incDir>
+          <commandLine>`root-config --cflags`</commandLine>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <linkerAddLib>
+            <pElem>../HEPfit/BAT/lib</pElem>
+          </linkerAddLib>
+          <linkerDynSerch>
+            <pElem>../HEPfit/BAT/lib</pElem>
+          </linkerDynSerch>
+          <commandLine>`gsl-config --libs` `root-config --libs` -lMinuit -L../HEPfit/BAT/lib -lBAT -lBATmodels</commandLine>
+        </linkerTool>
+      </compileType>
+      <item path="CorrelatedGaussianObservables.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="CorrelatedGaussianObservables.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="MixingModel.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MixingModel.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="dato.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="histo.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="histo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="CorrelatedGaussianObservables.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="CorrelatedGaussianObservables.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="MixingModel.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MixingModel.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="dato.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="histo.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="histo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+    </conf>
+    <conf name="MPI_parallel" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <commandlineTool>mpic++</commandlineTool>
+          <incDir>
+            <pElem>../HEPfit/BAT_parallel/include</pElem>
+            <pElem>../HEPfit/gslpp/src</pElem>
+            <pElem>/usr/include/root</pElem>
+          </incDir>
+          <commandLine>`root-config --cflags`</commandLine>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/ddbar</output>
+          <linkerAddLib>
+            <pElem>../HEPfit/BAT_parallel/lib</pElem>
+          </linkerAddLib>
+          <linkerDynSerch>
+            <pElem>../HEPfit/BAT_parallel/lib</pElem>
+          </linkerDynSerch>
+          <commandlineTool>mpic++</commandlineTool>
+          <commandLine>-L/usr/lib -lgsl -lgslcblas -lm `root-config --libs` -lMinuit -L../HEPfit/BAT_parallel/lib -lBAT -lBATmodels</commandLine>
+        </linkerTool>
+      </compileType>
+      <item path="CorrelatedGaussianObservables.cpp" ex="false" tool="1" flavor2="9">
+      </item>
+      <item path="CorrelatedGaussianObservables.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="MixingModel.cpp" ex="false" tool="1" flavor2="9">
+      </item>
+      <item path="MixingModel.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="dato.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="histo.cpp" ex="false" tool="1" flavor2="9">
+      </item>
+      <item path="histo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="9">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
