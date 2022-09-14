@@ -1877,6 +1877,82 @@ void MixingModel::Add_time_dependent_Dmeas(){
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID30", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
+  if(comb == 2){
+
+  // https://arxiv.org/abs/2208.09402
+
+  //First measurements
+  //Observables 2:
+  CorrData.clear();
+  CorrData.push_back(dato(0.132 ,0.011, 0.007)); //A_kpi
+  CorrData.push_back(dato( 0.130, 0.012, 0.008)); // A_kpi ^ pipipi0
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(2,2);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.38;
+  Corr(1,1) = 1.;
+
+  //Correlation Matrix (syst)
+  Corr2.ResizeTo(2,2);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.16;
+  Corr2(1,1) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("BESIII_Adk", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+  //Second measurements
+  //Observables 2:
+  CorrData.clear();
+  CorrData.push_back(dato( -0.0562 , 0.0081, 0.0051)); //rD_kpi cos()
+  CorrData.push_back(dato( -0.011, 0.012, 0.0076)); // rD_kpi sin()
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(2,2);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.02;
+  Corr(1,1) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("BESIII_rDkpi_polar", CorrelatedGaussianObservables(CorrData, Corr)));
+
+  //https://arxiv.org/pdf/2208.06512.pdf
+  //Observables 4:
+  CorrData.clear();
+  CorrData.push_back(dato(0.0040,0.00040,0.0002));//xcp
+  CorrData.push_back(dato(0.00550,0.00120,0.0006));//ycp
+  CorrData.push_back(dato(-0.0003,0.0002,0.0000));// dx
+  CorrData.push_back(dato(0.0003,0.0003,0.0001));//dy
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(4,4);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.12;
+  Corr(0,2) = -0.02;
+  Corr(0,3) = -0.02;
+  Corr(1,1) = 1.;
+  Corr(1,2) = -0.01;
+  Corr(1,3) = -0.06;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.07;
+  Corr(3,3) = 1.;
+
+  //Correlation Matrix (syst)
+  Corr2.ResizeTo(4,4);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.08;
+  Corr2(0,2) = 0.;
+  Corr2(0,3) = -0.01;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = -0.02;
+  Corr2(1,3) = -0.04;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.33;
+  Corr2(3,3) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCb_kspp_Au2022", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+  }
+
 }
 // ---------------------------------------------------------
 
@@ -1948,6 +2024,10 @@ void MixingModel::Add_other_meas(){
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID23", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
+  if(comb == 2){
+   // https://arxiv.org/pdf/2208.10098.pdf
+   meas.insert(pair<string,dato>("Fpipipipi_BESIII", dato(0.735, 0.015, 0.005))); //F_pipipipi
+  }
 
 }
 // ---------------------------------------------------------
@@ -2396,7 +2476,7 @@ void MixingModel::DefineParameters()
     AddParameter("d_dkpipi", -M_PI -1.5, M_PI -1.5, "#delta_{DK #pi #pi}"); // //ACI [1., 2*M_PI]
     AddParameter("k_dkpipi", 0., 1., "#kappa_{DK #pi #pi}"); //
     AddParameter("r_dpipipi",0., 0.2, "r_{D #pi #pi #pi}"); //0.067
-    AddParameter("d_dpipipi", -M_PI - 1.6, M_PI - 1.6, "#delta_{D #pi #pi #pi}"); //
+    AddParameter("d_dpipipi", -M_PI - 1.5, M_PI - 1.5, "#delta_{D #pi #pi #pi}"); //
     AddParameter("k_dpipipi", 0., 1., "#kappa_{D #pi #pi #pi}"); //
 
     //---------------------------------- Parametri Time Dependent B decay  ---------------------------------------------------
@@ -2647,6 +2727,8 @@ void MixingModel::DefineHistograms(){
     histos.createH1D("g", 200, 1., -1.);
     histos.createH1D("x12", 200, 1., -1.);
     histos.createH1D("y12", 200, 1., -1.);
+    histos.createH1D("x", 200, 1., -1.);
+    histos.createH1D("y", 200, 1., -1.);
     histos.createH1D("r_dk", 200, 1., -1.);
     histos.createH1D("r_dpi", 200, 1., -1.);
     histos.createH1D("rD_kpi", 200, 1., -1.);
@@ -2703,6 +2785,7 @@ void MixingModel::DefineHistograms(){
 
     //Time dependent D decay and mixing
     histos.createH1D("PhiM12", 200, 1., -1.);
+    histos.createH1D("PhiG12", 200, 1., -1.);
     histos.createH1D("AD", 200, 1., -1.);
     histos.createH1D("Delta_totau", 200, 1., -1.);
     histos.createH1D("DeltaAcp", 200, 1., -1.);
@@ -2716,17 +2799,24 @@ void MixingModel::DefineHistograms(){
 
     //Time integrated decay chain
     histos.createH2D("r_dk", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dk", "r_dk", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpi", "r_dpi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("r_dpi", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("d_dk", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("d_dpi", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "r_dk", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "r_dpi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("r_dkstz", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("d_dkstz", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("dD_kpi", "rD_kpi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("y12", "x12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "x", 200, 1., -1., 200, 1., -1);
     histos.createH2D("y12", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("x12", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "x", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "y", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "qopm1", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "qopm1", 200, 1., -1., 200, 1., -1);
 
     //Time dependent D mixing and Decay
     histos.createH2D("y12", "qopm1", 200, 1., -1., 200, 1., -1);
@@ -2735,6 +2825,191 @@ void MixingModel::DefineHistograms(){
     histos.createH2D("phi", "x12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("phi", "y12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("PhiM12", "x12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "y12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "x", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "y", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiG12", "x12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiG12", "y12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiG12", "x", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiG12", "y", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "PhiG12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpi", "dD_kpi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_k3pi", "dD_k3pi", 200, 1., -1., 200, 1., -1);
+
+    histos.createH2D("g", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x12", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y12", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipi0", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_kkpi0", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("RBRdkdpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkst", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkst", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkst", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkstz", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkstz", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkstz", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dsk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dsk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phis", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta_s", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dmpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dmpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiG12", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("AD", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("Delta_totau", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("DeltaAcp", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi12", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("delta", "qop", 200, 1., -1., 200, 1., -1);
+
+    histos.createH2D("g", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x12", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y12", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipi0", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_kkpi0", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("RBRdkdpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkst", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkst", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkst", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkstz", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkstz", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkstz", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dsk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dsk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phis", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta_s", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dmpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dmpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiG12", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("AD", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("Delta_totau", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("DeltaAcp", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi12", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("delta", "phi", 200, 1., -1., 200, 1., -1);
+
+    histos.createH2D("g", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x12", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y12", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipi0", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_kkpi0", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("RBRdkdpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkst", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkst", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkst", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dsk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dsk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phis", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta_s", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dmpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dmpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiG12", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("AD", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("Delta_totau", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("DeltaAcp", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("delta", "phi12", 200, 1., -1., 200, 1., -1);
+
 
   }
   else if(comb == 1){
@@ -2800,6 +3075,9 @@ void MixingModel::DefineHistograms(){
         histos.createH2D("phi", "PhiG12", 200, 1., -1., 200, 1., -1);
         histos.createH2D("PhiM12", "PhiG12", 200, 1., -1., 200, 1., -1);
         histos.createH2D("PhiG12", "y12", 200, 1., -1., 200, 1., -1);
+        histos.createH2D("PhiG12", "y", 200, 1., -1., 200, 1., -1);
+        histos.createH2D("PhiG12", "x", 200, 1., -1., 200, 1., -1);
+        histos.createH2D("PhiG12", "x12", 200, 1., -1., 200, 1., -1);
         histos.createH2D("phipphig12", "phimphig12", 200, 1., -1., 200, 1., -1);
         histos.createH1D("phipphig12", 200, 1., -1.);
         histos.createH1D("phimphig12", 200, 1., -1.);
@@ -2812,6 +3090,8 @@ void MixingModel::DefineHistograms(){
     histos.createH1D("g", 200, 1., -1.);
     histos.createH1D("x12", 200, 1., -1.);
     histos.createH1D("y12", 200, 1., -1.);
+    histos.createH1D("x", 200, 1., -1.);
+    histos.createH1D("y", 200, 1., -1.);
     histos.createH1D("r_dk", 200, 1., -1.);
     histos.createH1D("r_dpi", 200, 1., -1.);
     histos.createH1D("rD_kpi", 200, 1., -1.);
@@ -2884,30 +3164,222 @@ void MixingModel::DefineHistograms(){
     //Time integrated decay chain
     histos.createH2D("r_dk", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("r_dpi", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("d_dk", "r_dk", 200, 1., -1., 200, 1., -1);
     histos.createH2D("d_dpi", "r_dpi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dk", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpi", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("r_dkstz", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("d_dkstz", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("dD_kpi", "rD_kpi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("y12", "x12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "x", 200, 1., -1., 200, 1., -1);
     histos.createH2D("y12", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("x12", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "g", 200, 1., -1., 200, 1., -1);
+
 
     //Time dependent D mixing and Decay
     histos.createH2D("y12", "qopm1", 200, 1., -1., 200, 1., -1);
     histos.createH2D("x12", "qopm1", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "qopm1", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "qopm1", 200, 1., -1., 200, 1., -1);
     histos.createH2D("phi", "qopm1", 200, 1., -1., 200, 1., -1);
     histos.createH2D("phi", "x12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("phi", "y12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "x", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "y", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "y12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "y", 200, 1., -1., 200, 1., -1);
     histos.createH2D("PhiM12", "x12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "x", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpi", "dD_kpi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_k3pi", "dD_k3pi", 200, 1., -1., 200, 1., -1);
+
     if (ckmcorr) {
         histos.createH1D("phiKsLHCb", 200, 1., -1.);
         histos.createH1D("RCP", 200, 1., -1.);
     }
 
+    histos.createH2D("g", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x12", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y12", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipi0", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_kkpi0", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("RBRdkdpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkst", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkst", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkst", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkstz", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkstz", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkstz", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dsk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dsk", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phis", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta_s", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dmpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dmpi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiG12", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("AD", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("Delta_totau", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("DeltaAcp", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi12", "qop", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("delta", "qop", 200, 1., -1., 200, 1., -1);
+
+    histos.createH2D("g", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x12", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y12", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipi0", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_kkpi0", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("RBRdkdpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkst", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkst", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkst", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkstz", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkstz", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkstz", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dsk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dsk", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phis", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta_s", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dmpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dmpi", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiG12", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("AD", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("Delta_totau", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("DeltaAcp", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi12", "phi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("delta", "phi", 200, 1., -1., 200, 1., -1);
+
+    histos.createH2D("g", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x12", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y12", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_pipipi0", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("F_kkpi0", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("kD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("RBRdkdpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dstpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dstpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkst", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkst", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkst", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dsk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dsk", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phis", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta_s", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("k_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("l_dmpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dmpi", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("beta", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiG12", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("AD", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("Delta_totau", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("DeltaAcp", "phi12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("delta", "phi12", 200, 1., -1., 200, 1., -1);
+
+
+
   }
+
+
 
 }
 // ---------------------------------------------------------
@@ -3529,6 +4001,20 @@ double MixingModel::Calculate_time_dependent_Dobservables(){
   ym_uid30 = y_minus(dD_kpi);
   xmsq_uid30 = x_minus(dD_kpi) * x_minus(dD_kpi);
 
+  if(comb == 2){
+
+  // https://arxiv.org/abs/2208.09402
+  Akpi_BESIII = (- 2 * rD_kpi * cos(dD_kpi) + y) / (1 + rD_kpi * rD_kpi);
+  Akpi_kpipi0_BESIII = ( F_pipipi0 * (- 2 * rD_kpi * cos(dD_kpi) + y )  ) / ( 1 + rD_kpi * rD_kpi + (1 - F_pipipi0)  * ( 2 * rD_kpi * cos(dD_kpi) + y  ) );
+
+  xi_x_BESIII = rD_kpi * cos(dD_kpi);
+  xi_y_BESIII = - rD_kpi * sin(dD_kpi); // Because of the different phase convention dD = (-dD)BESIII
+
+  //https://arxiv.org/pdf/2208.06512.pdf
+  //they are the same of xcp, ycp, dx, dy
+
+  }
+
   //----------------------------------------------- Contribution to the LogLikelihood -------------------------------------------------------------------------
   TVectorD corr(8);
 
@@ -3593,6 +4079,31 @@ double MixingModel::Calculate_time_dependent_Dobservables(){
 
   ll3 += corrmeas.at("UID30").logweight(corr);
 
+  if(comb == 2){
+
+  // https://arxiv.org/abs/2208.09402
+  corr.ResizeTo(2);
+  corr(0) = Akpi_BESIII;
+  corr(1) = Akpi_kpipi0_BESIII;
+  ll3 += corrmeas.at("BESIII_Adk").logweight(corr);
+
+  corr.ResizeTo(2);
+  corr(0) = xi_x_BESIII;
+  corr(1) = xi_y_BESIII;
+  ll3 += corrmeas.at("BESIII_rDkpi_polar").logweight(corr);
+
+  //https://arxiv.org/pdf/2208.06512.pdf
+  //Observables 4:
+  corr.ResizeTo(4);
+  corr(0) = xcp;
+  corr(1) = ycp;
+  corr(2) = dx;
+  corr(3) = dy;
+
+  ll3 += corrmeas.at("LHCb_kspp_Au2022").logweight(corr);
+
+  }
+
   return ll3;
 
 }
@@ -3625,6 +4136,10 @@ double MixingModel::Calculate_other_observables(){
   dD_kskpi_uid23 = - dD_kskpi; // change sign of the phase convention
   kD_kskpi_uid23 = kD_kskpi;
 
+  if(comb == 2){
+    F_pipipipi_BESIII = F_pipipipi;
+  }
+
   //----------------------------------------------- Contribution to the LogLikelihood -------------------------------------------------------------------------
   TVectorD corr(8);
 
@@ -3652,6 +4167,10 @@ double MixingModel::Calculate_other_observables(){
   corr(2) = kD_kskpi_uid23;
 
   ll4 += corrmeas.at("UID23").logweight(corr);
+
+  if(comb == 2){
+    ll4 += meas.at("Fpipipipi_BESIII").logweight(F_pipipipi_BESIII);
+  }
 
   return ll4;
 
@@ -4039,6 +4558,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["phi"] = phi * r2d;
     obs["phi12"] = phi12 * r2d;
     obs["delta"] = d;
+    obs["x"] = x;
+    obs["y"] = y;
 
   }
   else if(comb == 1){
@@ -4341,6 +4862,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
 
     obs["phiKsLHCb"] = phiKsLHCb * r2d;
     obs["RCP"] = RCP;
+    obs["x"] = x;
+    obs["y"] = y;
 
   }
 

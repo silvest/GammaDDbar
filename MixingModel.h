@@ -121,6 +121,13 @@ public:
   ycpksppLHCb, AgksppLHCb, Ag, am,
   xcpphiKsLHCb, dxphiKsLHCb;
 
+  //https://arxiv.org/abs/2208.09402 observables
+  double Akpi_BESIII, Akpi_kpipi0_BESIII,
+         xi_x_BESIII, xi_y_BESIII;
+
+  //https://arxiv.org/pdf/2208.10098.pdf
+  double F_pipipipi_BESIII;
+
   //Methods to calculate the observables and the Log-Likelihood
   double Calculate_time_integrated_observables();
   double Calculate_time_dependent_Bobservables();

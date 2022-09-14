@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   CorrelatedGaussianObservables.h
  * Author: silvest
  *
@@ -25,7 +25,7 @@ public:
   :Obs(orig.getObs()),Cov(orig.getCov()) {};
 
   const TVectorD& getObs() const { return Obs; }
-  
+
   const TMatrixDSym& getCov() const { return Cov; }
 
   double logweight(const TVectorD& v) ;
@@ -36,4 +36,3 @@ private:
 };
 
 #endif	/* CORRELATEDGAUSSIANOBSERVABLES_H */
-

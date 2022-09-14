@@ -2,6 +2,8 @@
 #include <BAT/BCAux.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <iostream>
+#include <fstream>
 #include <TFile.h>
 //#include <mpi.h>
 #include "MixingModel.h"
@@ -83,7 +85,7 @@ int main(int argc, char ** argv)
 
 
   //m.PrintParameterPlot("Params.pdf",1);
-  m.PrintCorrelationMatrix("coor_matrix.pdf");
+  m.PrintCorrelationMatrix((filename+"coor_matrix.pdf").c_str());
   m.PrintSummary(); //Print all the relevant results in the log
 
 

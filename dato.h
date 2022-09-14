@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   dato.h
  * Author: silvest
  *
@@ -13,6 +13,7 @@
 #include <iostream>
 
 class dato {
+
 public:
     dato(double ave, double sig1, double sig2 = 0., double sig3 = 0.) {
         sigma1 = sig1;
@@ -37,6 +38,8 @@ public:
         return exp(-0.5 * (x - mean)*(x - mean) / sigma / sigma);
     };
 
+
+    //Peso Gaussiano del dato
     double logweight(double x) {
         return (-0.5 * (x - mean)*(x - mean) / sigma / sigma);
     };
@@ -70,4 +73,3 @@ private:
 };
 
 #endif	/* DATO_H */
-
