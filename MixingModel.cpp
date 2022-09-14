@@ -3082,6 +3082,10 @@ void MixingModel::DefineHistograms(){
         histos.createH1D("phipphig12", 200, 1., -1.);
         histos.createH1D("phimphig12", 200, 1., -1.);
         histos.createH1D("PhiG12", 200, 1., -1.);
+        histos.createH2D("PhiG12", "qop", 200, 1., -1., 200, 1., -1);
+        histos.createH2D("PhiG12", "phi", 200, 1., -1., 200, 1., -1);
+        histos.createH2D("PhiG12", "phi12", 200, 1., -1., 200, 1., -1);
+
     }
 
     //1D Histograms of the parameters
@@ -3252,7 +3256,6 @@ void MixingModel::DefineHistograms(){
     histos.createH2D("d_dmpi", "qop", 200, 1., -1., 200, 1., -1);
     histos.createH2D("beta", "qop", 200, 1., -1., 200, 1., -1);
     histos.createH2D("PhiM12", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiG12", "qop", 200, 1., -1., 200, 1., -1);
     histos.createH2D("AD", "qop", 200, 1., -1., 200, 1., -1);
     histos.createH2D("Delta_totau", "qop", 200, 1., -1., 200, 1., -1);
     histos.createH2D("DeltaAcp", "qop", 200, 1., -1., 200, 1., -1);
@@ -3311,7 +3314,6 @@ void MixingModel::DefineHistograms(){
     histos.createH2D("d_dmpi", "phi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("beta", "phi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("PhiM12", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiG12", "phi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("AD", "phi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("Delta_totau", "phi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("DeltaAcp", "phi", 200, 1., -1., 200, 1., -1);
@@ -3369,7 +3371,6 @@ void MixingModel::DefineHistograms(){
     histos.createH2D("d_dmpi", "phi12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("beta", "phi12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("PhiM12", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiG12", "phi12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("AD", "phi12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("Delta_totau", "phi12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("DeltaAcp", "phi12", 200, 1., -1., 200, 1., -1);
