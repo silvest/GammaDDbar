@@ -19,7 +19,7 @@ class MixingModel : public BCModel {
 public:
 
   // Constructors and destructor
-  MixingModel(int combination, bool phig12_i, bool noagamma_i, bool nokspipi_i, bool nok3pi_i, bool nokp_i, bool rad_i, bool epsK_i, bool ckmcorr_i, bool combgamma_all_i, bool combgamma_delta_i);
+  MixingModel(vector<string> nParam, int combination, bool phig12_i, bool noagamma_i, bool nokspipi_i, bool nok3pi_i, bool nokp_i, bool rad_i, bool epsK_i, bool ckmcorr_i, bool combgamma_all_i, bool combgamma_delta_i);
   ~MixingModel();
 
   // Methods to overload, see file MixingModel.cpp
@@ -29,8 +29,9 @@ public:
   void PrintHistogram();
 
   //Methods to insert the measurements
-  void Add_time_integrated_meas(); //B decay chain modes
-  void Add_time_dependent_Bmeas(); //B0s, B0d mixing and decay modes
+  void Add_ChargedB_meas(); //Charged B decay chain modes
+  void Add_NeutralBd_meas(); //Neutral B decay chain modes
+  void Add_NeutralBs_meas(); //B0s, B0d mixing and decay modes
   void Add_time_dependent_Dmeas(); // D mixing and decay modes
   void Add_other_meas(); // other support measurements
   void Add_old_meas(); // old code measurements
@@ -41,6 +42,8 @@ public:
   //Boolean variables to set the combination
   int comb;
   bool phig12, noagamma, nokspipi, nok3pi, rad, epsK, ckmcorr, nokp, combgamma_all, combgamma_delta;
+  // vector to copy the names of the variables to fill the relative histograms
+  std::vector<string> nVarab;
 
 
   map<string,dato> meas;
@@ -62,8 +65,9 @@ public:
   l_dsk, d_dsk, phis, //3
   l_dskpipi, d_dskpipi, k_dskpipi, //3
   l_dmpi, d_dmpi, beta, // 3
-  PhiM12, PhiG12, AD, Delta_totau, DeltaAcp; //5
+  PhiM12, PhiG12, AD, Delta_totau, DeltaAcp, //5
   //52 total parameters
+  F_kkpipi; //airXiv 20301.10328
 
   //old parameter
   double RCP, RCP_in, RCP_err, Rd, delta_kpi, delta_kpipi;
@@ -128,9 +132,14 @@ public:
   //https://arxiv.org/pdf/2208.10098.pdf
   double F_pipipipi_BESIII;
 
+  //https://arxiv.org/abs/2301.10328
+  double acp_dk_kkpipi_203110328, acp_dpi_kkpipi_203110328, acp_dk_pipipipi_203110328, acp_dpi_pipipipi_203110328,
+         rcp_kpi_kkpipi_203110328, rcp_kpi_pipipipi_203110328;
+
   //Methods to calculate the observables and the Log-Likelihood
-  double Calculate_time_integrated_observables();
-  double Calculate_time_dependent_Bobservables();
+  double Calculate_ChargedB_observables();
+  double Calculate_time_dependent_neutralBdobservables();
+  double Calculate_time_dependent_neutralBsobservables();
   double Calculate_time_dependent_Dobservables();
   double Calculate_other_observables();
   double Calculate_old_observables();

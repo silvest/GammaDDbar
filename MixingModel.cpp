@@ -8,8 +8,11 @@ using namespace std;
 
 // ---------------------------------------------------------
 
-MixingModel::MixingModel(int combination, bool phig12_i, bool noagamma_i, bool nokspipi_i, bool nok3pi_i, bool nokp_i, bool rad_i, bool epsK_i, bool ckmcorr_i, bool combgamma_all_i, bool combgamma_delta_i) : BCModel(), histos(obs)
+MixingModel::MixingModel(std::vector<string> nParam, int combination, bool phig12_i, bool noagamma_i, bool nokspipi_i, bool nok3pi_i, bool nokp_i, bool rad_i, bool epsK_i, bool ckmcorr_i, bool combgamma_all_i, bool combgamma_delta_i) : BCModel(), histos(obs)
 {
+
+  //------------------------------------------ Setting the auxiliary variables --------------------------------------------------------------------------
+
   TH1::SetDefaultBufferSize(1000000);
   phig12 = phig12_i; // turn on the phi_Gamma measurement
   noagamma = noagamma_i; // turn off the Agamma measurement
@@ -24,25 +27,36 @@ MixingModel::MixingModel(int combination, bool phig12_i, bool noagamma_i, bool n
   comb = combination; // set the combination
   r2d = (rad ? 1. : 180. / M_PI);
   d2r = M_PI / 180.;
+  nVarab = nParam; //copy the names of the variables of interest to print the histograms
 
   //------------------------------------------ Inserting the measurements --------------------------------------------------------------------------
 
-  if(comb == 0){
-    Add_time_integrated_meas(); //B decay chain time integrated
-    Add_time_dependent_Bmeas(); // time dependent B decay and mixing
-    Add_time_dependent_Dmeas(); // time dependent D decay and mixing
-    Add_other_meas(); // Other useful inputs
-  } // LHCb Combination
-  else if(comb == 1){
-    Add_old_meas();  //mesures of the old code
-  } // Old Combination
-  else if(comb == 2){
-    Add_time_integrated_meas(); //B decay chain time integrated
-    Add_time_dependent_Bmeas(); // time dependent B decay and mixing
+  if(comb == 0){ // Charged B measurements
+    Add_ChargedB_meas(); //Charged B decay chains
     Add_time_dependent_Dmeas(); // time dependent D decay and mixing
     Add_other_meas(); // Other useful inputs
     Add_old_meas(); // old code measurements
-  } // Global combination LHCb + Old
+  }
+  else if(comb == 1){ // Neutral Bd measurements
+    Add_NeutralBd_meas(); // time dependent Bd decay and mixing
+    Add_time_dependent_Dmeas(); // time dependent D decay and mixing
+    Add_other_meas(); // Other useful inputs
+    Add_old_meas(); // old code measurements
+  }
+  else if(comb == 2){ // Neutral Bs measurements
+    Add_NeutralBs_meas(); // time dependent Bs decay and mixing
+    Add_time_dependent_Dmeas(); // time dependent D decay and mixing
+    Add_other_meas(); // Other useful inputs
+    Add_old_meas(); // old code measurements
+  }
+  else if(comb == 3){ // All modes
+    Add_ChargedB_meas(); //Charged B decay chains
+    Add_NeutralBd_meas(); // time dependent Bd decay and mixing
+    Add_NeutralBs_meas(); // time dependent Bs decay and mixing
+    Add_time_dependent_Dmeas(); // time dependent D decay and mixing
+    Add_other_meas(); // Other useful inputs
+    Add_old_meas(); // old code measurements
+  }
 
   //------------------------------------------- Defining the Histograms --------------------------------------------------------------
 
@@ -61,7 +75,7 @@ MixingModel::~MixingModel()
 // ---------------------------------------------------------
 
 // ---------------------------------------------------------
-void MixingModel::Add_time_integrated_meas(){
+void MixingModel::Add_ChargedB_meas(){
 
   vector<dato> CorrData;
   TMatrixDSym Corr, Corr2;
@@ -1022,6 +1036,298 @@ void MixingModel::Add_time_integrated_meas(){
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID6", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
+
+  //10. PDF: glwads-dhpipi-hh-dmix (UID9)
+  //Observables 11:
+  CorrData.clear();
+  CorrData.push_back(dato(1.0400,0.064,0.0));//rcp_dkpipi
+  CorrData.push_back(dato(0.013,0.019,0.013));//afav_dkpipi_kpi
+  CorrData.push_back(dato(-0.002,0.003,0.011));//afav_dpipipi_kpi
+  CorrData.push_back(dato(-0.045,0.064,0.011));//acp_dkpipi_kk
+  CorrData.push_back(dato(-0.054,0.101,0.011));// acp_dkpipi_pipi
+  CorrData.push_back(dato(-0.019,0.011,0.01));//acp_dpipipi_kk
+  CorrData.push_back(dato(-0.013,0.016,0.01));// acp_dpipipi_pipi
+  CorrData.push_back(dato(0.0107,0.006,0.00110));// rp_dkpipi
+  CorrData.push_back(dato(0.00530,0.0045,0.0006));// rm_dkpipi
+  CorrData.push_back(dato(0.00432,0.00053,0.00021));// rp_dpipipi
+  CorrData.push_back(dato(0.00421,0.00053,0.00021));// rm_dpipipi
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(11,11);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.;
+  Corr(0,2) = 0.0;
+  Corr(0,3) = 0.0;
+  Corr(0,4) = 0.0;
+  Corr(0,5) = 0.0;
+  Corr(0,6) = 0.0;
+  Corr(0,7) = 0.;
+  Corr(0,8) = 0.;
+  Corr(0,9) = 0.;
+  Corr(0,10) = 0.;
+  Corr(1,1) = 1.;
+  Corr(1,2) = 0.0;
+  Corr(1,3) = 0.0;
+  Corr(1,4) = 0.0;
+  Corr(1,5) = 0.0;
+  Corr(1,6) = 0.0;
+  Corr(1,7) = 0.;
+  Corr(1,8) = 0.;
+  Corr(1,9) = 0.;
+  Corr(1,10) = 0.;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.;
+  Corr(2,4) = 0.;
+  Corr(2,5) = 0.0;
+  Corr(2,6) = 0.0;
+  Corr(2,7) = 0.0;
+  Corr(2,8) = 0.;
+  Corr(2,9) = 0.;
+  Corr(2,10) = 0.;
+  Corr(3,3) = 1.;
+  Corr(3,4) = 0.2;
+  Corr(3,5) = 0.;
+  Corr(3,6) = 0.;
+  Corr(3,7) = 0.;
+  Corr(3,8) = 0.;
+  Corr(3,9) = 0.;
+  Corr(3,10) = 0.;
+  Corr(4,4) = 1.;
+  Corr(4,5) = 0.0;
+  Corr(4,6) = 0.0;
+  Corr(4,7) = 0.;
+  Corr(4,8) = 0.;
+  Corr(4,9) = 0.;
+  Corr(4,10) = 0.;
+  Corr(5,5) = 1.;
+  Corr(5,6) = 0.08;
+  Corr(5,7) = 0.;
+  Corr(5,8) = 0.;
+  Corr(5,9) = 0.;
+  Corr(5,10) = 0.;
+  Corr(6,6) = 1.;
+  Corr(6,7) = 0.;
+  Corr(6,8) = 0.;
+  Corr(6,9) = 0.;
+  Corr(6,10) = 0.;
+  Corr(7,7) = 1.;
+  Corr(7,8) = 0.0;
+  Corr(7,9) = 0.;
+  Corr(7,10) = 0.0;
+  Corr(8,8) = 1.;
+  Corr(8,9) = 0.;
+  Corr(8,10) = 0.;
+  Corr(9,9) = 1.;
+  Corr(9,10) = 0.0;
+  Corr(10,10) = 1.;
+
+  //Correlation Matrix (syst)
+  Corr2.ResizeTo(11,11);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.;
+  Corr2(0,2) = 0.;
+  Corr2(0,3) = 0.;
+  Corr2(0,4) = 0.;
+  Corr2(0,5) = 0.;
+  Corr2(0,6) = 0.;
+  Corr2(0,7) = 0.;
+  Corr2(0,8) = 0.;
+  Corr2(0,9) = 0.;
+  Corr2(0,10) = 0.;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = 0.;
+  Corr2(1,3) = 0.;
+  Corr2(1,4) = 0.;
+  Corr2(1,5) = 0.;
+  Corr2(1,6) = 0.;
+  Corr2(1,7) = 0.;
+  Corr2(1,8) = 0.;
+  Corr2(1,9) = 0.;
+  Corr2(1,10) = 0.;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.;
+  Corr2(2,4) = 0.;
+  Corr2(2,5) = 0.;
+  Corr2(2,6) = 0.;
+  Corr2(2,7) = 0.;
+  Corr2(2,8) = 0.;
+  Corr2(2,9) = 0.;
+  Corr2(2,10) = 0.;
+  Corr2(3,3) = 1.;
+  Corr2(3,4) = 0.;
+  Corr2(3,5) = 0.;
+  Corr2(3,6) = 0.;
+  Corr2(3,7) = 0.;
+  Corr2(3,8) = 0.;
+  Corr2(3,9) = 0.;
+  Corr2(3,10) = 0.;
+  Corr2(4,4) = 1.;
+  Corr2(4,5) = 0.;
+  Corr2(4,6) = 0.;
+  Corr2(4,7) = 0.;
+  Corr2(4,8) = 0.;
+  Corr2(4,9) = 0.;
+  Corr2(4,10) = 0.;
+  Corr2(5,5) = 1.;
+  Corr2(5,6) = 0.;
+  Corr2(5,7) = 0.;
+  Corr2(5,8) = 0.;
+  Corr2(5,9) = 0.;
+  Corr2(5,10) = 0.;
+  Corr2(6,6) = 1.;
+  Corr2(6,7) = 0.;
+  Corr2(6,8) = 0.;
+  Corr2(6,9) = 0.;
+  Corr2(6,10) = 0.;
+  Corr2(7,7) = 1.;
+  Corr2(7,8) = 0.;
+  Corr2(7,9) = 0.;
+  Corr2(7,10) = 0.;
+  Corr2(8,8) = 1.;
+  Corr2(8,9) = 0.;
+  Corr2(8,10) = 0.;
+  Corr2(9,9) = 1.;
+  Corr2(9,10) = 0.;
+  Corr2(10,10) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID9", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+  //https://arxiv.org/abs/2301.10328
+  //GGSZ analysis: 6 observables //The systematic uncertainties are summed in quadrature with the ones arising from ci, si ecc..
+  CorrData.clear();
+  CorrData.push_back(dato(0.079,0.029,0.0057)); //xm_dk
+  CorrData.push_back(dato(-0.033,0.034,0.036)); //ym_dk
+  CorrData.push_back(dato(-0.125,0.025,0.017)); //xp_dk
+  CorrData.push_back(dato(-0.042,0.031,0.013)); //yp_dk
+  CorrData.push_back(dato(-0.031,0.035,0.0071)); // xi_x_dpi
+  CorrData.push_back(dato(-0.017,0.047,0.012)); // xi_y_dpi
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(6,6);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.032;
+  Corr(0,2) = 0.008;
+  Corr(0,3) = -0.010;
+  Corr(0,4) = 0.034;
+  Corr(0,5) = 0.102;
+  Corr(1,1) = 1.;
+  Corr(1,2) = 0.017;
+  Corr(1,3) = 0.;
+  Corr(1,4) = -0.091;
+  Corr(1,5) = 0.08;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.007;
+  Corr(2,4) = -0.100;
+  Corr(2,5) = 0.051;
+  Corr(3,3) = 1.;
+  Corr(3,4) = 0.012;
+  Corr(3,5) = -0.097;
+  Corr(4,4) = 1.;
+  Corr(4,5) = 0.014;
+  Corr(5,5) = 1.;
+  //Correlation Matrix (syst)
+  Corr2.ResizeTo(6,6);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = -0.678;
+  Corr2(0,2) = 0.751;
+  Corr2(0,3) = 0.736;
+  Corr2(0,4) = -0.048;
+  Corr2(0,5) = -0.650;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = -0.973;
+  Corr2(1,3) = -0.961;
+  Corr2(1,4) = -0.200;
+  Corr2(1,5) = 0.898;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.971;
+  Corr2(2,4) = 0.166;
+  Corr2(2,5) = -0.862;
+  Corr2(3,3) = 1.;
+  Corr2(3,4) = 0.065;
+  Corr2(3,5) = -0.913;
+  Corr2(4,4) = 1.;
+  Corr2(4,5) = -0.057;
+  Corr2(5,5) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("GGSZ_20301.10328", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+  //GLW: 6 observables
+  CorrData.clear();
+  CorrData.push_back(dato(0.093,0.023,0.002)); //acp_dk_kkpipi
+  CorrData.push_back(dato(-0.009,0.006,0.001)); //acp_dpi_kkpipi
+  CorrData.push_back(dato(0.060,0.013,0.001)); //acp_dk_4pi
+  CorrData.push_back(dato(-0.0082, 0.0031, 0.0007)); //acp_dpi_4pi
+  CorrData.push_back(dato(0.974,0.024,0.015)); // rcp_kkpipi
+  CorrData.push_back(dato(0.978,0.014,0.010)); // rcp_4pi
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(6,6);
+  Corr(0,0) = 1.;
+  Corr(0,1) = -0.025;
+  Corr(0,2) = 0.00;
+  Corr(0,3) = 0.;
+  Corr(0,4) = 0.015;
+  Corr(0,5) = 0.;
+  Corr(1,1) = 1.;
+  Corr(1,2) = 0.;
+  Corr(1,3) = 0.;
+  Corr(1,4) = 0.002;
+  Corr(1,5) = 0.;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.028;
+  Corr(2,4) = 0.002;
+  Corr(2,5) = 0.016;
+  Corr(3,3) = 1.;
+  Corr(3,4) = 0.;
+  Corr(3,5) = 0.002;
+  Corr(4,4) = 1.;
+  Corr(4,5) = 0.068;
+  Corr(5,5) = 1.;
+  //Correlation Matrix (syst)
+  Corr2.ResizeTo(6,6);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.442;
+  Corr2(0,2) = 0.594;
+  Corr2(0,3) = 0.441;
+  Corr2(0,4) = -0.723;
+  Corr2(0,5) = -0.060;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = 0.646;
+  Corr2(1,3) = 0.999;
+  Corr2(1,4) = 0.002;
+  Corr2(1,5) = 0.008;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.643;
+  Corr2(2,4) = -0.042;
+  Corr2(2,5) = -0.348;
+  Corr2(3,3) = 1.;
+  Corr2(3,4) = 0.009;
+  Corr2(3,5) = 0.013;
+  Corr2(4,4) = 1.;
+  Corr2(4,5) = 0.236;
+  Corr2(5,5) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("GLW_20301.10328", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+
+
+  //-------------------------------------------  Other useful inputs for the parameters of the Time Integrated B Decay Chain -------------------------------------------------------------------------
+
+  //25. PDF: dkstcoherence (UID24)
+
+  //Observables 1:
+  meas.insert(pair<string,dato>("UID24", dato(0.95,0.06,0.)));//k_dkst
+
+
+}
+// ---------------------------------------------------------
+
+// ---------------------------------------------------------
+void MixingModel::Add_NeutralBd_meas(){
+
+  vector<dato> CorrData;
+  TMatrixDSym Corr, Corr2;
+
+  //-------------------------------------- Time Integrated B0d decay-------------------------------------------------------------------------
+
   //8. PDF: glwads-dkst-hh-h3pi-dmix (UID7)
   //Observables 12:
   CorrData.clear();
@@ -1238,273 +1544,53 @@ void MixingModel::Add_time_integrated_meas(){
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID8", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
-  //10. PDF: glwads-dhpipi-hh-dmix (UID9)
-  //Observables 11:
-  CorrData.clear();
-  CorrData.push_back(dato(1.0400,0.064,0.0));//rcp_dkpipi
-  CorrData.push_back(dato(0.013,0.019,0.013));//afav_dkpipi_kpi
-  CorrData.push_back(dato(-0.002,0.003,0.011));//afav_dpipipi_kpi
-  CorrData.push_back(dato(-0.045,0.064,0.011));//acp_dkpipi_kk
-  CorrData.push_back(dato(-0.054,0.101,0.011));// acp_dkpipi_pipi
-  CorrData.push_back(dato(-0.019,0.011,0.01));//acp_dpipipi_kk
-  CorrData.push_back(dato(-0.013,0.016,0.01));// acp_dpipipi_pipi
-  CorrData.push_back(dato(0.0107,0.006,0.00110));// rp_dkpipi
-  CorrData.push_back(dato(0.00530,0.0045,0.0006));// rm_dkpipi
-  CorrData.push_back(dato(0.00432,0.00053,0.00021));// rp_dpipipi
-  CorrData.push_back(dato(0.00421,0.00053,0.00021));// rm_dpipipi
 
-  //Correlation Matrix (stat):
-  Corr.ResizeTo(11,11);
-  Corr(0,0) = 1.;
-  Corr(0,1) = 0.;
-  Corr(0,2) = 0.0;
-  Corr(0,3) = 0.0;
-  Corr(0,4) = 0.0;
-  Corr(0,5) = 0.0;
-  Corr(0,6) = 0.0;
-  Corr(0,7) = 0.;
-  Corr(0,8) = 0.;
-  Corr(0,9) = 0.;
-  Corr(0,10) = 0.;
-  Corr(1,1) = 1.;
-  Corr(1,2) = 0.0;
-  Corr(1,3) = 0.0;
-  Corr(1,4) = 0.0;
-  Corr(1,5) = 0.0;
-  Corr(1,6) = 0.0;
-  Corr(1,7) = 0.;
-  Corr(1,8) = 0.;
-  Corr(1,9) = 0.;
-  Corr(1,10) = 0.;
-  Corr(2,2) = 1.;
-  Corr(2,3) = 0.;
-  Corr(2,4) = 0.;
-  Corr(2,5) = 0.0;
-  Corr(2,6) = 0.0;
-  Corr(2,7) = 0.0;
-  Corr(2,8) = 0.;
-  Corr(2,9) = 0.;
-  Corr(2,10) = 0.;
-  Corr(3,3) = 1.;
-  Corr(3,4) = 0.2;
-  Corr(3,5) = 0.;
-  Corr(3,6) = 0.;
-  Corr(3,7) = 0.;
-  Corr(3,8) = 0.;
-  Corr(3,9) = 0.;
-  Corr(3,10) = 0.;
-  Corr(4,4) = 1.;
-  Corr(4,5) = 0.0;
-  Corr(4,6) = 0.0;
-  Corr(4,7) = 0.;
-  Corr(4,8) = 0.;
-  Corr(4,9) = 0.;
-  Corr(4,10) = 0.;
-  Corr(5,5) = 1.;
-  Corr(5,6) = 0.08;
-  Corr(5,7) = 0.;
-  Corr(5,8) = 0.;
-  Corr(5,9) = 0.;
-  Corr(5,10) = 0.;
-  Corr(6,6) = 1.;
-  Corr(6,7) = 0.;
-  Corr(6,8) = 0.;
-  Corr(6,9) = 0.;
-  Corr(6,10) = 0.;
-  Corr(7,7) = 1.;
-  Corr(7,8) = 0.0;
-  Corr(7,9) = 0.;
-  Corr(7,10) = 0.0;
-  Corr(8,8) = 1.;
-  Corr(8,9) = 0.;
-  Corr(8,10) = 0.;
-  Corr(9,9) = 1.;
-  Corr(9,10) = 0.0;
-  Corr(10,10) = 1.;
+  //-------------------------------------- Time Dependent B0 decay-------------------------------------------------------------------------
 
-  //Correlation Matrix (syst)
-  Corr2.ResizeTo(11,11);
-  Corr2(0,0) = 1.;
-  Corr2(0,1) = 0.;
-  Corr2(0,2) = 0.;
-  Corr2(0,3) = 0.;
-  Corr2(0,4) = 0.;
-  Corr2(0,5) = 0.;
-  Corr2(0,6) = 0.;
-  Corr2(0,7) = 0.;
-  Corr2(0,8) = 0.;
-  Corr2(0,9) = 0.;
-  Corr2(0,10) = 0.;
-  Corr2(1,1) = 1.;
-  Corr2(1,2) = 0.;
-  Corr2(1,3) = 0.;
-  Corr2(1,4) = 0.;
-  Corr2(1,5) = 0.;
-  Corr2(1,6) = 0.;
-  Corr2(1,7) = 0.;
-  Corr2(1,8) = 0.;
-  Corr2(1,9) = 0.;
-  Corr2(1,10) = 0.;
-  Corr2(2,2) = 1.;
-  Corr2(2,3) = 0.;
-  Corr2(2,4) = 0.;
-  Corr2(2,5) = 0.;
-  Corr2(2,6) = 0.;
-  Corr2(2,7) = 0.;
-  Corr2(2,8) = 0.;
-  Corr2(2,9) = 0.;
-  Corr2(2,10) = 0.;
-  Corr2(3,3) = 1.;
-  Corr2(3,4) = 0.;
-  Corr2(3,5) = 0.;
-  Corr2(3,6) = 0.;
-  Corr2(3,7) = 0.;
-  Corr2(3,8) = 0.;
-  Corr2(3,9) = 0.;
-  Corr2(3,10) = 0.;
-  Corr2(4,4) = 1.;
-  Corr2(4,5) = 0.;
-  Corr2(4,6) = 0.;
-  Corr2(4,7) = 0.;
-  Corr2(4,8) = 0.;
-  Corr2(4,9) = 0.;
-  Corr2(4,10) = 0.;
-  Corr2(5,5) = 1.;
-  Corr2(5,6) = 0.;
-  Corr2(5,7) = 0.;
-  Corr2(5,8) = 0.;
-  Corr2(5,9) = 0.;
-  Corr2(5,10) = 0.;
-  Corr2(6,6) = 1.;
-  Corr2(6,7) = 0.;
-  Corr2(6,8) = 0.;
-  Corr2(6,9) = 0.;
-  Corr2(6,10) = 0.;
-  Corr2(7,7) = 1.;
-  Corr2(7,8) = 0.;
-  Corr2(7,9) = 0.;
-  Corr2(7,10) = 0.;
-  Corr2(8,8) = 1.;
-  Corr2(8,9) = 0.;
-  Corr2(8,10) = 0.;
-  Corr2(9,9) = 1.;
-  Corr2(9,10) = 0.;
-  Corr2(10,10) = 1.;
-
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID9", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
-
-  //-------------------------------------------  Other useful inputs for the parameters of the Time Integrated B Decay Chain -------------------------------------------------------------------------
-
-  //20. PDF: dk3pi_dkpipi0_constraints (UID19)
-  //Observables 6:
-  CorrData.clear();
-  CorrData.push_back(dato(0.44,0.095,0.));//kD_k3pi
-  CorrData.push_back(dato(2.80998, 0.40143 , 0.));//dD_k3pi
-  //CorrData.push_back(dato(2*M_PI - 2.80998, 0.40143 , 0.));//dD_k3pi
-  //NB: I used 2pi-x, where x is the value written in gammacharm_lhc document because I have the phase convention dD = -dD
-  CorrData.push_back(dato(0.79,0.04,0.));// kD_kpipi0
-  CorrData.push_back(dato(3.42085, 0.19199,0.));// dD_kpipi0
-  //CorrData.push_back(dato(2 * M_PI - 3.42085, 0.19199,0.));// dD_kpipi0
-  //NB: I used 2pi-x, where x is the value written in gammacharm_lhc document because I have the phase convention dD = -dD
-  CorrData.push_back(dato(0.055,0.0007,0.));// rD_k3pi
-  CorrData.push_back(dato(0.0441,0.0011,0.));// rD_kpipi0
-
-  //Correlation Matrix (stat):
-  Corr.ResizeTo(6,6);
-  Corr(0,0) = 1.;
-  Corr(0,1) = -0.75;
-  Corr(0,2) = 0.;
-  Corr(0,3) = -0.07;
-  Corr(0,4) = 0.52;
-  Corr(0,5) = -0.06;
-  Corr(1,1) = 1.;
-  Corr(1,2) = 0.03;
-  Corr(1,3) = 0.17;
-  Corr(1,4) = -0.42;
-  Corr(1,5) = 0.01;
-  Corr(2,2) = 1.;
-  Corr(2,3) = 0.19;
-  Corr(2,4) = -0.01;
-  Corr(2,5) = -0.01;
-  Corr(3,3) = 1.;
-  Corr(3,4) = -0.02;
-  Corr(3,5) = 0.25;
-  Corr(4,4) = 1.;
-  Corr(4,5) = -0.12;
-  Corr(5,5) = 1.;
-
-  //Correlation Matrix (syst)
-  Corr2.ResizeTo(6,6);
-  Corr2(0,0) = 1.;
-  Corr2(0,1) = 0.;
-  Corr2(0,2) = 0.;
-  Corr2(0,3) = 0.;
-  Corr2(0,4) = 0.;
-  Corr2(0,5) = 0.;
-  Corr2(1,1) = 1.;
-  Corr2(1,2) = 0.;
-  Corr2(1,3) = 0.;
-  Corr2(1,4) = 0.;
-  Corr2(1,5) = 0.;
-  Corr2(2,2) = 1.;
-  Corr2(2,3) = 0.;
-  Corr2(2,4) = 0.;
-  Corr2(2,5) = 0.;
-  Corr2(3,3) = 1.;
-  Corr2(3,4) = 0.;
-  Corr2(3,5) = 0.;
-  Corr2(4,4) = 1.;
-  Corr2(4,5) = 0.;
-  Corr2(5,5) = 1.;
-
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID19", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
-
-  //21. PDF: d4pi_dmixing_cleo (UID20)
-
-  //Observables 1:
-  meas.insert(pair<string,dato>("UID20", dato(0.737,0.028,0.))); //Fpipipipi
-
-  //22. PDF: CleoDhhpi0Diluition (UID21)
+  //13. PDF: dmpi (UID12)
 
   //Observables 2:
   CorrData.clear();
-  CorrData.push_back(dato(0.973,0.017,0.));//F_pipipi0
-  CorrData.push_back(dato(0.732,0.055,0.));//F_kkpi0
+  CorrData.push_back(dato(0.058,0.02,0.011));//s_dmpi
+  CorrData.push_back(dato(0.038,0.02,0.007));// sb_dmpi
+  //changed the sign of the observables with respect to the document
 
   //Correlation Matrix (stat):
   Corr.ResizeTo(2,2);
   Corr(0,0) = 1.;
-  Corr(0,1) = 0.;
+  Corr(0,1) = 0.6;
   Corr(1,1) = 1.;
 
   //Correlation Matrix (syst)
   Corr2.ResizeTo(2,2);
   Corr2(0,0) = 1.;
-  Corr2(0,1) = 0.;
+  Corr2(0,1) = -0.41;
   Corr2(1,1) = 1.;
 
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID21", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID12", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
-  //25. PDF: dkstcoherence (UID24)
-
-  //Observables 1:
-  meas.insert(pair<string,dato>("UID24", dato(0.95,0.06,0.)));//k_dkst
+  //-------------------------------------  Other useful inputs for the Time Dependent B0 Decay and mixing parameters -------------------------------------------------------------------------
 
   //26. PDF: dkstzcoherence (UID25)
 
   //Observables 1:
   meas.insert(pair<string,dato>("UID25", dato(0.958,0.0075,0.024)));//k_dkstz
 
+  //28. PDF: beta (UID27)
+
+  //Observables 1:
+  meas.insert(pair<string,dato>("UID27", dato(0.38746,0.0122,0.)));// beta
+
 }
 // ---------------------------------------------------------
 
 // ---------------------------------------------------------
-void MixingModel::Add_time_dependent_Bmeas(){
+void MixingModel::Add_NeutralBs_meas(){
 
   vector<dato> CorrData;
   TMatrixDSym Corr, Corr2;
 
-  //-------------------------------------- Time Dependent B0 decay-------------------------------------------------------------------------
+  //-------------------------------------- Time Dependent B0s decay-------------------------------------------------------------------------
 
   //11. PDF: dsk (UID10)
 
@@ -1602,39 +1688,12 @@ void MixingModel::Add_time_dependent_Bmeas(){
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID11", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
-  //13. PDF: dmpi (UID12)
-
-  //Observables 2:
-  CorrData.clear();
-  CorrData.push_back(dato(0.058,0.02,0.011));//s_dmpi
-  CorrData.push_back(dato(0.038,0.02,0.007));// sb_dmpi
-  //changed the sign of the observables with respect to the document
-
-  //Correlation Matrix (stat):
-  Corr.ResizeTo(2,2);
-  Corr(0,0) = 1.;
-  Corr(0,1) = 0.6;
-  Corr(1,1) = 1.;
-
-  //Correlation Matrix (syst)
-  Corr2.ResizeTo(2,2);
-  Corr2(0,0) = 1.;
-  Corr2(0,1) = -0.41;
-  Corr2(1,1) = 1.;
-
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID12", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
-
   //-------------------------------------  Other useful inputs for the Time Dependent B0 Decay and mixing parameters -------------------------------------------------------------------------
 
   //27. PDF: phis (UID26)
 
   //Observables 1:
   meas.insert(pair<string,dato>("UID26", dato(-0.05,0.019,0.)));//phis = - 2 beta_s
-
-  //28. PDF: beta (UID27)
-
-  //Observables 1:
-  meas.insert(pair<string,dato>("UID27", dato(0.38746,0.0122,0.)));// beta
 
 }
 // ---------------------------------------------------------
@@ -1803,14 +1862,8 @@ void MixingModel::Add_time_dependent_Dmeas(){
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID17", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
   //29. PDF: Charm_ycp_minus_ycp_rs_lhcb-r1 (UID28)
-
-  //Observables 1:
-  if(comb == 0){
-    meas.insert(pair<string,dato>("UID28", dato(0.0057,0.0013,0.0009)));// ycp //old measurement
-  }
-  else{
-    meas.insert(pair<string,dato>("UID28", dato(0.00696,0.00026,0.00013)));// ycp  // new measurement https://arxiv.org/abs/2202.09106
-  } //global combination
+  meas.insert(pair<string,dato>("UID28", dato(0.00696,0.00026,0.00013)));// ycp  // new measurement https://arxiv.org/abs/2202.09106
+  //global combination
 
   //30. PDF: charm-dy-rs (UID29)
 
@@ -1876,8 +1929,6 @@ void MixingModel::Add_time_dependent_Dmeas(){
   Corr2(5,5) = 1.;
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID30", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
-
-  if(comb == 2){
 
   // https://arxiv.org/abs/2208.09402
 
@@ -1951,7 +2002,6 @@ void MixingModel::Add_time_dependent_Dmeas(){
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCb_kspp_Au2022", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
-  }
 
 }
 // ---------------------------------------------------------
@@ -1961,6 +2011,93 @@ void MixingModel::Add_other_meas(){
 
   vector<dato> CorrData;
   TMatrixDSym Corr, Corr2;
+
+  //20. PDF: dk3pi_dkpipi0_constraints (UID19)
+  //Observables 6:
+  CorrData.clear();
+  CorrData.push_back(dato(0.44,0.095,0.));//kD_k3pi
+  CorrData.push_back(dato(2.80998, 0.40143 , 0.));//dD_k3pi
+  CorrData.push_back(dato(0.79,0.04,0.));// kD_kpipi0
+  CorrData.push_back(dato(3.42085, 0.19199,0.));// dD_kpipi0
+  CorrData.push_back(dato(0.055,0.0007,0.));// rD_k3pi
+  CorrData.push_back(dato(0.0441,0.0011,0.));// rD_kpipi0
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(6,6);
+  Corr(0,0) = 1.;
+  Corr(0,1) = -0.75;
+  Corr(0,2) = 0.;
+  Corr(0,3) = -0.07;
+  Corr(0,4) = 0.52;
+  Corr(0,5) = -0.06;
+  Corr(1,1) = 1.;
+  Corr(1,2) = 0.03;
+  Corr(1,3) = 0.17;
+  Corr(1,4) = -0.42;
+  Corr(1,5) = 0.01;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.19;
+  Corr(2,4) = -0.01;
+  Corr(2,5) = -0.01;
+  Corr(3,3) = 1.;
+  Corr(3,4) = -0.02;
+  Corr(3,5) = 0.25;
+  Corr(4,4) = 1.;
+  Corr(4,5) = -0.12;
+  Corr(5,5) = 1.;
+
+  //Correlation Matrix (syst)
+  Corr2.ResizeTo(6,6);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.;
+  Corr2(0,2) = 0.;
+  Corr2(0,3) = 0.;
+  Corr2(0,4) = 0.;
+  Corr2(0,5) = 0.;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = 0.;
+  Corr2(1,3) = 0.;
+  Corr2(1,4) = 0.;
+  Corr2(1,5) = 0.;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.;
+  Corr2(2,4) = 0.;
+  Corr2(2,5) = 0.;
+  Corr2(3,3) = 1.;
+  Corr2(3,4) = 0.;
+  Corr2(3,5) = 0.;
+  Corr2(4,4) = 1.;
+  Corr2(4,5) = 0.;
+  Corr2(5,5) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID19", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+  //21. PDF: d4pi_dmixing_cleo (UID20)
+
+  //Observables 1:
+  meas.insert(pair<string,dato>("UID20", dato(0.737,0.028,0.))); //Fpipipipi
+
+  //22. PDF: CleoDhhpi0Diluition (UID21)
+
+  //Observables 2:
+  CorrData.clear();
+  CorrData.push_back(dato(0.973,0.017,0.));//F_pipipi0
+  CorrData.push_back(dato(0.732,0.055,0.));//F_kkpi0
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(2,2);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.;
+  Corr(1,1) = 1.;
+
+  //Correlation Matrix (syst)
+  Corr2.ResizeTo(2,2);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.;
+  Corr2(1,1) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID21", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
 
   //-------------------------------------------- Other Observables-------------------------------------------------------------------------
 
@@ -2024,10 +2161,8 @@ void MixingModel::Add_other_meas(){
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID23", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
-  if(comb == 2){
-   // https://arxiv.org/pdf/2208.10098.pdf
-   meas.insert(pair<string,dato>("Fpipipipi_BESIII", dato(0.735, 0.015, 0.005))); //F_pipipipi
-  }
+  // https://arxiv.org/pdf/2208.10098.pdf
+  meas.insert(pair<string,dato>("Fpipipipi_BESIII", dato(0.735, 0.015, 0.005))); //F_pipipipi
 
 }
 // ---------------------------------------------------------
@@ -2038,9 +2173,6 @@ void MixingModel::Add_old_meas(){
   tauD = .410; //ps
 
   epsI = 2.228 * sin(43.52 / 180. * M_PI);
-
-  /*r2d = (rad ? 1. : 180. / M_PI);
-  d2r = M_PI / 180.;*/
 
   vector<dato> CorrData;
   TMatrixDSym Corr, Corr2;
@@ -2059,20 +2191,6 @@ void MixingModel::Add_old_meas(){
   }else{
     meas.insert(pair<string, dato>("ycp", dato(0.719e-2, 0.113e-2))); //HFLAV 2020
   }
-
-  // 2nd Block
-  // Because this measurement is just present in UID29 of the LHCb Combo
-  if(comb != 2){
-    if (!noagamma && !combgamma_all) {
-      if (phig12){
-        meas.insert(pair<string, dato>("AGamma", dato(1.9e-4, 1.3e-4, 0.4e-4))); //LHCb 2021
-      }else{
-        meas.insert(pair<string, dato>("AGamma", dato(1.0e-4, 1.1e-4, 0.3e-4))); //LHCb 2021
-      }
-    }
-  }
-
-  //      meas.insert(pair<string, dato>("AGamma", dato(-0.0309e-2, 0.0204e-2))); //HFLAV 2020
 
   // 3rd Block
   CorrData.clear();
@@ -2259,144 +2377,6 @@ void MixingModel::Add_old_meas(){
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kpi_cdf",
   CorrelatedGaussianObservables(CorrData, Corr)));
 
-  // because they are already present in UID16; UID18; UID14 OF LHCb combination
-  if(comb != 2){
-    if (!combgamma_all) {
-
-      //15th Block
-      CorrData.clear();
-
-      CorrData.push_back(dato(3.454e-3, 0.028e-3, 0.014e-3)); // RD_exp_lhcb_kp
-      CorrData.push_back(dato(5.01e-3, 0.48e-3, 0.29e-3)); // ypp_exp_lhcb_kp
-      CorrData.push_back(dato(0.61e-4, 0.26e-4, 0.16e-4)); // xpp2_exp_lhcb_kp
-      CorrData.push_back(dato(5.54e-3, 0.48e-3, 0.29e-3)); // ypm_exp_lhcb_kp
-      CorrData.push_back(dato(0.16e-4, 0.26e-4, 0.16e-4)); // xpm2_exp_lhcb_kp
-
-      Corr.ResizeTo(5, 5);
-
-      Corr(0, 0) = 1.;
-      Corr(0, 1) = -0.883;
-      Corr(0, 2) = 0.745;
-      Corr(0, 3) = -0.883;
-      Corr(0, 4) = 0.749;
-      Corr(1, 1) = 1.;
-      Corr(1, 2) = -0.944;
-      Corr(1, 3) = 0.758;
-      Corr(1, 4) = -0.644;
-      Corr(2, 2) = 1.;
-      Corr(2, 3) = -0.642;
-      Corr(2, 4) = 0.545;
-      Corr(3, 3) = 1.;
-      Corr(3, 4) = -0.946;
-      Corr(4, 4) = 1.;
-
-      corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kpi_lhcb",
-      CorrelatedGaussianObservables(CorrData, Corr)));
-
-      // 7th Block
-      meas.insert(pair<string, dato>("RMKppp", dato(0.0096e-2, 0.0036e-2))); //LHCb Kppp multiplied by 2
-
-      //4th Block
-      CorrData.clear();
-
-      CorrData.push_back(dato(3.97e-3, .46e-3, .29e-3)); // XCP_LHCb_kspp
-      CorrData.push_back(dato(4.59e-3, 1.20e-3, .85e-3)); // YCP_LHCb_kspp
-      CorrData.push_back(dato(-.27e-3, .18e-3, .01e-3)); // DX_LHCb_kspp
-      CorrData.push_back(dato(.20e-3, .36e-3, .13e-3)); // DY_LHCb_kspp
-
-      Corr.ResizeTo(4, 4);
-
-      Corr(0, 0) = 1.;
-      Corr(0, 1) = .11;
-      Corr(0, 2) = -.02;
-      Corr(0, 3) = -.01;
-      Corr(1, 1) = 1.;
-      Corr(1, 2) = -.01;
-      Corr(1, 3) = -.05;
-      Corr(2, 2) = 1.;
-      Corr(2, 3) = .08;
-      Corr(3, 3) = 1.;
-
-      Corr2.ResizeTo(4, 4);
-
-      Corr2(0, 0) = 1.;
-      Corr2(0, 1) = .13;
-      Corr2(0, 2) = .01;
-      Corr2(0, 3) = 0.01;
-      Corr2(1, 1) = 1.;
-      Corr2(1, 2) = -.02;
-      Corr2(1, 3) = .01;
-      Corr2(2, 2) = 1.;
-      Corr2(2, 3) = .31;
-      Corr2(3, 3) = 1.;
-
-      corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCb_kspp",
-      CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
-
-    } else {
-
-      //LHCb combo results
-      CorrData.clear();
-
-      CorrData.push_back(dato(4.00e-3, .52e-3)); // X_LHCb_combo
-      CorrData.push_back(dato(6.31e-3, .32e-3)); // Y_LHCb_combo
-      CorrData.push_back(dato(.997, .016)); // qop_LHCb_combo
-      CorrData.push_back(dato(-2.4, 1.2)); // phi_LHCb_combo (degrees)
-      CorrData.push_back(dato(.05867, .00015)); // rDkp_LHCb_combo
-      CorrData.push_back(dato(10., 4.2)); // deltaDKpi_LHCb_combo (degrees)
-
-
-      Corr.ResizeTo(6, 6);
-
-      Corr(0, 0) = 1.;
-      Corr(0, 1) = .013;
-      Corr(0, 2) = -.129;
-      Corr(0, 3) = .083;
-      Corr(0, 4) = .282;
-      Corr(0, 5) = .029;
-      Corr(1, 1) = 1.;
-      Corr(1, 2) = -.018;
-      Corr(1, 3) = .04;
-      Corr(1, 4) = -.095;
-      Corr(1, 5) = .891;
-      Corr(2, 2) = 1.;
-      Corr(2, 3) = .554;
-      Corr(2, 4) = -.07;
-      Corr(2, 5) = -.02;
-      Corr(3, 3) = 1.;
-      Corr(3, 4) = .015;
-      Corr(3, 5) = .055;
-      Corr(4, 4) = 1.;
-      Corr(4, 5) = .295;
-      Corr(5, 5) = 1.;
-
-
-      corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCb_combo",
-      CorrelatedGaussianObservables(CorrData, Corr)));
-    }
-
-
-    if (combgamma_delta) {
-
-      //LHCb D -> Kpi results
-      CorrData.clear();
-
-      CorrData.push_back(dato(.05867, .00015)); // rDkp_LHCb_combo
-      CorrData.push_back(dato(10., 4.2)); // deltaDKpi_LHCb_combo (degrees)
-
-      Corr.ResizeTo(2, 2);
-
-      Corr(0, 0) = 1.;
-      Corr(0, 1) = 0.295;
-      Corr(1, 1) = 1.;
-
-      corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCb_combo_delta",
-      CorrelatedGaussianObservables(CorrData, Corr)));
-
-    }
-  }
-
-
 }
 // ---------------------------------------------------------
 
@@ -2406,9 +2386,9 @@ void MixingModel::DefineParameters()
 {
   //------------------------------- Adding model parameters for all the combinations ------------------------------------------------------------------------
 
-  if(comb == 0){
+  if(comb == 0){  //-------- Adding model parameters for the charged B modes --------------------------------
 
-    //------------------------ Time Integrated B decay chain parameters -----------------------------------------------
+    //---------------------------  Time Integrated B decay chain Parameters  -----------------------------------------------
     //Global parameters
     AddParameter("g", 0.7  ,  1.5, "#gamma"); //All combined interval [1, 1.6]
     AddParameter("x12", 0.5e-3, 8.e-3,"x_{12}"); // ACI [2e-3, 6e-3]
@@ -2461,6 +2441,140 @@ void MixingModel::DefineParameters()
     AddParameter("d_dkst", -1.5, 4.5, "#delta_{DK^{*}}"); // 0.61 //ACI [0.,4.]
     AddParameter("k_dkst", 0.5, 1., "#kappa_{DK^{*}}"); //
 
+    //10. PDF: glwads-dhpipi-hh-dmix (UID9)
+    //Parametri:11
+    AddParameter("r_dkpipi", 0., 0.2, "r_{DK #pi #pi}"); //0.079
+    AddParameter("d_dkpipi", -M_PI -1.5 , M_PI - 1.5, "#delta_{DK #pi #pi}"); // //ACI [1., 2*M_PI]
+    AddParameter("k_dkpipi", 0., 1., "#kappa_{DK #pi #pi}"); //
+    AddParameter("r_dpipipi",0., 0.2, "r_{D #pi #pi #pi}"); //0.067
+    AddParameter("d_dpipipi", -M_PI - 1.5, M_PI -1.5, "#delta_{D #pi #pi #pi}"); //
+    AddParameter("k_dpipipi", 0., 1., "#kappa_{D #pi #pi #pi}"); //
+
+    //---------------------------------- Parametri Time Dependent B decay  ---------------------------------------------------
+
+    //---------------------------------- Parametri Time Dependent D decay  ---------------------------------------------------
+
+    //14. PDF: charm-kspipi-nocpv (UID13)
+    //Parametri:2
+
+    //15. PDF: charm-kspipi (UID14)
+    //Parametri:4
+    AddParameter("PhiM12",-0.2,0.3,"#phi_{M}");
+    if (phig12){
+      AddParameter("PhiG12", -0.2, 0.2, "#phi_{#Gamma}");
+    }
+    else{
+      AddParameter("PhiG12", 0., 0.);
+    }
+
+    //16. PDF: charm-kspipi (UID15)
+    //Parametri:4
+
+    //17. PDF: charm-kpi (UID16)
+    //Parametri:7
+    AddParameter("AD", -4e-2, 3e-2, "A_D");
+
+    //18. PDF: charm-deltaacp-diff (UID17)
+    //Parametri: 6
+    AddParameter("Delta_totau", 0.1, 0.13, "<#Delta t>"); //0.115
+    AddParameter("DeltaAcp", -3.5e-3, 0., "#Delta a_{CP}"); //-0.00152
+
+    //19. PDF: charm-k3pi (UID18)
+    //Parametri: 2
+
+    //20. PDF: dk3pi_dkpipi0_constraints (UID19)
+    //Parametri: 6 kD_k3pi, dD_k3pi, kD_kpipi0, dD_kpipi0, rD_k3pi, rD_kpipi0
+
+    //21. PDF: d4pi_dmixing_cleo (UID20)
+    //Parametri:1 F_pipipipi
+
+    //22. PDF: CleoDhhpi0Dilution (UID21)
+    //Parametri:2  F_pipipi0, F_kkpi0
+
+    //23. PDF: dkskpiRWS (UID22)
+    //Parametri:5  rD_kskpi, dD_kskpi, kD_kskpi, xD, yD
+
+    //24. PDF: dkskpi (UID23)
+    //Parametri 5:  rD_kskpi, dD_kskpi, kD_kskpi, xD, yD
+
+    //25. PDF: dkstcoherence (UID24)
+    //Parametri 1: k_dkst
+
+    //26. PDF: dkstzcoherence (UID25)
+    //Parametri 1: k_dkstz
+
+    //27. PDF: phis (UID26)
+    //Parametri 1: phis
+
+    //28. PDF: beta (UID27)
+    //Parametri 1: beta
+
+    //29. PDF: Charm_ycp_minus_ycp_rs_lhcb-r1 (UID28)
+    //Parametri 6: rD_kpi, dD_kpi, xD, yD, qopD, phiD
+
+    //30. PDF: charm-dy-rs (UID29)
+    //Parametri 4:  xD, yD, qopD, phiD
+
+    //31. PDF: charm-kpi (UID30
+    //Parametri 7: rD_kpi, dD_kpi, xD, yD, qopD, phiD, AD
+
+    //#Parameters = 52
+
+    //20301.10328
+    AddParameter("F_kkpipi", 0., 1., "F_{K^+K^-#pi^+#pi^-}");
+
+    if (ckmcorr){
+      AddParameter("RCP", RCP_in - 5. * RCP_err, RCP_in + 5. * RCP_err);
+    }
+    SetPriorConstantAll();
+    if (ckmcorr){
+      GetParameter("RCP").SetPrior(new BCGaussianPrior(RCP_in, RCP_err));
+    }
+
+  }
+  else if(comb == 1){  //-------- Adding model parameters for the Neutral-Bd modes --------------------------------
+
+    //---------------------------  Time Integrated B decay chain Parameters  -----------------------------------------------
+    //Global parameters
+    AddParameter("g", -0.3  ,  2.6, "#gamma"); //All combined interval [1, 1.6]
+    AddParameter("x12", 0.5e-3, 8.e-3,"x_{12}"); // ACI [2e-3, 6e-3]
+    AddParameter("y12", 3e-3, 9e-3, "y_{12}"); // ACI [4e-3, 1e-2]
+
+    //1. PDF: glwads-dh-hh-dmix (UID0)
+    //Parametri:9
+    AddParameter("rD_kpi", 0.055, 0.065, "r^{D}_{K#pi}"); // LHCb 0.05867 [0.05852, 0.05882]
+    AddParameter("dD_kpi", 2.2, 3.8, "#delta^{D}_{K#pi}"); //LHCb [120, 230]G //ACI[4.,5.]
+
+    //2. PDF: glwads-dh-h3pi-dmix (UID1)
+    //Parametri:11
+    AddParameter("rD_k3pi", 0.048, 0.065, "r^{D}_{K3#pi}"); // 0.0556 [0.05502,0.05619]
+    AddParameter("dD_k3pi", 1., 5.5, "#delta^{D}_{K3#pi}"); // 3.595 [3.87,3.33]
+    AddParameter("kD_k3pi", 0., 1., "#kappa^{D}_{K3#pi}"); // 0.480
+    AddParameter("F_pipipipi", 0.5, 1., "F_{#pi#pi#pi#pi}"); // 0.737
+
+    //3. PDF: glwads-dh-hhpi0-dmix (UID2)
+    //Parametri:12
+    AddParameter("rD_kpipi0", 0.03, 0.06, "r^{D}_{K#pi#pi^{0}}"); //0.044
+    AddParameter("dD_kpipi0", 1.5, 4.5, "#delta^{D}_{K#pi#pi^{0}}"); // [3.28,2.86]
+    AddParameter("kD_kpipi0", 0.4, 1., "#kappa^{D}_{K#pi#pi^{0}}"); // 0.79
+    AddParameter("F_pipipi0", 0.6, 1., "F_{#pi#pi#pi^{0}}"); // 0.973
+    AddParameter("F_kkpi0", 0.2, 1., "F_{KK#pi^0}"); // 0.732
+
+    //4. PDF: ggsz-dh (UID3)
+    //Parametri: 5
+
+    //5. PDF: glwads-dkdpi-kskpi-dmix (UID4)
+    //Parametri: 11
+    AddParameter("rD_kskpi", 0.55, 0.7, "r^{D}_{K^{0}_S K #pi}"); //0.6150
+    AddParameter("dD_kskpi", -2., 2., "#delta^{D}_{K^{0}_S K #pi}"); // [6.23, 5.75]
+    AddParameter("kD_kskpi", 0.3, 1., "#kappa_{K^{0}_S K #pi}"); // 0.82
+
+    //6. PDF: glwads-dsth-hh-dmix (UID5)
+    //Parametri: 9
+
+    //7. PDF: glwads-dkst-hh-h3pi-dmix-newvars (UID6)
+    //Parametri:12
+
     //8. PDF: glwads-dkstz-hh-h3pi-dmix (UID7)
     //Parametri:12
     AddParameter("r_dkstz", 0., 0.5, "r_{D K^{0*}}");  //0.25
@@ -2472,12 +2586,142 @@ void MixingModel::DefineParameters()
 
     //10. PDF: glwads-dhpipi-hh-dmix (UID9)
     //Parametri:11
-    AddParameter("r_dkpipi", 0., 0.2, "r_{DK #pi #pi}"); //0.079
-    AddParameter("d_dkpipi", -M_PI -1.5, M_PI -1.5, "#delta_{DK #pi #pi}"); // //ACI [1., 2*M_PI]
-    AddParameter("k_dkpipi", 0., 1., "#kappa_{DK #pi #pi}"); //
-    AddParameter("r_dpipipi",0., 0.2, "r_{D #pi #pi #pi}"); //0.067
-    AddParameter("d_dpipipi", -M_PI - 1.5, M_PI - 1.5, "#delta_{D #pi #pi #pi}"); //
-    AddParameter("k_dpipipi", 0., 1., "#kappa_{D #pi #pi #pi}"); //
+
+    //---------------------------------- Parametri Time Dependent B decay  ---------------------------------------------------
+
+    //13. PDF: dmpi (UID12)
+    //Parametri:4
+    AddParameter("l_dmpi", 0., 0.4, "#lambda_{D^{-} #pi}");
+    AddParameter("d_dmpi", -M_PI, M_PI, "#delta_{D^{-} #pi}");
+    AddParameter("beta", 0.2, 0.5, "#beta");
+
+    //---------------------------------- Parametri Time Dependent D decay  ---------------------------------------------------
+
+    //14. PDF: charm-kspipi-nocpv (UID13)
+    //Parametri:2
+
+    //15. PDF: charm-kspipi (UID14)
+    //Parametri:4
+    AddParameter("PhiM12",-0.2,0.3,"#phi_{M}");
+    if (phig12){
+      AddParameter("PhiG12", -0.2, 0.2, "#phi_{#Gamma}");
+    }
+    else{
+      AddParameter("PhiG12", 0., 0.);
+    }
+
+    //16. PDF: charm-kspipi (UID15)
+    //Parametri:4
+
+    //17. PDF: charm-kpi (UID16)
+    //Parametri:7
+    AddParameter("AD", -4e-2, 3e-2, "A_D");
+
+    //18. PDF: charm-deltaacp-diff (UID17)
+    //Parametri: 6
+    AddParameter("Delta_totau", 0.1, 0.13, "<#Delta t>"); //0.115
+    AddParameter("DeltaAcp", -3.5e-3, 0., "#Delta a_{CP}"); //-0.00152
+
+    //19. PDF: charm-k3pi (UID18)
+    //Parametri: 2
+
+    //20. PDF: dk3pi_dkpipi0_constraints (UID19)
+    //Parametri: 6 kD_k3pi, dD_k3pi, kD_kpipi0, dD_kpipi0, rD_k3pi, rD_kpipi0
+
+    //21. PDF: d4pi_dmixing_cleo (UID20)
+    //Parametri:1 F_pipipipi
+
+    //22. PDF: CleoDhhpi0Dilution (UID21)
+    //Parametri:2  F_pipipi0, F_kkpi0
+
+    //23. PDF: dkskpiRWS (UID22)
+    //Parametri:5  rD_kskpi, dD_kskpi, kD_kskpi, xD, yD
+
+    //24. PDF: dkskpi (UID23)
+    //Parametri 5:  rD_kskpi, dD_kskpi, kD_kskpi, xD, yD
+
+    //25. PDF: dkstcoherence (UID24)
+    //Parametri 1: k_dkst
+
+    //26. PDF: dkstzcoherence (UID25)
+    //Parametri 1: k_dkstz
+
+    //27. PDF: phis (UID26)
+    //Parametri 1: phis
+
+    //28. PDF: beta (UID27)
+    //Parametri 1: beta
+
+    //29. PDF: Charm_ycp_minus_ycp_rs_lhcb-r1 (UID28)
+    //Parametri 6: rD_kpi, dD_kpi, xD, yD, qopD, phiD
+
+    //30. PDF: charm-dy-rs (UID29)
+    //Parametri 4:  xD, yD, qopD, phiD
+
+    //31. PDF: charm-kpi (UID30
+    //Parametri 7: rD_kpi, dD_kpi, xD, yD, qopD, phiD, AD
+
+    //#Parameters = 52
+
+    if (ckmcorr){
+      AddParameter("RCP", RCP_in - 5. * RCP_err, RCP_in + 5. * RCP_err);
+    }
+    SetPriorConstantAll();
+    if (ckmcorr){
+      GetParameter("RCP").SetPrior(new BCGaussianPrior(RCP_in, RCP_err));
+    }
+  }
+  else if(comb == 2){  //-------- Adding model parameters for the Neutral_Bs modes --------------------------------
+
+    //---------------------------  Time Integrated B decay chain Parameters  -----------------------------------------------
+    //Global parameters
+    AddParameter("g", 0. ,  M_PI, "#gamma"); //All combined interval [1, 1.6]
+    AddParameter("x12", 0.5e-3, 8.e-3,"x_{12}"); // ACI [2e-3, 6e-3]
+    AddParameter("y12", 3e-3, 9e-3, "y_{12}"); // ACI [4e-3, 1e-2]
+
+    //1. PDF: glwads-dh-hh-dmix (UID0)
+    //Parametri:9
+    AddParameter("rD_kpi", 0.055, 0.065, "r^{D}_{K#pi}"); // LHCb 0.05867 [0.05852, 0.05882]
+    AddParameter("dD_kpi", 2.2, 3.8, "#delta^{D}_{K#pi}"); //LHCb [120, 230]G //ACI[4.,5.]
+
+    //2. PDF: glwads-dh-h3pi-dmix (UID1)
+    //Parametri:11
+    AddParameter("rD_k3pi", 0.048, 0.065, "r^{D}_{K3#pi}"); // 0.0556 [0.05502,0.05619]
+    AddParameter("dD_k3pi", 0.5, 5.5, "#delta^{D}_{K3#pi}"); // 3.595 [3.87,3.33]
+    AddParameter("kD_k3pi", 0., 1., "#kappa^{D}_{K3#pi}"); // 0.480
+    AddParameter("F_pipipipi", 0.5, 1., "F_{#pi#pi#pi#pi}"); // 0.737
+
+    //3. PDF: glwads-dh-hhpi0-dmix (UID2)
+    //Parametri:12
+    AddParameter("rD_kpipi0", 0.03, 0.06, "r^{D}_{K#pi#pi^{0}}"); //0.044
+    AddParameter("dD_kpipi0", 1.5, 4.5, "#delta^{D}_{K#pi#pi^{0}}"); // [3.28,2.86]
+    AddParameter("kD_kpipi0", 0.4, 1., "#kappa^{D}_{K#pi#pi^{0}}"); // 0.79
+    AddParameter("F_pipipi0", 0.6, 1., "F_{#pi#pi#pi^{0}}"); // 0.973
+    AddParameter("F_kkpi0", 0.2, 1., "F_{KK#pi^0}"); // 0.732
+
+    //4. PDF: ggsz-dh (UID3)
+    //Parametri: 5
+
+    //5. PDF: glwads-dkdpi-kskpi-dmix (UID4)
+    //Parametri: 11
+    AddParameter("rD_kskpi", 0.55, 0.7, "r^{D}_{K^{0}_S K #pi}"); //0.6150
+    AddParameter("dD_kskpi", -2., 2., "#delta^{D}_{K^{0}_S K #pi}"); // [6.23, 5.75]
+    AddParameter("kD_kskpi", 0.3, 1., "#kappa_{K^{0}_S K #pi}"); // 0.82
+
+    //6. PDF: glwads-dsth-hh-dmix (UID5)
+    //Parametri: 9
+
+    //7. PDF: glwads-dkst-hh-h3pi-dmix-newvars (UID6)
+    //Parametri:12
+
+    //8. PDF: glwads-dkstz-hh-h3pi-dmix (UID7)
+    //Parametri:12
+
+    //9. PDF: ggsz_dkstz_lhcb_md (UID8)
+    //Parametri:4
+
+    //10. PDF: glwads-dhpipi-hh-dmix (UID9)
+    //Parametri:11
 
     //---------------------------------- Parametri Time Dependent B decay  ---------------------------------------------------
 
@@ -2495,9 +2739,6 @@ void MixingModel::DefineParameters()
 
     //13. PDF: dmpi (UID12)
     //Parametri:4
-    AddParameter("l_dmpi", 0., 0.4, "#lambda_{D^{-} #pi}");
-    AddParameter("d_dmpi", -M_PI, M_PI, "#delta_{D^{-} #pi}");
-    AddParameter("beta", 0.2, 0.5, "#beta");
 
     //---------------------------------- Parametri Time Dependent D decay  ---------------------------------------------------
 
@@ -2507,8 +2748,12 @@ void MixingModel::DefineParameters()
     //15. PDF: charm-kspipi (UID14)
     //Parametri:4
     AddParameter("PhiM12",-0.2,0.3,"#phi_{M}");
-    AddParameter("PhiG12", -0.2, 0.3, "#phi_{#Gamma}");
-
+    if (phig12){
+      AddParameter("PhiG12", -0.2, 0.2, "#phi_{#Gamma}");
+    }
+    else{
+      AddParameter("PhiG12", 0., 0.);
+    }
 
     //16. PDF: charm-kspipi (UID15)
     //Parametri:4
@@ -2522,30 +2767,57 @@ void MixingModel::DefineParameters()
     AddParameter("Delta_totau", 0.1, 0.13, "<#Delta t>"); //0.115
     AddParameter("DeltaAcp", -3.5e-3, 0., "#Delta a_{CP}"); //-0.00152
 
+    //19. PDF: charm-k3pi (UID18)
+    //Parametri: 2
+
+    //20. PDF: dk3pi_dkpipi0_constraints (UID19)
+    //Parametri: 6 kD_k3pi, dD_k3pi, kD_kpipi0, dD_kpipi0, rD_k3pi, rD_kpipi0
+
+    //21. PDF: d4pi_dmixing_cleo (UID20)
+    //Parametri:1 F_pipipipi
+
+    //22. PDF: CleoDhhpi0Dilution (UID21)
+    //Parametri:2  F_pipipi0, F_kkpi0
+
+    //23. PDF: dkskpiRWS (UID22)
+    //Parametri:5  rD_kskpi, dD_kskpi, kD_kskpi, xD, yD
+
+    //24. PDF: dkskpi (UID23)
+    //Parametri 5:  rD_kskpi, dD_kskpi, kD_kskpi, xD, yD
+
+    //25. PDF: dkstcoherence (UID24)
+    //Parametri 1: k_dkst
+
+    //26. PDF: dkstzcoherence (UID25)
+    //Parametri 1: k_dkstz
+
+    //27. PDF: phis (UID26)
+    //Parametri 1: phis
+
+    //28. PDF: beta (UID27)
+    //Parametri 1: beta
+
+    //29. PDF: Charm_ycp_minus_ycp_rs_lhcb-r1 (UID28)
+    //Parametri 6: rD_kpi, dD_kpi, xD, yD, qopD, phiD
+
+    //30. PDF: charm-dy-rs (UID29)
+    //Parametri 4:  xD, yD, qopD, phiD
+
+    //31. PDF: charm-kpi (UID30
+    //Parametri 7: rD_kpi, dD_kpi, xD, yD, qopD, phiD, AD
+
+    //#Parameters = 52
+
+    if (ckmcorr){
+      AddParameter("RCP", RCP_in - 5. * RCP_err, RCP_in + 5. * RCP_err);
+    }
     SetPriorConstantAll();
+    if (ckmcorr){
+      GetParameter("RCP").SetPrior(new BCGaussianPrior(RCP_in, RCP_err));
+    }
   }
-  else if(comb == 1){
+  else if(comb == 3){ //-------- Adding model parameters for all the modes --------------------------------
 
-    AddParameter("x12", 0., 2.e-2, "x_{12}");
-    AddParameter("y12", 0., 5.e-2, "y_{12}");
-    AddParameter("PhiM12", -0.2, 0.2, "#phi_{M}");
-    AddParameter("dD_kpi", 0., 2*M_PI, "#delta^D_{K #pi}"); //dD_kpi
-    AddParameter("dD_kpipi0", 0., 2*M_PI, "#delta^D_{K #pi #pi^0}"); // dD_kpipi0
-    AddParameter("rD_kpi", 0., 0.1, "r^D_{K #pi}"); // rD_kpi
-    if (phig12)
-    AddParameter("PhiG12", -0.2, 0.2, "#phi_{#Gamma}");
-    else
-    AddParameter("PhiG12", 0., 0.);
-
-    if (ckmcorr)
-    AddParameter("RCP", RCP_in - 5. * RCP_err, RCP_in + 5. * RCP_err);
-
-    SetPriorConstantAll();
-    if (ckmcorr)
-    GetParameter("RCP").SetPrior(new BCGaussianPrior(RCP_in, RCP_err));
-
-  }
-  else if(comb == 2){
     //---------------------------  Time Integrated B decay chain Parameters  -----------------------------------------------
     //Global parameters
     AddParameter("g", 0.7  ,  1.5, "#gamma"); //All combined interval [1, 1.6]
@@ -2705,6 +2977,9 @@ void MixingModel::DefineParameters()
 
     //#Parameters = 52
 
+    //20301.10328
+    AddParameter("F_kkpipi", 0., 1., "F_{K^+K^-#pi^+#pi^-}");
+
     if (ckmcorr){
       AddParameter("RCP", RCP_in - 5. * RCP_err, RCP_in + 5. * RCP_err);
     }
@@ -2720,7 +2995,33 @@ void MixingModel::DefineParameters()
 // ---------------------------------------------------------
 void MixingModel::DefineHistograms(){
 
-  if(comb == 0){
+  //-------------------------------------- Generating 1D and 2D histograms ---------------------------------------
+  int j = 0;
+  for(int i = 0; i < nVarab.size(); i++){
+    histos.createH1D(nVarab[i], 200, 1., -1.);
+    for(int j = i+1 ; j < nVarab.size(); j++){
+      histos.createH2D(nVarab[i], nVarab[j], 200, 1., -1., 200, 1., -1.);
+    }
+  }
+  /*if(comb == 0){
+
+    if (phig12) {
+      histos.createH2D("phi", "PhiG12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiM12", "PhiG12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "y12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "y", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "x", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "x12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("phipphig12", "phimphig12", 200, 1., -1., 200, 1., -1);
+      histos.createH1D("phipphig12", 200, 1., -1.);
+      histos.createH1D("phimphig12", 200, 1., -1.);
+      histos.createH1D("PhiG12", 200, 1., -1.);
+      histos.createH2D("PhiG12", "qop", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "phi", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "phi12", 200, 1., -1., 200, 1., -1);
+
+    }
+
     //1D Histograms of the parameters
 
     //Time integrated decay chain
@@ -2759,9 +3060,6 @@ void MixingModel::DefineHistograms(){
     histos.createH1D("r_dkst", 200, 1., -1.);
     histos.createH1D("d_dkst", 200, 1., -1.);
     histos.createH1D("k_dkst", 200, 1., -1.);
-    histos.createH1D("r_dkstz", 200, 1., -1.);
-    histos.createH1D("d_dkstz", 200, 1., -1.);
-    histos.createH1D("k_dkstz", 200, 1., -1.);
     histos.createH1D("r_dkpipi", 200, 1., -1.);
     histos.createH1D("d_dkpipi", 200, 1., -1.);
     histos.createH1D("k_dkpipi", 200, 1., -1.);
@@ -2770,22 +3068,116 @@ void MixingModel::DefineHistograms(){
     histos.createH1D("k_dpipipi", 200, 1., -1.);
 
     //Time dependent B decay and mixing
-    histos.createH1D("l_dsk", 200, 1., -1.);
-    histos.createH1D("d_dsk", 200, 1., -1.);
-    histos.createH1D("phis", 200, 1., -1.);
-    histos.createH1D("beta_s", 200, 1., -1.);
 
-    histos.createH1D("l_dskpipi", 200, 1., -1.);
-    histos.createH1D("d_dskpipi", 200, 1., -1.);
-    histos.createH1D("k_dskpipi", 200, 1., -1.);
 
+    //Time dependent D decay and mixing
+    histos.createH1D("PhiM12", 200, 1., -1.);
+    histos.createH1D("AD", 200, 1., -1.);
+    histos.createH1D("Delta_totau", 200, 1., -1.);
+    histos.createH1D("DeltaAcp", 200, 1., -1.);
+    histos.createH1D("phi", 200, 1., -1.);
+    histos.createH1D("qopm1", 200, 1., -1.);
+    histos.createH1D("qop", 200, 1., -1.);
+    histos.createH1D("phi12", 200, 1., -1.);
+    histos.createH1D("delta", 200, 1., -1.);
+    histos.createH1D("delta_kp", 200, 1., -1.);
+    histos.createH1D("delta_kpp", 200, 1., -1.);
+
+    // 2D Histograms
+
+    //Time integrated decay chain
+    histos.createH2D("r_dk", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("r_dpi", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dk", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("d_dpi", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("dD_kpi", "rD_kpi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y12", "x12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "x", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y12", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x12", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "g", 200, 1., -1., 200, 1., -1);
+
+
+    //Time dependent D mixing and Decay
+    histos.createH2D("y12", "qopm1", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x12", "qopm1", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "qopm1", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "qopm1", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "qopm1", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "x12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "y12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "x", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("phi", "y", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "y12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "y", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "x12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "x", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_kpi", "dD_kpi", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("rD_k3pi", "dD_k3pi", 200, 1., -1., 200, 1., -1);
+
+    if (ckmcorr) {
+      histos.createH1D("phiKsLHCb", 200, 1., -1.);
+      histos.createH1D("RCP", 200, 1., -1.);
+    }
+
+  }
+  else if(comb == 1){
+
+    if (phig12) {
+      histos.createH2D("phi", "PhiG12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiM12", "PhiG12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "y12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "y", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "x", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "x12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("phipphig12", "phimphig12", 200, 1., -1., 200, 1., -1);
+      histos.createH1D("phipphig12", 200, 1., -1.);
+      histos.createH1D("phimphig12", 200, 1., -1.);
+      histos.createH1D("PhiG12", 200, 1., -1.);
+      histos.createH2D("PhiG12", "qop", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "phi", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "phi12", 200, 1., -1., 200, 1., -1);
+
+    }
+
+    //1D Histograms of the parameters
+
+    //Time integrated decay chain
+    histos.createH1D("g", 200, 1., -1.);
+    histos.createH1D("x12", 200, 1., -1.);
+    histos.createH1D("y12", 200, 1., -1.);
+    histos.createH1D("x", 200, 1., -1.);
+    histos.createH1D("y", 200, 1., -1.);
+    histos.createH1D("rD_kpi", 200, 1., -1.);
+    histos.createH1D("dD_kpi", 200, 1., -1.);
+    histos.createH1D("dD_kpi_LHCb", 200, 1., -1.);
+    histos.createH1D("rD_k3pi", 200, 1., -1.);
+    histos.createH1D("dD_k3pi", 200, 1., -1.);
+    histos.createH1D("dD_k3pi_LHCb", 200, 1., -1.);
+    histos.createH1D("kD_k3pi", 200, 1., -1.);
+    histos.createH1D("F_pipipipi", 200, 1., -1.);
+    histos.createH1D("rD_kpipi0", 200, 1., -1.);
+    histos.createH1D("dD_kpipi0", 200, 1., -1.);
+    histos.createH1D("dD_kpipi0_LHCb", 200, 1., -1.);
+    histos.createH1D("kD_kpipi0", 200, 1., -1.);
+    histos.createH1D("F_pipipi0", 200, 1., -1.);
+    histos.createH1D("F_kkpi0", 200, 1., -1.);
+    histos.createH1D("rD_kskpi", 200, 1., -1.);
+    histos.createH1D("dD_kskpi", 200, 1., -1.);
+    histos.createH1D("dD_kskpi_LHCb", 200, 1., -1.);
+    histos.createH1D("kD_kskpi", 200, 1., -1.);
+    histos.createH1D("r_dkstz", 200, 1., -1.);
+    histos.createH1D("d_dkstz", 200, 1., -1.);
+    histos.createH1D("k_dkstz", 200, 1., -1.);
+
+    //Time dependent B decay and mixing
     histos.createH1D("l_dmpi", 200, 1., -1.);
     histos.createH1D("d_dmpi", 200, 1., -1.);
     histos.createH1D("beta", 200, 1., -1.);
 
     //Time dependent D decay and mixing
     histos.createH1D("PhiM12", 200, 1., -1.);
-    histos.createH1D("PhiG12", 200, 1., -1.);
     histos.createH1D("AD", 200, 1., -1.);
     histos.createH1D("Delta_totau", 200, 1., -1.);
     histos.createH1D("DeltaAcp", 200, 1., -1.);
@@ -2798,270 +3190,32 @@ void MixingModel::DefineHistograms(){
     // 2D Histograms
 
     //Time integrated decay chain
-    histos.createH2D("r_dk", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "r_dk", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "r_dpi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpi", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("r_dkstz", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("d_dkstz", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("dD_kpi", "rD_kpi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("y12", "x12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("y", "x", 200, 1., -1., 200, 1., -1);
     histos.createH2D("y12", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("x12", "g", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("x", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phi", "x", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phi", "y", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y", "qopm1", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x", "qopm1", 200, 1., -1., 200, 1., -1);
+
 
     //Time dependent D mixing and Decay
     histos.createH2D("y12", "qopm1", 200, 1., -1., 200, 1., -1);
     histos.createH2D("x12", "qopm1", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("y", "qopm1", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("x", "qopm1", 200, 1., -1., 200, 1., -1);
     histos.createH2D("phi", "qopm1", 200, 1., -1., 200, 1., -1);
     histos.createH2D("phi", "x12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("phi", "y12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "x12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "y12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "x", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "y", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiG12", "x12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiG12", "y12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiG12", "x", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiG12", "y", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "PhiG12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpi", "dD_kpi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_k3pi", "dD_k3pi", 200, 1., -1., 200, 1., -1);
-
-    histos.createH2D("g", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x12", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y12", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipi0", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_kkpi0", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("RBRdkdpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkst", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkst", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkst", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkstz", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkstz", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkstz", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dsk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dsk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phis", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta_s", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dmpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dmpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiG12", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("AD", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("Delta_totau", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("DeltaAcp", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phi12", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("delta", "qop", 200, 1., -1., 200, 1., -1);
-
-    histos.createH2D("g", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x12", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y12", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipi0", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_kkpi0", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("RBRdkdpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkst", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkst", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkst", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkstz", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkstz", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkstz", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dsk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dsk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phis", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta_s", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dmpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dmpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiG12", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("AD", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("Delta_totau", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("DeltaAcp", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phi12", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("delta", "phi", 200, 1., -1., 200, 1., -1);
-
-    histos.createH2D("g", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x12", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y12", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipi0", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_kkpi0", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("RBRdkdpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkst", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkst", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkst", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dsk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dsk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phis", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta_s", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dmpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dmpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiG12", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("AD", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("Delta_totau", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("DeltaAcp", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("delta", "phi12", 200, 1., -1., 200, 1., -1);
-
-
-  }
-  else if(comb == 1){
-
-    if (phig12) {
-      histos.createH2D("phi", "phiG12", 200, 1., -1., 200, 1., -1);
-      histos.createH2D("phiM12", "phiG12", 200, 1., -1., 200, 1., -1);
-      histos.createH2D("phiG12", "y12", 200, 1., -1., 200, 1., -1);
-      histos.createH2D("phipphig12", "phimphig12", 200, 1., -1., 200, 1., -1);
-      histos.createH1D("phipphig12", 200, 1., -1.);
-      histos.createH1D("phimphig12", 200, 1., -1.);
-      histos.createH1D("phiG12", 200, 1., -1.);
-    }
-
-    histos.createH2D("phi", "qopm1", 200, 1., -1., 200, 1., -1);
     histos.createH2D("phi", "x", 200, 1., -1., 200, 1., -1);
     histos.createH2D("phi", "y", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phiM12", "x12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y", "x", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y12", "x12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y", "qopm1", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x", "qopm1", 200, 1., -1., 200, 1., -1);
-    histos.createH1D("qopm1", 200, 1., -1.);
-    histos.createH1D("delta", 200, 1., -1.);
-    histos.createH1D("x", 200, 1., -1.);
-    histos.createH1D("y", 200, 1., -1.);
-    histos.createH1D("x12", 200, 1., -1.);
-    histos.createH1D("y12", 200, 1., -1.);
-    histos.createH1D("phi", 200, 1., -1.);
-    histos.createH1D("phiM12", 200, 1., -1.);
-    histos.createH1D("phi12", 200, 1., -1.);
-    histos.createH1D("RD", 200, 1., -1.);
-    histos.createH1D("Rm", 200, 1., -1.);
-    histos.createH1D("Am", 200, 1., -1.);
-    histos.createH1D("AGamma", 200, 1., -1.);
-    histos.createH1D("ycp", 200, 1., -1.);
-    histos.createH1D("xcp", 200, 1., -1.);
-    histos.createH1D("dx", 200, 1., -1.);
-    histos.createH1D("ypp", 200, 1., -1.);
-    histos.createH1D("ypm", 200, 1., -1.);
-    histos.createH1D("xpp", 200, 1., -1.);
-    histos.createH1D("xpm", 200, 1., -1.);
-    histos.createH1D("xpp2", 200, 1., -1.);
-    histos.createH1D("xpm2", 200, 1., -1.);
-    histos.createH1D("ypp_kpp", 200, 1., -1.);
-    histos.createH1D("ypm_kpp", 200, 1., -1.);
-    histos.createH1D("xpp_kpp", 200, 1., -1.);
-    histos.createH1D("xpm_kpp", 200, 1., -1.);
-    histos.createH1D("delta_kp", 200, 1., -1.);
-    histos.createH1D("delta_kpp", 200, 1., -1.);
-    histos.createH1D("dD_kpi", 200, 1., -1.);
-    histos.createH1D("dD_kpipi0", 200, 1., -1.);
+    histos.createH2D("PhiM12", "y12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "y", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "x12", 200, 1., -1., 200, 1., -1);
+    histos.createH2D("PhiM12", "x", 200, 1., -1., 200, 1., -1);
+
     if (ckmcorr) {
       histos.createH1D("phiKsLHCb", 200, 1., -1.);
       histos.createH1D("RCP", 200, 1., -1.);
@@ -3072,19 +3226,19 @@ void MixingModel::DefineHistograms(){
   else if(comb == 2){
 
     if (phig12) {
-        histos.createH2D("phi", "PhiG12", 200, 1., -1., 200, 1., -1);
-        histos.createH2D("PhiM12", "PhiG12", 200, 1., -1., 200, 1., -1);
-        histos.createH2D("PhiG12", "y12", 200, 1., -1., 200, 1., -1);
-        histos.createH2D("PhiG12", "y", 200, 1., -1., 200, 1., -1);
-        histos.createH2D("PhiG12", "x", 200, 1., -1., 200, 1., -1);
-        histos.createH2D("PhiG12", "x12", 200, 1., -1., 200, 1., -1);
-        histos.createH2D("phipphig12", "phimphig12", 200, 1., -1., 200, 1., -1);
-        histos.createH1D("phipphig12", 200, 1., -1.);
-        histos.createH1D("phimphig12", 200, 1., -1.);
-        histos.createH1D("PhiG12", 200, 1., -1.);
-        histos.createH2D("PhiG12", "qop", 200, 1., -1., 200, 1., -1);
-        histos.createH2D("PhiG12", "phi", 200, 1., -1., 200, 1., -1);
-        histos.createH2D("PhiG12", "phi12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("phi", "PhiG12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiM12", "PhiG12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "y12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "y", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "x", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "x12", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("phipphig12", "phimphig12", 200, 1., -1., 200, 1., -1);
+      histos.createH1D("phipphig12", 200, 1., -1.);
+      histos.createH1D("phimphig12", 200, 1., -1.);
+      histos.createH1D("PhiG12", 200, 1., -1.);
+      histos.createH2D("PhiG12", "qop", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "phi", 200, 1., -1., 200, 1., -1);
+      histos.createH2D("PhiG12", "phi12", 200, 1., -1., 200, 1., -1);
 
     }
 
@@ -3096,11 +3250,7 @@ void MixingModel::DefineHistograms(){
     histos.createH1D("y12", 200, 1., -1.);
     histos.createH1D("x", 200, 1., -1.);
     histos.createH1D("y", 200, 1., -1.);
-    histos.createH1D("r_dk", 200, 1., -1.);
-    histos.createH1D("r_dpi", 200, 1., -1.);
     histos.createH1D("rD_kpi", 200, 1., -1.);
-    histos.createH1D("d_dk", 200, 1., -1.);
-    histos.createH1D("d_dpi", 200, 1., -1.);
     histos.createH1D("dD_kpi", 200, 1., -1.);
     histos.createH1D("dD_kpi_LHCb", 200, 1., -1.);
     histos.createH1D("rD_k3pi", 200, 1., -1.);
@@ -3118,23 +3268,6 @@ void MixingModel::DefineHistograms(){
     histos.createH1D("dD_kskpi", 200, 1., -1.);
     histos.createH1D("dD_kskpi_LHCb", 200, 1., -1.);
     histos.createH1D("kD_kskpi", 200, 1., -1.);
-    histos.createH1D("RBRdkdpi", 200, 1., -1.);
-    histos.createH1D("r_dstk", 200, 1., -1.);
-    histos.createH1D("d_dstk", 200, 1., -1.);
-    histos.createH1D("r_dstpi", 200, 1., -1.);
-    histos.createH1D("d_dstpi", 200, 1., -1.);
-    histos.createH1D("r_dkst", 200, 1., -1.);
-    histos.createH1D("d_dkst", 200, 1., -1.);
-    histos.createH1D("k_dkst", 200, 1., -1.);
-    histos.createH1D("r_dkstz", 200, 1., -1.);
-    histos.createH1D("d_dkstz", 200, 1., -1.);
-    histos.createH1D("k_dkstz", 200, 1., -1.);
-    histos.createH1D("r_dkpipi", 200, 1., -1.);
-    histos.createH1D("d_dkpipi", 200, 1., -1.);
-    histos.createH1D("k_dkpipi", 200, 1., -1.);
-    histos.createH1D("r_dpipipi", 200, 1., -1.);
-    histos.createH1D("d_dpipipi", 200, 1., -1.);
-    histos.createH1D("k_dpipipi", 200, 1., -1.);
 
     //Time dependent B decay and mixing
     histos.createH1D("l_dsk", 200, 1., -1.);
@@ -3145,10 +3278,6 @@ void MixingModel::DefineHistograms(){
     histos.createH1D("l_dskpipi", 200, 1., -1.);
     histos.createH1D("d_dskpipi", 200, 1., -1.);
     histos.createH1D("k_dskpipi", 200, 1., -1.);
-
-    histos.createH1D("l_dmpi", 200, 1., -1.);
-    histos.createH1D("d_dmpi", 200, 1., -1.);
-    histos.createH1D("beta", 200, 1., -1.);
 
     //Time dependent D decay and mixing
     histos.createH1D("PhiM12", 200, 1., -1.);
@@ -3166,14 +3295,6 @@ void MixingModel::DefineHistograms(){
     // 2D Histograms
 
     //Time integrated decay chain
-    histos.createH2D("r_dk", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpi", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "r_dk", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "r_dpi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkstz", "g", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkstz", "g", 200, 1., -1., 200, 1., -1);
     histos.createH2D("dD_kpi", "rD_kpi", 200, 1., -1., 200, 1., -1);
     histos.createH2D("y12", "x12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("y", "x", 200, 1., -1., 200, 1., -1);
@@ -3197,191 +3318,14 @@ void MixingModel::DefineHistograms(){
     histos.createH2D("PhiM12", "y", 200, 1., -1., 200, 1., -1);
     histos.createH2D("PhiM12", "x12", 200, 1., -1., 200, 1., -1);
     histos.createH2D("PhiM12", "x", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpi", "dD_kpi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_k3pi", "dD_k3pi", 200, 1., -1., 200, 1., -1);
+
 
     if (ckmcorr) {
-        histos.createH1D("phiKsLHCb", 200, 1., -1.);
-        histos.createH1D("RCP", 200, 1., -1.);
+      histos.createH1D("phiKsLHCb", 200, 1., -1.);
+      histos.createH1D("RCP", 200, 1., -1.);
     }
 
-    histos.createH2D("g", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x12", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y12", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_k3pi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipi0", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kpipi0", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_kkpi0", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kskpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("RBRdkdpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkst", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkst", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkst", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkstz", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkstz", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkstz", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dpipipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dsk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dsk", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phis", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta_s", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dskpipi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dmpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dmpi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("AD", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("Delta_totau", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("DeltaAcp", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phi", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phi12", "qop", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("delta", "qop", 200, 1., -1., 200, 1., -1);
-
-    histos.createH2D("g", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x12", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y12", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_k3pi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipi0", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kpipi0", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_kkpi0", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kskpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("RBRdkdpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkst", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkst", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkst", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkstz", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkstz", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkstz", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dpipipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dsk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dsk", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phis", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta_s", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dskpipi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dmpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dmpi", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("AD", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("Delta_totau", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("DeltaAcp", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phi12", "phi", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("delta", "phi", 200, 1., -1., 200, 1., -1);
-
-    histos.createH2D("g", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x12", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("x", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y12", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("y", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_k3pi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_pipipi0", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kpipi0", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("F_kkpi0", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("rD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("dD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("kD_kskpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("RBRdkdpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dstpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dstpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkst", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkst", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkst", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkstz", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dkpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("r_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dpipipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dsk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dsk", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("phis", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta_s", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("k_dskpipi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("l_dmpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("d_dmpi", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("beta", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("PhiM12", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("AD", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("Delta_totau", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("DeltaAcp", "phi12", 200, 1., -1., 200, 1., -1);
-    histos.createH2D("delta", "phi12", 200, 1., -1., 200, 1., -1);
-
-
-
-  }
-
-
-
+  }*/
 }
 // ---------------------------------------------------------
 
@@ -3503,7 +3447,7 @@ double MixingModel::x_minus(double delta_D){
 }
 
 // ---------------------------------------------------------
-double MixingModel::Calculate_time_integrated_observables(){
+double MixingModel::Calculate_ChargedB_observables(){
 
   double ll1;
   ll1 = 0.;
@@ -3599,27 +3543,6 @@ double MixingModel::Calculate_time_integrated_observables(){
   rp_dkst_k3pi_uid6 = Rp(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
   rm_dkst_k3pi_uid6 = Rm(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
 
-  // 8. PDF: glwads-dkstz-hh-h3pi-dmix (UID7)
-  //12 Observables
-  acp_dkstz_kk_uid7 = Acp(r_dkstz, d_dkstz, k_dkstz, 1., 2*0.6);
-  acp_dkstz_pipi_uid7 = Acp(r_dkstz, d_dkstz, k_dkstz, 1., 2 * 0.6);
-  rcp_dkstz_kk_uid7 = Rcp_h(r_dkstz, d_dkstz, r_dkstz, rD_kpi, d_dkstz, dD_kpi, k_dkstz, 1., 1.,  2 * 0.6);
-  rcp_dkstz_pipi_uid7 = Rcp_h(r_dkstz, d_dkstz, r_dkstz, rD_kpi, d_dkstz, dD_kpi, k_dkstz, 1.,1.,  2 * 0.6);
-  acp_dkstz_4pi_uid7 = Acp(r_dkstz, d_dkstz, k_dkstz, F_pipipipi, 2 * 0.6);
-  rcp_dkstz_4pi_uid7 = Rcp_h(r_dkstz, d_dkstz, r_dkstz, rD_k3pi, d_dkstz, dD_k3pi, k_dkstz, kD_k3pi, F_pipipipi, 2 * 0.6 );
-  rp_dkstz_kpi_uid7 = Rp(r_dkstz, rD_kpi, d_dkstz, dD_kpi, k_dkstz, 1., 2 * 0.6);
-  rm_dkstz_kpi_uid7 = Rm(r_dkstz, rD_kpi, d_dkstz, dD_kpi, k_dkstz, 1., 2 * 0.6);
-  rp_dkstz_k3pi_uid7 = Rp(r_dkstz, rD_k3pi, d_dkstz, dD_k3pi, k_dkstz, kD_k3pi, 2 * 0.6);
-  rm_dkstz_k3pi_uid7 = Rm(r_dkstz, rD_k3pi, d_dkstz, dD_k3pi, k_dkstz, kD_k3pi, 2 * 0.6);
-  afav_dkstz_kpi_uid7 = Afav(r_dkstz, rD_kpi, d_dkstz, dD_kpi, k_dkstz, 1., 2 * 0.6);
-  afav_dkstz_k3pi_uid7 = Afav(r_dkstz, rD_k3pi, d_dkstz, dD_k3pi, k_dkstz, kD_k3pi, 2 * 0.6);
-
-  //9. PDF: ggsz_dkstz_lhcb_md (UID8)
-  // 4 Observables
-  xm_dkstz_uid8 = k_dkstz * r_dkstz * cos(d_dkstz - g);
-  ym_dkstz_uid8 = k_dkstz * r_dkstz * sin(d_dkstz - g);
-  xp_dkstz_uid8 = k_dkstz * r_dkstz * cos(d_dkstz + g);
-  yp_dkstz_uid8 = k_dkstz * r_dkstz * sin(d_dkstz + g);
 
   //10. PDF: glwads-dhpipi-hh-dmix (UID9)
   // 11 Observables
@@ -3635,32 +3558,20 @@ double MixingModel::Calculate_time_integrated_observables(){
   rp_dpipipi_uid9 = Rp(r_dpipipi, rD_kpi, d_dpipipi, dD_kpi, k_dpipipi, 1., 2*0.6);
   rm_dpipipi_uid9 = Rm(r_dpipipi, rD_kpi, d_dpipipi, dD_kpi, k_dpipipi, 1., 2*0.6);
 
+  //airXiv 20301.10328
+  //6 Observables
+  acp_dk_kkpipi_203110328 = Acp(r_dk, d_dk, 1., F_kkpipi, 1.);
+  acp_dpi_kkpipi_203110328 = Acp(r_dpi, d_dpi, 1., F_kkpipi, 1.);
+  acp_dk_pipipipi_203110328 = Acp(r_dk, d_dk, 1., F_pipipipi, 1.);
+  acp_dpi_pipipipi_203110328 = Acp(r_dpi, d_dpi, 1., F_pipipipi, 1.);
+  rcp_kpi_kkpipi_203110328 = Rcp_h(r_dk, d_dk, r_dk, rD_k3pi, d_dk, dD_k3pi, 1., kD_k3pi, F_kkpipi,  1.) / Rcp_h(r_dpi, d_dpi, r_dpi, rD_k3pi, d_dpi, dD_k3pi, 1., kD_k3pi, F_kkpipi, 1.);
+  rcp_kpi_pipipipi_203110328 = Rcp_h(r_dk, d_dk, r_dk, rD_k3pi, d_dk, dD_k3pi, 1., kD_k3pi, F_pipipipi, 1.) / Rcp_h(r_dpi, d_dpi, r_dpi, rD_k3pi, d_dpi, dD_k3pi, 1., kD_k3pi, F_pipipipi, 1.);
+
   //------------------------------------------------------ Calculating the contirbutions of other useful inputs ----------------------------------------------------
-
-  //20. PDF: dk3pi_dkpipi0_constraints (UID19)
-  // 6 Observables
-  kD_k3pi_uid19 = kD_k3pi;
-  dD_k3pi_uid19 = 2*M_PI - dD_k3pi; //because of the phase sign convention
-  kD_kpipi0_uid19 = kD_kpipi0;
-  dD_kpipi0_uid19 = 2*M_PI - dD_kpipi0; //because of the phase sign convention
-  rD_k3pi_uid19 = rD_k3pi;
-  rD_kpipi0_uid19 = rD_kpipi0;
-
-  //21. PDF: d4pi_dmixing_cleo (UID20)
-  // 1 Osservabile
-  F_pipipipi_uid20 = F_pipipipi;
-
-  //22. PDF: CleoDhhpi0Dilution (UID21)
-  F_pipipi0_uid21 = F_pipipi0;
-  F_kkpi0_uid21 = F_kkpi0;
 
   //25. PDF: dkstcoherence (UID24)
   // 1 Osservabile
   k_dkst_uid24 = k_dkst;
-
-  //26. PDF: dkstzcoherence (UID25)
-  // 1 Osservabile
-  k_dkstz_uid25 = k_dkstz;
 
   //------------------------------------------------------ Calculating the contribution to the LogLikelihood ----------------------------------------------------
 
@@ -3775,36 +3686,6 @@ double MixingModel::Calculate_time_integrated_observables(){
 
   ll1 += corrmeas.at("UID6").logweight(corr);
 
-
-  //8. PDF: glwads-dkst-hh-h3pi-dmix (UID7)
-  //Observables 12:
-  corr.ResizeTo(12);
-  corr(0) = acp_dkstz_kk_uid7;
-  corr(1) = acp_dkstz_pipi_uid7;
-  corr(2) = rcp_dkstz_kk_uid7;
-  corr(3) = rcp_dkstz_pipi_uid7;
-  corr(4) = acp_dkstz_4pi_uid7;
-  corr(5) = rcp_dkstz_4pi_uid7;
-  corr(6) = rp_dkstz_kpi_uid7;
-  corr(7) = rm_dkstz_kpi_uid7;
-  corr(8) = rp_dkstz_k3pi_uid7;
-  corr(9) = rm_dkstz_k3pi_uid7;
-  corr(10) = afav_dkstz_kpi_uid7;
-  corr(11) = afav_dkstz_k3pi_uid7;
-
-  ll1 += corrmeas.at("UID7").logweight(corr);
-
-
-  //9. PDF: ggsz-dkstz-lhcb-md (UID8)
-  //Observables 4:
-  corr.ResizeTo(4);
-  corr(0) = xm_dkstz_uid8;
-  corr(1) = ym_dkstz_uid8;
-  corr(2) = xp_dkstz_uid8;
-  corr(3) = yp_dkstz_uid8;
-
-  ll1 += corrmeas.at("UID8").logweight(corr);
-
   //10. PDF: glwads-dhpipi-hh-dmix (UID9)
   //Observables 11:
   corr.ResizeTo(11);
@@ -3822,40 +3703,34 @@ double MixingModel::Calculate_time_integrated_observables(){
 
   ll1 += corrmeas.at("UID9").logweight(corr);
 
-  //20. PDF: dk3pi_dkpipi0_constraints (UID19)
+  //GGSZ_20301.10328
   //Observables 6:
   corr.ResizeTo(6);
-  corr(0) = kD_k3pi_uid19;
-  corr(1) = 2*M_PI - dD_k3pi_uid19;
-  corr(2) = kD_kpipi0_uid19;
-  corr(3) = 2*M_PI - dD_kpipi0_uid19;
-  corr(4) = rD_k3pi_uid19;
-  corr(5) = rD_kpipi0_uid19;
+  corr(0) = xm_dk_uid3;
+  corr(1) = ym_dk_uid3;
+  corr(2) = xp_dk_uid3;
+  corr(3) = yp_dk_uid3;
+  corr(4) = xi_x_dpi_uid3;
+  corr(5) = xi_y_dpi_uid3;
 
-  ll1 += corrmeas.at("UID19").logweight(corr);
+  ll1 += corrmeas.at("GGSZ_20301.10328").logweight(corr);
 
-  //21. PDF: d4pi_dmixing_cleo (UID20)
-  //Observables 1:
+  //GLW_20301.10328
+  //Observables 6:
+  corr.ResizeTo(6);
+  corr(0) = acp_dk_kkpipi_203110328;
+  corr(1) = acp_dpi_kkpipi_203110328;
+  corr(2) = acp_dk_pipipipi_203110328;
+  corr(3) = acp_dpi_pipipipi_203110328;
+  corr(4) = rcp_kpi_kkpipi_203110328;
+  corr(5) = rcp_kpi_pipipipi_203110328;
 
-  ll1 += meas.at("UID20").logweight(F_pipipipi_uid20);
-
-  //22. PDF: CleoDhhpi0Diluition (UID21)
-  //Observables 2:
-  corr.ResizeTo(2);
-  corr(0) = F_pipipi0;
-  corr(1) = F_kkpi0;
-
-  ll1 += corrmeas.at("UID21").logweight(corr);
+  ll1 += corrmeas.at("GLW_20301.10328").logweight(corr);
 
   //25. PDF: dkstcoherence (UID24)
   //Observables 1:
 
   ll1 += meas.at("UID24").logweight(k_dkst_uid24);
-
-  //26. PDF: dkstzcoherence (UID25)
-  //Observables 1:
-
-  ll1 += meas.at("UID25").logweight(k_dkstz_uid25);
 
   return ll1;
 
@@ -3863,12 +3738,120 @@ double MixingModel::Calculate_time_integrated_observables(){
 // ---------------------------------------------------------
 
 // ---------------------------------------------------------
-double MixingModel::Calculate_time_dependent_Bobservables(){
+double MixingModel::Calculate_time_dependent_neutralBdobservables(){
 
   double ll2;
   ll2 = 0.;
 
-  //----------------------------------------------- Calculating time dependent B observables -------------------------------------------------------------------------
+  //26. PDF: dkstzcoherence (UID25)
+  // 1 Osservabile
+  k_dkstz_uid25 = k_dkstz;
+
+
+  //----------------------------------------------- Calculating time Integrated B0d observables -------------------------------------------------------------------------
+
+  // 8. PDF: glwads-dkstz-hh-h3pi-dmix (UID7)
+  //12 Observables
+  acp_dkstz_kk_uid7 = Acp(r_dkstz, d_dkstz, k_dkstz, 1., 2*0.6);
+  acp_dkstz_pipi_uid7 = Acp(r_dkstz, d_dkstz, k_dkstz, 1., 2 * 0.6);
+  rcp_dkstz_kk_uid7 = Rcp_h(r_dkstz, d_dkstz, r_dkstz, rD_kpi, d_dkstz, dD_kpi, k_dkstz, 1., 1.,  2 * 0.6);
+  rcp_dkstz_pipi_uid7 = Rcp_h(r_dkstz, d_dkstz, r_dkstz, rD_kpi, d_dkstz, dD_kpi, k_dkstz, 1.,1.,  2 * 0.6);
+  acp_dkstz_4pi_uid7 = Acp(r_dkstz, d_dkstz, k_dkstz, F_pipipipi, 2 * 0.6);
+  rcp_dkstz_4pi_uid7 = Rcp_h(r_dkstz, d_dkstz, r_dkstz, rD_k3pi, d_dkstz, dD_k3pi, k_dkstz, kD_k3pi, F_pipipipi, 2 * 0.6 );
+  rp_dkstz_kpi_uid7 = Rp(r_dkstz, rD_kpi, d_dkstz, dD_kpi, k_dkstz, 1., 2 * 0.6);
+  rm_dkstz_kpi_uid7 = Rm(r_dkstz, rD_kpi, d_dkstz, dD_kpi, k_dkstz, 1., 2 * 0.6);
+  rp_dkstz_k3pi_uid7 = Rp(r_dkstz, rD_k3pi, d_dkstz, dD_k3pi, k_dkstz, kD_k3pi, 2 * 0.6);
+  rm_dkstz_k3pi_uid7 = Rm(r_dkstz, rD_k3pi, d_dkstz, dD_k3pi, k_dkstz, kD_k3pi, 2 * 0.6);
+  afav_dkstz_kpi_uid7 = Afav(r_dkstz, rD_kpi, d_dkstz, dD_kpi, k_dkstz, 1., 2 * 0.6);
+  afav_dkstz_k3pi_uid7 = Afav(r_dkstz, rD_k3pi, d_dkstz, dD_k3pi, k_dkstz, kD_k3pi, 2 * 0.6);
+
+  //9. PDF: ggsz_dkstz_lhcb_md (UID8)
+  // 4 Observables
+  xm_dkstz_uid8 = k_dkstz * r_dkstz * cos(d_dkstz - g);
+  ym_dkstz_uid8 = k_dkstz * r_dkstz * sin(d_dkstz - g);
+  xp_dkstz_uid8 = k_dkstz * r_dkstz * cos(d_dkstz + g);
+  yp_dkstz_uid8 = k_dkstz * r_dkstz * sin(d_dkstz + g);
+
+  //----------------------------------------------- Calculating time dependent B0d observables -------------------------------------------------------------------------
+
+  //13. PDF: dmpi (UID12)
+  // 2 Observables
+  s_dmpi_uid12 = - (2 * l_dmpi * sin(d_dmpi - (2 *beta + g))) / (1 + l_dmpi*l_dmpi);
+  sb_dmpi_uid12 = (2 * l_dmpi * sin(d_dmpi + (2 *beta + g))) / (1 + l_dmpi*l_dmpi);
+
+
+  //28. PDF: beta (UID27)
+  // 1 Osservabile
+  beta_uid27 = beta;
+
+  //----------------------------------------------- Contribution to the LogLikelihood -------------------------------------------------------------------------
+
+  TVectorD corr(8);
+
+
+  //26. PDF: dkstzcoherence (UID25)
+  //Observables 1:
+
+  ll2 += meas.at("UID25").logweight(k_dkstz_uid25);
+
+  //8. PDF: glwads-dkst-hh-h3pi-dmix (UID7)
+  //Observables 12:
+  corr.ResizeTo(12);
+  corr(0) = acp_dkstz_kk_uid7;
+  corr(1) = acp_dkstz_pipi_uid7;
+  corr(2) = rcp_dkstz_kk_uid7;
+  corr(3) = rcp_dkstz_pipi_uid7;
+  corr(4) = acp_dkstz_4pi_uid7;
+  corr(5) = rcp_dkstz_4pi_uid7;
+  corr(6) = rp_dkstz_kpi_uid7;
+  corr(7) = rm_dkstz_kpi_uid7;
+  corr(8) = rp_dkstz_k3pi_uid7;
+  corr(9) = rm_dkstz_k3pi_uid7;
+  corr(10) = afav_dkstz_kpi_uid7;
+  corr(11) = afav_dkstz_k3pi_uid7;
+
+  ll2 += corrmeas.at("UID7").logweight(corr);
+
+
+  //9. PDF: ggsz-dkstz-lhcb-md (UID8)
+  //Observables 4:
+  corr.ResizeTo(4);
+  corr(0) = xm_dkstz_uid8;
+  corr(1) = ym_dkstz_uid8;
+  corr(2) = xp_dkstz_uid8;
+  corr(3) = yp_dkstz_uid8;
+
+  ll2 += corrmeas.at("UID8").logweight(corr);
+
+
+  //----------------------------------------------- Contribution to the LogLikelihood -------------------------------------------------------------------------
+
+  //13. PDF: dmpi (UID12)
+  //Observables 2:
+  corr.ResizeTo(2);
+  corr(0) = s_dmpi_uid12;
+  corr(1) = sb_dmpi_uid12;
+
+  ll2 += corrmeas.at("UID12").logweight(corr);
+
+  //28. PDF: beta (UID27)
+  //Observables 1:
+
+  ll2 += meas.at("UID27").logweight(beta_uid27);
+
+
+  return ll2;
+
+}
+// ---------------------------------------------------------
+
+// ---------------------------------------------------------
+double MixingModel::Calculate_time_dependent_neutralBsobservables(){
+
+  double ll2;
+  ll2 = 0.;
+
+  //----------------------------------------------- Calculating time dependent B0s observables -------------------------------------------------------------------------
 
   //11. PDF: dsk (UID10)
   // 5 Observables
@@ -3886,18 +3869,9 @@ double MixingModel::Calculate_time_dependent_Bobservables(){
   s_dskpipi_uid11 = (2*k_dskpipi*l_dskpipi*sin(d_dskpipi - (g+phis)))/(1 + l_dskpipi*l_dskpipi);
   sb_dskpipi_uid11 = - (2*k_dskpipi*l_dskpipi*sin(d_dskpipi + (g+phis))) / (1+l_dskpipi*l_dskpipi);
 
-  //13. PDF: dmpi (UID12)
-  // 2 Observables
-  s_dmpi_uid12 = - (2 * l_dmpi * sin(d_dmpi - (2 *beta + g))) / (1 + l_dmpi*l_dmpi);
-  sb_dmpi_uid12 = (2 * l_dmpi * sin(d_dmpi + (2 *beta + g))) / (1 + l_dmpi*l_dmpi);
-
   //27. PDF: phis (UID26)
   // 1 Osservabile
   phis_uid26 = phis;
-
-  //28. PDF: beta (UID27)
-  // 1 Osservabile
-  beta_uid27 = beta;
 
   //----------------------------------------------- Contribution to the LogLikelihood -------------------------------------------------------------------------
 
@@ -3925,24 +3899,10 @@ double MixingModel::Calculate_time_dependent_Bobservables(){
 
   ll2 += corrmeas.at("UID11").logweight(corr);
 
-  //13. PDF: dmpi (UID12)
-  //Observables 2:
-  corr.ResizeTo(2);
-  corr(0) = s_dmpi_uid12;
-  corr(1) = sb_dmpi_uid12;
-
-  ll2 += corrmeas.at("UID12").logweight(corr);
-
   //27. PDF: phis (UID26)
   //Observables 1:
 
   ll2 += meas.at("UID26").logweight(phis_uid26);
-
-  //28. PDF: beta (UID27)
-  //Observables 1:
-
-  ll2 += meas.at("UID27").logweight(beta_uid27);
-
 
   return ll2;
 
@@ -4002,8 +3962,6 @@ double MixingModel::Calculate_time_dependent_Dobservables(){
   ym_uid30 = y_minus(dD_kpi);
   xmsq_uid30 = x_minus(dD_kpi) * x_minus(dD_kpi);
 
-  if(comb == 2){
-
   // https://arxiv.org/abs/2208.09402
   Akpi_BESIII = (- 2 * rD_kpi * cos(dD_kpi) + y) / (1 + rD_kpi * rD_kpi);
   Akpi_kpipi0_BESIII = ( F_pipipi0 * (- 2 * rD_kpi * cos(dD_kpi) + y )  ) / ( 1 + rD_kpi * rD_kpi + (1 - F_pipipi0)  * ( 2 * rD_kpi * cos(dD_kpi) + y  ) );
@@ -4013,8 +3971,6 @@ double MixingModel::Calculate_time_dependent_Dobservables(){
 
   //https://arxiv.org/pdf/2208.06512.pdf
   //they are the same of xcp, ycp, dx, dy
-
-  }
 
   //----------------------------------------------- Contribution to the LogLikelihood -------------------------------------------------------------------------
   TVectorD corr(8);
@@ -4080,8 +4036,6 @@ double MixingModel::Calculate_time_dependent_Dobservables(){
 
   ll3 += corrmeas.at("UID30").logweight(corr);
 
-  if(comb == 2){
-
   // https://arxiv.org/abs/2208.09402
   corr.ResizeTo(2);
   corr(0) = Akpi_BESIII;
@@ -4103,8 +4057,6 @@ double MixingModel::Calculate_time_dependent_Dobservables(){
 
   ll3 += corrmeas.at("LHCb_kspp_Au2022").logweight(corr);
 
-  }
-
   return ll3;
 
 }
@@ -4115,6 +4067,23 @@ double MixingModel::Calculate_other_observables(){
 
   double ll4;
   ll4 = 0.;
+
+  //20. PDF: dk3pi_dkpipi0_constraints (UID19)
+  // 6 Observables
+  kD_k3pi_uid19 = kD_k3pi;
+  dD_k3pi_uid19 = 2*M_PI - dD_k3pi; //because of the phase sign convention
+  kD_kpipi0_uid19 = kD_kpipi0;
+  dD_kpipi0_uid19 = 2*M_PI - dD_kpipi0; //because of the phase sign convention
+  rD_k3pi_uid19 = rD_k3pi;
+  rD_kpipi0_uid19 = rD_kpipi0;
+
+  //21. PDF: d4pi_dmixing_cleo (UID20)
+  // 1 Osservabile
+  F_pipipipi_uid20 = F_pipipipi;
+
+  //22. PDF: CleoDhhpi0Dilution (UID21)
+  F_pipipi0_uid21 = F_pipipi0;
+  F_kkpi0_uid21 = F_kkpi0;
 
   //----------------------------------------------- Other Observables-------------------------------------------------------------------------
   //14. PDF: charm-kspipi-nocpv (UID13)
@@ -4137,12 +4106,36 @@ double MixingModel::Calculate_other_observables(){
   dD_kskpi_uid23 = - dD_kskpi; // change sign of the phase convention
   kD_kskpi_uid23 = kD_kskpi;
 
-  if(comb == 2){
-    F_pipipipi_BESIII = F_pipipipi;
-  }
+  F_pipipipi_BESIII = F_pipipipi;
 
   //----------------------------------------------- Contribution to the LogLikelihood -------------------------------------------------------------------------
   TVectorD corr(8);
+
+  //20. PDF: dk3pi_dkpipi0_constraints (UID19)
+  //Observables 6:
+  corr.ResizeTo(6);
+  corr(0) = kD_k3pi_uid19;
+  corr(1) = 2*M_PI - dD_k3pi_uid19;
+  corr(2) = kD_kpipi0_uid19;
+  corr(3) = 2*M_PI - dD_kpipi0_uid19;
+  corr(4) = rD_k3pi_uid19;
+  corr(5) = rD_kpipi0_uid19;
+
+  ll4 += corrmeas.at("UID19").logweight(corr);
+
+  //21. PDF: d4pi_dmixing_cleo (UID20)
+  //Observables 1:
+
+  ll4 += meas.at("UID20").logweight(F_pipipipi_uid20);
+
+  //22. PDF: CleoDhhpi0Diluition (UID21)
+  //Observables 2:
+  corr.ResizeTo(2);
+  corr(0) = F_pipipi0;
+  corr(1) = F_kkpi0;
+
+  ll4 += corrmeas.at("UID21").logweight(corr);
+
 
   //14. PDF: charm-kspipi-nocpv (UID13)
   //Observables 2:
@@ -4169,9 +4162,8 @@ double MixingModel::Calculate_other_observables(){
 
   ll4 += corrmeas.at("UID23").logweight(corr);
 
-  if(comb == 2){
-    ll4 += meas.at("Fpipipipi_BESIII").logweight(F_pipipipi_BESIII);
-  }
+  ll4 += meas.at("Fpipipipi_BESIII").logweight(F_pipipipi_BESIII);
+
 
   return ll4;
 
@@ -4221,11 +4213,8 @@ double MixingModel::Calculate_old_observables(){
 
   //no direct CPV in tree decays
   // in the global combination It is allowed
-  if(comb != 2){
-    AD = 0.;
-  }
 
-  Rdkp = Rd * (1. + AD);
+  Rdkp = Rd;
 
   TVectorD corr(4);
 
@@ -4233,11 +4222,6 @@ double MixingModel::Calculate_old_observables(){
   llo += meas.at("ycp").logweight(ycp);
 
   // 2nd Block
-  if(comb != 2){
-    if (!noagamma && !combgamma_all){
-      llo += meas.at("AGamma").logweight(Ag);
-    }
-  }
 
   // 3rd Block
   corr(0) = x;
@@ -4307,69 +4291,13 @@ double MixingModel::Calculate_old_observables(){
   llo += corrmeas.at("kpi_belle_minus").logweight(corr);
 
   // 14th Block
-  corr(0) = Rd;
-  corr(1) = (yp_plus + yp_minus) / 2.;
-  corr(2) = (xp_plus_sq + xp_minus_sq + yp_plus * yp_plus + yp_minus * yp_minus) / 2. - corr(1) * corr(1);
+  corr(0) = rD_kpi*rD_kpi;
+  corr(1) = yp;
+  corr(2) = xp*xp;
 
   llo += corrmeas.at("kpi_cdf").logweight(corr);
 
-  if(comb != 2){
-
-    if (!combgamma_all) {
-
-      //15th Block
-      corr.ResizeTo(5);
-
-      corr(0) = Rd;
-      corr(1) = yp_plus;
-      corr(2) = xp_plus_sq;
-      corr(3) = yp_minus;
-      corr(4) = xp_minus_sq;
-
-      llo += corrmeas.at("kpi_lhcb").logweight(corr);
-
-      // 7th Block
-      llo += meas.at("RMKppp").logweight(rm);
-
-      //4th Block
-      corr.ResizeTo(4);
-
-      corr(0) = xcpphiKsLHCb;
-      corr(1) = ycpksppLHCb;
-      corr(2) = dxphiKsLHCb;
-      corr(3) = AgksppLHCb;
-
-      llo += corrmeas.at("LHCb_kspp").logweight(corr);
-
-    } else {
-
-      // LHCb Combination Resultss
-      corr.ResizeTo(6);
-
-      corr(0) = x;
-      corr(1) = y;
-      corr(2) = qop;
-      corr(3) = phi / d2r;
-      corr(4) = sqrt(Rd);
-      corr(5) = delta_kpi / d2r;
-
-      llo += corrmeas.at("LHCb_combo").logweight(corr);
-    }
-    if (combgamma_delta) {
-
-      // DKpi LHCb combination results
-      corr.ResizeTo(2);
-
-      corr(0) = sqrt(Rd);
-      corr(1) = delta_kpi / d2r;
-
-      llo += corrmeas.at("LHCb_combo_delta").logweight(corr);
-
-    }
-  }
-
-
-  return llo;
+return llo;
 }
 // ---------------------------------------------------------
 
@@ -4379,8 +4307,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
   double ll = 0.;
 
   if(comb == 0){
-    //--------------------------   assignment of the parameters variables to the extracted values --------------------------------------------
 
+    //Variabili globali
     g = parameters[0];
     x12 = parameters[1];
     y12 = parameters[2];
@@ -4423,44 +4351,31 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     d_dkst = parameters[27];
     k_dkst = parameters[28];
 
-    //  8. PDF: glwads-dkstz-hh-h3pi-dmix (UID7)
-    r_dkstz = parameters[29];
-    d_dkstz = parameters[30];
-    k_dkstz = parameters[31];
-
     //10. PDF: glwads-dhpipi-hh-dmix (UID9)
-    r_dkpipi = parameters[32];
-    d_dkpipi = parameters[33];
-    k_dkpipi = parameters[34];
-    r_dpipipi = parameters[35];
-    d_dpipipi = parameters[36];
-    k_dpipipi = parameters[37];
-
-    //11. PDF: dsk (UID10)
-    l_dsk = parameters[38];
-    d_dsk = parameters[39];
-    phis = parameters[40];
-
-    //12. PDF: dskpipi (UID11)
-    l_dskpipi = parameters[41];
-    d_dskpipi = parameters[42];
-    k_dskpipi = parameters[43];
-
-    //13. PDF: dmpi (UID12)
-    l_dmpi = parameters[44];
-    d_dmpi = parameters[45];
-    beta = parameters[46];
+    r_dkpipi = parameters[29];
+    d_dkpipi = parameters[30];
+    k_dkpipi = parameters[31];
+    r_dpipipi = parameters[32];
+    d_dpipipi = parameters[33];
+    k_dpipipi = parameters[34];
 
     //15. PDF: charm-kspipi (UID14)
-    PhiM12 = parameters[47];
-    PhiG12 = parameters[48];
+    PhiM12 = parameters[35];
+    PhiG12 = parameters[36];
 
     //17. PDF: charm-kpi (UID16)
-    AD = parameters[49];
+    AD = parameters[37];
 
     //18. PDF: charm-deltaacp-diff (UID17)
-    Delta_totau = parameters[50];
-    DeltaAcp = parameters[51];
+    Delta_totau = parameters[38];
+    DeltaAcp = parameters[39];
+
+    //https://arxiv.org/abs/2301.10328
+    F_kkpipi = parameters[40];
+
+    if (ckmcorr){
+      RCP = parameters[41];
+    }
 
     //General parameters
     phi12 = remainder(-PhiG12 + PhiM12, 2. * M_PI);
@@ -4476,26 +4391,42 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     dx = 0.5 * ( x*cos(phi)*(qop - 1./qop) + y*sin(phi)*(qop + 1./qop) );
     dy = 0.5 * ( y*cos(phi)*(qop - 1./qop) - x*sin(phi)*(qop + 1./qop)  );
 
-    //------------------------------------------ Calculating the observables and their contributions to the Log-Likelihood ---------------------------------
+    phiKsBfact = phi;
+    phiKsLHCb = phi;
+    if (epsK){
+      phiKsBfact += -2 * epsI;
+    }
+    if (ckmcorr) {
+      //    std::cout << RCP << std::endl;
+      phiKsBfact -= RCP;
+      phiKsLHCb -= RCP;
+    }
 
-    //---------------------------------------------------- Time integrated observables ----------------------------------------------------
-    ll += Calculate_time_integrated_observables();
-    //------------------------------------------------------  Time Dependent B observables  ----------------------------------------------------
-    ll += Calculate_time_dependent_Bobservables();
-    //------------------------------------------------------  Time Dependent D observables  ----------------------------------------------------
+    ycpksppLHCb = (qop + 1. / qop) / 2. * y * cos(phiKsLHCb) - (qop - 1. / qop) / 2. * x * sin(phiKsLHCb);
+    AgksppLHCb = (qop - 1. / qop) / 2. * y * cos(phiKsLHCb)- (qop + 1. / qop) / 2. * x * sin(phiKsLHCb);
+    xcpphiKsLHCb = 0.5 * ( x * cos(phiKsLHCb) * (qop + 1./qop) + y * sin(phiKsLHCb) * (qop - 1./qop)  );
+    dxphiKsLHCb = 0.5 * ( x*cos(phiKsLHCb)*(qop - 1./qop) + y*sin(phiKsLHCb)*(qop + 1./qop) );
+    ycpksppLHCb = (qop + 1. / qop) / 2. * y * cos(phiKsLHCb) - (qop - 1. / qop) / 2. * x * sin(phiKsLHCb);
+    am = (qop * qop - 1. / (qop * qop)) / (qop * qop + 1. / (qop * qop));
+
+    //---------------------------------------------------- Contribution to the LogLikelihood of the charged B measurements  ----------------------------------------------------
+    ll += Calculate_ChargedB_observables();
+    //------------------------------------------------------  Contribution to the LogLikelihood of the Time Dependent D observables ----------------------------------------------------
     ll += Calculate_time_dependent_Dobservables();
-    //----------------------------------------------- Other Observables-------------------------------------------------------------------------
+    //----------------------------------------------- Contribution to the LogLikelihood of the Other Observables -------------------------------------------------------------------------
     ll += Calculate_other_observables();
+    //-----------------------------------------------  Contribution to the LogLikelihood of the Old Observables -------------------------------------------------------------------------
+    ll += Calculate_old_observables();
 
     //---------------------------------- Fill the Histograms ---------------------
 
     // Time Integrated B decay chain
     obs["g"] = g * r2d;
-    obs["x12"] = x12;
-    obs["y12"] = y12;
-    obs["r_dk"] = r_dk;
-    obs["r_dpi"] = r_dpi;
-    obs["rD_kpi"] = rD_kpi;
+    obs["x12"] = x12 * 1000;
+    obs["y12"] = y12 * 1000;
+    obs["r_dk"] = r_dk * 100;
+    obs["r_dpi"] = r_dpi * 1000;
+    obs["rD_kpi"] = rD_kpi * 100;
     obs["d_dk"] = d_dk * r2d;
     obs["d_dpi"] = d_dpi * r2d;
     obs["dD_kpi"] = dD_kpi * r2d;
@@ -4523,28 +4454,15 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["r_dkst"] = r_dkst;
     obs["d_dkst"] = d_dkst * r2d;
     obs["k_dkst"] = k_dkst;
-    obs["r_dkstz"] = r_dkstz;
-    obs["d_dkstz"] = d_dkstz * r2d;
-    obs["k_dkstz"] = k_dkstz;
     obs["r_dkpipi"] = r_dkpipi;
     obs["d_dkpipi"] = d_dkpipi * r2d;
     obs["k_dkpipi"] = k_dkpipi;
     obs["r_dpipipi"] = r_dpipipi;
     obs["d_dpipipi"] = d_dpipipi * r2d;
     obs["k_dpipipi"] = k_dpipipi;
+    obs["F_kkpipi"] = F_kkpipi;
 
     // Time dependent B decay chain
-
-    obs["l_dsk"] = l_dsk;
-    obs["d_dsk"] = d_dsk;
-    obs["phis"] = phis * r2d;
-    obs["beta_s"] = - 0.5 * phis;
-    obs["l_dskpipi"] = l_dskpipi;
-    obs["d_dskpipi"] = d_dskpipi;
-    obs["k_dskpipi"] = k_dskpipi;
-    obs["l_dmpi"] = l_dmpi;
-    obs["d_dmpi"] = d_dmpi * r2d;
-    obs["beta"] = beta * r2d;
 
     //Time dependent D decay and mixing
     obs["PhiM12"] = PhiM12 * r2d;
@@ -4554,26 +4472,72 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["AD"] = AD;
     obs["Delta_totau"] = Delta_totau;
     obs["DeltaAcp"] = DeltaAcp;
-    obs["qopm1"] = qop -1;
+    obs["qopm1"] = (qop -1) * 100;
     obs["qop"] = qop;
     obs["phi"] = phi * r2d;
     obs["phi12"] = phi12 * r2d;
     obs["delta"] = d;
+    obs["delta_kp"] = delta_kpi * r2d;
+    obs["delta_kpp"] = delta_kpipi * r2d;
+
+    obs["phiKsLHCb"] = phiKsLHCb * r2d;
+    obs["RCP"] = RCP;
     obs["x"] = x;
     obs["y"] = y;
 
   }
   else if(comb == 1){
 
-    x12 = parameters[0];
-    y12 = parameters[1];
-    PhiM12 = parameters[2];
-    dD_kpi = parameters[3];
-    dD_kpipi0 = parameters[4];
-    rD_kpi = parameters[5];
-    PhiG12 = parameters[6];
+    //Variabili globali
+    g = parameters[0];
+    x12 = parameters[1];
+    y12 = parameters[2];
+
+    // 1. PDF: glwads-dh-hh-dmix (UID0)
+    rD_kpi = parameters[3];
+    dD_kpi = parameters[4];
+
+    //  2. PDF: glwads-dh-h3pi-dmix (UID1)
+    rD_k3pi = parameters[5];
+    dD_k3pi = parameters[6];
+    kD_k3pi = parameters[7];
+    F_pipipipi = parameters[8];
+
+    // 3. PDF: glwads-dh-hhpi0-dmix (UID2)
+    rD_kpipi0 = parameters[9];
+    dD_kpipi0 = parameters[10];
+    kD_kpipi0 = parameters[11];
+    F_pipipi0 = parameters[12];
+    F_kkpi0 = parameters[13];
+
+    //5. PDF: glwads-dkdpi-kskpi-dmix (UID4)
+    rD_kskpi = parameters[14];
+    dD_kskpi = parameters[15];
+    kD_kskpi = parameters[16];
+
+    //  8. PDF: glwads-dkstz-hh-h3pi-dmix (UID7)
+    r_dkstz = parameters[17];
+    d_dkstz = parameters[18];
+    k_dkstz = parameters[19];
+
+    //13. PDF: dmpi (UID12)
+    l_dmpi = parameters[20];
+    d_dmpi = parameters[21];
+    beta = parameters[22];
+
+    //15. PDF: charm-kspipi (UID14)
+    PhiM12 = parameters[23];
+    PhiG12 = parameters[24];
+
+    //17. PDF: charm-kpi (UID16)
+    AD = parameters[25];
+
+    //18. PDF: charm-deltaacp-diff (UID17)
+    Delta_totau = parameters[26];
+    DeltaAcp = parameters[27];
+
     if (ckmcorr){
-      RCP = parameters[7];
+      RCP = parameters[28];
     }
 
     //General parameters
@@ -4585,11 +4549,16 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     (x12 * x12 * cos(2. * PhiM12) + y12 * y12 * cos(2. * PhiG12)) ) / 2.;
     d = (1. - qop * qop) / (1. + qop * qop);
 
+    xcp = 0.5 * ( x * cos(phi) * (qop + 1./qop) + y * sin(phi) * (qop - 1./qop)  );
+    ycp = 0.5 * ( y * cos(phi) * (qop + 1./qop) - x * sin(phi) * (qop - 1./qop));
+    dx = 0.5 * ( x*cos(phi)*(qop - 1./qop) + y*sin(phi)*(qop + 1./qop) );
+    dy = 0.5 * ( y*cos(phi)*(qop - 1./qop) - x*sin(phi)*(qop + 1./qop)  );
+
     phiKsBfact = phi;
     phiKsLHCb = phi;
     if (epsK){
-    phiKsBfact += -2 * epsI;
-  }
+      phiKsBfact += -2 * epsI;
+    }
     if (ckmcorr) {
       //    std::cout << RCP << std::endl;
       phiKsBfact -= RCP;
@@ -4603,59 +4572,225 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     ycpksppLHCb = (qop + 1. / qop) / 2. * y * cos(phiKsLHCb) - (qop - 1. / qop) / 2. * x * sin(phiKsLHCb);
     am = (qop * qop - 1. / (qop * qop)) / (qop * qop + 1. / (qop * qop));
 
+    //------------------------------------------------------  Contribution to the LogLikelihood of the Bd observables  ----------------------------------------------------
+    ll += Calculate_time_dependent_neutralBdobservables();
+    //------------------------------------------------------  Contribution to the LogLikelihood of the Time Dependent D observables ----------------------------------------------------
+    ll += Calculate_time_dependent_Dobservables();
+    //----------------------------------------------- Contribution to the LogLikelihood of the Other Observables -------------------------------------------------------------------------
+    ll += Calculate_other_observables();
+    //----------------------------------------------- Contribution to the LogLikelihood of the Old Observables -------------------------------------------------------------------------
+    ll += Calculate_old_observables();
+
+    //---------------------------------- Fill the Histograms ---------------------
+
+    // Time Integrated B decay chain
+    obs["g"] = g * r2d;
+    obs["x12"] = x12 * 1000;
+    obs["y12"] = y12 * 1000;
+    obs["rD_kpi"] = rD_kpi * 100;
+    obs["dD_kpi"] = dD_kpi * r2d;
+    obs["dD_kpi_LHCb"] = (2*M_PI - dD_kpi) * r2d;
+    obs["rD_k3pi"] = rD_k3pi;
+    obs["dD_k3pi"] = dD_k3pi * r2d;
+    obs["dD_k3pi_LHCb"] = (2*M_PI - dD_k3pi) * r2d;
+    obs["kD_k3pi"] = kD_k3pi;
+    obs["F_pipipipi"] = F_pipipipi;
+    obs["rD_kpipi0"] = rD_kpipi0;
+    obs["dD_kpipi0"] = dD_kpipi0 * r2d;
+    obs["dD_kpipi0_LHCb"] = (2*M_PI - dD_kpipi0) * r2d;
+    obs["kD_kpipi0"] = kD_kpipi0;
+    obs["F_pipipi0"] = F_pipipi0;
+    obs["F_kkpi0"] = F_kkpi0;
+    obs["rD_kskpi"] = rD_kskpi;
+    obs["dD_kskpi"] = dD_kskpi * r2d;
+    obs["dD_kskpi_LHCb"] = -dD_kskpi * r2d;
+    obs["kD_kskpi"] = kD_kskpi;
+    obs["r_dkstz"] = r_dkstz;
+    obs["d_dkstz"] = d_dkstz * r2d;
+    obs["k_dkstz"] = k_dkstz;
+
+    // Time dependent B decay chain
+    obs["l_dmpi"] = l_dmpi;
+    obs["d_dmpi"] = d_dmpi * r2d;
+    obs["beta"] = beta * r2d;
+
+    //Time dependent D decay and mixing
+    obs["PhiM12"] = PhiM12 * r2d;
+    obs["PhiG12"] = PhiG12 * r2d;
+    obs["phipphig12"] = remainder(PhiG12 + phi, 2. * M_PI) * r2d;
+    obs["phimphig12"] = remainder(-PhiG12 + phi, 2. * M_PI) * r2d;
+    obs["AD"] = AD;
+    obs["Delta_totau"] = Delta_totau;
+    obs["DeltaAcp"] = DeltaAcp;
+    obs["qopm1"] = (qop -1)*100;
+    obs["qop"] = qop;
+    obs["phi"] = phi * r2d;
+    obs["phi12"] = phi12 * r2d;
+    obs["delta"] = d;
+    obs["delta_kp"] = delta_kpi * r2d;
+    obs["delta_kpp"] = delta_kpipi * r2d;
+
+    obs["phiKsLHCb"] = phiKsLHCb * r2d;
+    obs["RCP"] = RCP;
+    obs["x"] = x;
+    obs["y"] = y;
+
+  }
+  else if(comb == 2){
+
+    //Variabili globali
+    g = parameters[0];
+    x12 = parameters[1];
+    y12 = parameters[2];
+
+    // 1. PDF: glwads-dh-hh-dmix (UID0)
+    rD_kpi = parameters[3];
+    dD_kpi = parameters[4];
+
+    //  2. PDF: glwads-dh-h3pi-dmix (UID1)
+    rD_k3pi = parameters[5];
+    dD_k3pi = parameters[6];
+    kD_k3pi = parameters[7];
+    F_pipipipi = parameters[8];
+
+    // 3. PDF: glwads-dh-hhpi0-dmix (UID2)
+    rD_kpipi0 = parameters[9];
+    dD_kpipi0 = parameters[10];
+    kD_kpipi0 = parameters[11];
+    F_pipipi0 = parameters[12];
+    F_kkpi0 = parameters[13];
+
+    //5. PDF: glwads-dkdpi-kskpi-dmix (UID4)
+    rD_kskpi = parameters[14];
+    dD_kskpi = parameters[15];
+    kD_kskpi = parameters[16];
+
+    //11. PDF: dsk (UID10)
+    l_dsk = parameters[17];
+    d_dsk = parameters[18];
+    phis = parameters[19];
+
+    //12. PDF: dskpipi (UID11)
+    l_dskpipi = parameters[20];
+    d_dskpipi = parameters[21];
+    k_dskpipi = parameters[22];
+
+
+    //15. PDF: charm-kspipi (UID14)
+    PhiM12 = parameters[23];
+    PhiG12 = parameters[24];
+
+    //17. PDF: charm-kpi (UID16)
+    AD = parameters[25];
+
+    //18. PDF: charm-deltaacp-diff (UID17)
+    Delta_totau = parameters[26];
+    DeltaAcp = parameters[27];
+
+    if (ckmcorr){
+      RCP = parameters[28];
+    }
+
+    //General parameters
+    phi12 = remainder(-PhiG12 + PhiM12, 2. * M_PI);
+    x = x12;
+    y = y12;
+    qop = 1. + x12 * y12 * sin(phi12) / (x12 * x12 + y12 * y12);
+    phi = atan(- (x12 * x12 * sin(2. * PhiM12) + y12 * y12 * sin(2. * PhiG12)) /
+    (x12 * x12 * cos(2. * PhiM12) + y12 * y12 * cos(2. * PhiG12)) ) / 2.;
+    d = (1. - qop * qop) / (1. + qop * qop);
+
     xcp = 0.5 * ( x * cos(phi) * (qop + 1./qop) + y * sin(phi) * (qop - 1./qop)  );
     ycp = 0.5 * ( y * cos(phi) * (qop + 1./qop) - x * sin(phi) * (qop - 1./qop));
     dx = 0.5 * ( x*cos(phi)*(qop - 1./qop) + y*sin(phi)*(qop + 1./qop) );
     dy = 0.5 * ( y*cos(phi)*(qop - 1./qop) - x*sin(phi)*(qop + 1./qop)  );
 
+    phiKsBfact = phi;
+    phiKsLHCb = phi;
+    if (epsK){
+      phiKsBfact += -2 * epsI;
+    }
+    if (ckmcorr) {
+      //    std::cout << RCP << std::endl;
+      phiKsBfact -= RCP;
+      phiKsLHCb -= RCP;
+    }
 
-    //----------------------------------Contributions to the LL-------------------------------------------------------------------------
+    ycpksppLHCb = (qop + 1. / qop) / 2. * y * cos(phiKsLHCb) - (qop - 1. / qop) / 2. * x * sin(phiKsLHCb);
+    AgksppLHCb = (qop - 1. / qop) / 2. * y * cos(phiKsLHCb)- (qop + 1. / qop) / 2. * x * sin(phiKsLHCb);
+    xcpphiKsLHCb = 0.5 * ( x * cos(phiKsLHCb) * (qop + 1./qop) + y * sin(phiKsLHCb) * (qop - 1./qop)  );
+    dxphiKsLHCb = 0.5 * ( x*cos(phiKsLHCb)*(qop - 1./qop) + y*sin(phiKsLHCb)*(qop + 1./qop) );
+    ycpksppLHCb = (qop + 1. / qop) / 2. * y * cos(phiKsLHCb) - (qop - 1. / qop) / 2. * x * sin(phiKsLHCb);
+    am = (qop * qop - 1. / (qop * qop)) / (qop * qop + 1. / (qop * qop));
+
+
+    //------------------------------------------------------  Contribution to the LogLikelihood of the B0s observables  ----------------------------------------------------
+    ll += Calculate_time_dependent_neutralBsobservables();
+    //------------------------------------------------------  Contribution to the LogLikelihood of the Time Dependent D observables  ----------------------------------------------------
+    ll += Calculate_time_dependent_Dobservables();
+    //----------------------------------------------- Contribution to the LogLikelihood of the Other Observables -------------------------------------------------------------------------
+    ll += Calculate_other_observables();
+    //----------------------------------------------- Contribution to the LogLikelihood of the Old Observables -------------------------------------------------------------------------
     ll += Calculate_old_observables();
 
-    //----------------------------------Fill the Histograms-------------------------------------------------------------------------
-    obs["y"] = y;
-    obs["x"] = x;
+    //---------------------------------- Fill the Histograms ---------------------
+
+    // Time Integrated B decay chain
+    obs["g"] = g * r2d;
+    obs["x12"] = x12 * 1000;
+    obs["y12"] = y12 * 1000;
+    obs["rD_kpi"] = rD_kpi * 100;
     obs["dD_kpi"] = dD_kpi * r2d;
+    obs["dD_kpi_LHCb"] = (2*M_PI - dD_kpi) * r2d;
+    obs["rD_k3pi"] = rD_k3pi;
+    obs["dD_k3pi"] = dD_k3pi * r2d;
+    obs["dD_k3pi_LHCb"] = (2*M_PI - dD_k3pi) * r2d;
+    obs["kD_k3pi"] = kD_k3pi;
+    obs["F_pipipipi"] = F_pipipipi;
+    obs["rD_kpipi0"] = rD_kpipi0;
     obs["dD_kpipi0"] = dD_kpipi0 * r2d;
-    obs["delta_kp"] = delta_kpi * r2d;
-    obs["delta_kpp"] = delta_kpipi * r2d;
-    obs["phi"] = phi * r2d;
-    obs["phiG12"] = PhiG12 * r2d;
+    obs["dD_kpipi0_LHCb"] = (2*M_PI - dD_kpipi0) * r2d;
+    obs["kD_kpipi0"] = kD_kpipi0;
+    obs["F_pipipi0"] = F_pipipi0;
+    obs["F_kkpi0"] = F_kkpi0;
+    obs["rD_kskpi"] = rD_kskpi;
+    obs["dD_kskpi"] = dD_kskpi * r2d;
+    obs["dD_kskpi_LHCb"] = -dD_kskpi * r2d;
+    obs["kD_kskpi"] = kD_kskpi;
+
+    // Time dependent B decay chain
+
+    obs["l_dsk"] = l_dsk;
+    obs["d_dsk"] = d_dsk;
+    obs["phis"] = phis * r2d;
+    obs["beta_s"] = - 0.5 * phis;
+    obs["l_dskpipi"] = l_dskpipi;
+    obs["d_dskpipi"] = d_dskpipi;
+    obs["k_dskpipi"] = k_dskpipi;
+
+    //Time dependent D decay and mixing
+    obs["PhiM12"] = PhiM12 * r2d;
+    obs["PhiG12"] = PhiG12 * r2d;
     obs["phipphig12"] = remainder(PhiG12 + phi, 2. * M_PI) * r2d;
     obs["phimphig12"] = remainder(-PhiG12 + phi, 2. * M_PI) * r2d;
-    obs["phiM12"] = PhiM12 * r2d;
-    obs["phi12"] = phi12 * r2d;
-    obs["x12"] = x12;
-    obs["y12"] = y12;
-    obs["qopm1"] = qop - 1.;
-    obs["delta"] = d;
-    obs["RD"] = Rd;
     obs["AD"] = AD;
-    obs["RDkp"] = Rdkp;
-    obs["rDkp"] = sqrt(Rdkp);
-    obs["Rm"] = rm;
-    obs["Am"] = am;
-    obs["AGamma"] = Ag;
-    obs["ycp"] = ycp;
-    obs["dx"] = dx;
-    obs["dxphiKsLHCb"] = dxphiKsLHCb;
-    obs["xcp"] = xcp;
-    obs["xcpphiKsLHCb"] = xcpphiKsLHCb;
-    obs["ypp"] = yp_plus;
-    obs["ypm"] = yp_minus;
-    obs["xpp"] = xp_plus;
-    obs["xpm"] = xp_minus;
-    obs["xpp2"] = xp_plus_sq;
-    obs["xpm2"] = xp_minus_sq;
-    obs["ypp_kpp"] = yp_kpp_plus;
-    obs["ypm_kpp"] = yp_kpp_minus;
-    obs["xpp_kpp"] = xp_kpp_plus;
-    obs["xpm_kpp"] = xp_kpp_minus;
+    obs["Delta_totau"] = Delta_totau;
+    obs["DeltaAcp"] = DeltaAcp;
+    obs["qopm1"] = (qop -1)*100;
+    obs["qop"] = qop;
+    obs["phi"] = phi * r2d;
+    obs["phi12"] = phi12 * r2d;
+    obs["delta"] = d;
+    obs["delta_kp"] = delta_kpi * r2d;
+    obs["delta_kpp"] = delta_kpipi * r2d;
+
     obs["phiKsLHCb"] = phiKsLHCb * r2d;
     obs["RCP"] = RCP;
+    obs["x"] = x;
+    obs["y"] = y;
 
   }
-  else if(comb == 2){
+  else if(comb == 3){
 
     //Variabili globali
     g = parameters[0];
@@ -4739,8 +4874,11 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     Delta_totau = parameters[50];
     DeltaAcp = parameters[51];
 
+    //https://arxiv.org/abs/2301.10328
+    F_kkpipi = parameters[52];
+
     if (ckmcorr){
-      RCP = parameters[52];
+      RCP = parameters[53];
     }
 
     //General parameters
@@ -4760,8 +4898,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     phiKsBfact = phi;
     phiKsLHCb = phi;
     if (epsK){
-    phiKsBfact += -2 * epsI;
-  }
+      phiKsBfact += -2 * epsI;
+    }
     if (ckmcorr) {
       //    std::cout << RCP << std::endl;
       phiKsBfact -= RCP;
@@ -4775,26 +4913,27 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     ycpksppLHCb = (qop + 1. / qop) / 2. * y * cos(phiKsLHCb) - (qop - 1. / qop) / 2. * x * sin(phiKsLHCb);
     am = (qop * qop - 1. / (qop * qop)) / (qop * qop + 1. / (qop * qop));
 
-    //---------------------------------------------------- Time integrated observables ----------------------------------------------------
-    ll += Calculate_time_integrated_observables();
-    //------------------------------------------------------  Time Dependent B observables  ----------------------------------------------------
-    ll += Calculate_time_dependent_Bobservables();
-    //------------------------------------------------------  Time Dependent D observables  ----------------------------------------------------
+    //---------------------------------------------------- Contribution to the LogLikelihood of the charged B observables ----------------------------------------------------
+    ll += Calculate_ChargedB_observables();
+    //------------------------------------------------------  Contribution to the LogLikelihood of the neutral Bd observables  ----------------------------------------------------
+    ll += Calculate_time_dependent_neutralBdobservables();
+    //------------------------------------------------------  Contribution to the LogLikelihood of the neutral Bs observables  ----------------------------------------------------
+    ll += Calculate_time_dependent_neutralBsobservables();
+    //------------------------------------------------------  Contribution to the LogLikelihood of the Time Dependent D observables  ----------------------------------------------------
     ll += Calculate_time_dependent_Dobservables();
-    //----------------------------------------------- Other Observables-------------------------------------------------------------------------
+    //----------------------------------------------- Contribution to the LogLikelihood of the Other Observables -------------------------------------------------------------------------
     ll += Calculate_other_observables();
-    //----------------------------------------------- Old Observables-------------------------------------------------------------------------
+    //----------------------------------------------- Contribution to the LogLikelihood of the Old Observables -------------------------------------------------------------------------
     ll += Calculate_old_observables();
 
-    //---------------------------------- Fill the Histograms ---------------------
-
+    //---------------------------------- Fill the map "obs", a subset of which will be used to fill the histograms --------------------------------------------------------
     // Time Integrated B decay chain
     obs["g"] = g * r2d;
-    obs["x12"] = x12;
-    obs["y12"] = y12;
-    obs["r_dk"] = r_dk;
-    obs["r_dpi"] = r_dpi;
-    obs["rD_kpi"] = rD_kpi;
+    obs["x12"] = x12 * 1000;
+    obs["y12"] = y12 * 1000;
+    obs["r_dk"] = r_dk * 100;
+    obs["r_dpi"] = r_dpi * 1000;
+    obs["rD_kpi"] = rD_kpi * 100;
     obs["d_dk"] = d_dk * r2d;
     obs["d_dpi"] = d_dpi * r2d;
     obs["dD_kpi"] = dD_kpi * r2d;
@@ -4831,6 +4970,7 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["r_dpipipi"] = r_dpipipi;
     obs["d_dpipipi"] = d_dpipipi * r2d;
     obs["k_dpipipi"] = k_dpipipi;
+    obs["F_kkpipi"] = F_kkpipi;
 
     // Time dependent B decay chain
 
@@ -4853,7 +4993,7 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["AD"] = AD;
     obs["Delta_totau"] = Delta_totau;
     obs["DeltaAcp"] = DeltaAcp;
-    obs["qopm1"] = qop -1;
+    obs["qopm1"] = (qop -1)*100;
     obs["qop"] = qop;
     obs["phi"] = phi * r2d;
     obs["phi12"] = phi12 * r2d;
@@ -4865,6 +5005,7 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["RCP"] = RCP;
     obs["x"] = x;
     obs["y"] = y;
+
 
   }
 
