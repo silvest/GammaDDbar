@@ -37,7 +37,7 @@ Here:
 - **Output_name** is the name of the folder containing the results.
 - **Var_file** is the name of the file containing the parameters for which you want to store the 1D and 2D Histograms in the ROOT file.
 
-New inputs and parameters can be added to the combination by editing the class ``` MixingModel```. 
+New inputs and parameters can be added to the combination by editing the class ```MixingModel```. 
 The data are stored using the classes ```dato``` and  ```CorrelatedGaussianObservables```.
 
 ## Dependencies
