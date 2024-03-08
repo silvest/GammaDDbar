@@ -3,7 +3,7 @@
 
 # A tool to determine simultaneously the CKM angle $\gamma$ and the charm mixing and CP-violating parameters 
 
-This repository contains code for determining the CKM angle $\gamma$, charm mixing and CP-violating parameters in the framework of approximate universality.
+This repository contains code for determining the CKM angle $\gamma$, charm mixing, and CP-violating parameters in the framework of approximate universality.
 
 ## Features
 
@@ -14,7 +14,7 @@ We combine charm and beauty observables in a Bayesian framework. We use the prod
 - **posteriors of beauty and charm decay parameters:** ratios of magnitudes of decay amplitudes and strong phases for the most precise modes available to date.
 - **extensible:** new inputs and parameters can be added comfortably by modifying the model class.
 
-Results are stored in BAT output files and in ROOT files as one- and two-dimensional histograms.
+Results are stored in BAT output files and ROOT files as one- and two-dimensional histograms.
 
 ## Usage 
 
@@ -37,7 +37,8 @@ Here:
 - **Output_name** is the name of the folder containing the results.
 - **Var_file** is the name of the file containing the parameters for which you want to store the 1D and 2D Histograms in the ROOT file.
 
-New inputs and parameters can be added to the combination by editing the class ``` MixingModel```. The data are stored using the classes  ``` dato``` and  ``` CorrelatedGaussianObservables```.
+New inputs and parameters can be added to the combination by editing the class ``` MixingModel```. 
+The data are stored using the classes ``` dato``` and  ``` CorrelatedGaussianObservables```.
 
 ## Dependencies
 
