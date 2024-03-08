@@ -35,7 +35,8 @@ Here:
 - **Nevents_pre** is the number of events used to thermalize the algorithm.
 - **Nevents** is the number of configurations of the parameters employed to reconstruct the posteriors.
 - **Output_name** is the name of the folder containing the results.
-- **Var_file** is the name of the file containing the parameters for which you want to store the 1D and 2D Histograms in the ROOT file.
+- **CombType** is a number identifying the kind of beauty observables you want to include in the combination. Put '0' for only charged $B$ modes, '1' for only neutral $B$, '2' for only neutral $B_s$ modes and '3' for all the observables.
+- **Var_file** is the name of the file containing the parameters for which you want to store the 1D and 2D Histograms in the ROOT file. Examples are already stored in the "Variables" folder.
 
 New inputs and parameters can be added to the combination by editing the class ```MixingModel```. 
 The data are stored using the classes ```dato``` and  ```CorrelatedGaussianObservables```.
