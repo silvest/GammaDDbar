@@ -14,25 +14,35 @@ We combine charm and beauty observables in a Bayesian framework. We use the prod
 - **posteriors of beauty and charm decay parameters:** ratios of magnitudes of decay amplitudes and strong phases for the most precise modes available to date.
 - **extensible:** new inputs and parameters can be added comfortably by modifying the model class.
 
-Results are stored in BAT output files and in ROOT files as one- and two-dimensional contours for the variables contained in the folder "GammaDDbar/Variables".
+Results are stored in BAT output files and in ROOT files as one- and two-dimensional histograms.
 
 ## Usage 
 
-After having installed ROOT and BAT, the code can be executed by running the bash scripts in the home directory "GammaDDbar".
+After having installed ROOT and BAT, the code can be executed by running the bash scripts in the home directory "GammaDDbar". 
 
 1. The classes can be compiled by running the code
 
    ```
-    cd GammaDDbar
     sh compile_classes.sh
     ```
 
-3. Run the main script using "compile_main.sh" by sepcifying the Number of Markov chains, Numer of events to thermalize the chains, Number of events to sample to reconstruct the posterior of the parameters, Name of the output folder, combination type and name of the .txt file containing the variables to populate the histograms in the ROOT file.
+2. Run the main script using
+   ```
+    sh compile_main.sh Nchains Nevents_pre Nevents Output_name CombType Var_file
+    ```
+Here:
+- **Nchains** is the number of Markov Chains used.
+- **Nevents_pre** is the number of events used to thermalize the algorithm.
+- **Nevents** is the number of configurations of the parameters employed to reconstruct the posteriors.
+- **Output_name** is the name of the folder containing the results.
+- **Var_file** is the name of the file containing the parameters for which you want to store the 1D and 2D Histograms in the ROOT file.
+
+New inputs and parameters can be added to the combination by editing the class ``` MixingModel```. The data are stored using the classes  ``` dato``` and  ``` CorrelatedGaussianObservables```.
 
 ## Dependencies
 
-- ROOT v 6.26/04
-- BAT v 1.0
+- ROOT v6.26/04
+- BAT v1.0
 
 ## Contributing
 
