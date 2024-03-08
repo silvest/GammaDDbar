@@ -11,7 +11,7 @@
 #include <iostream>
 #include <cmath>
 
-// ---------------------------------------------------------
+// --------------------------------------------------------- This is the class to make the model ----------------------------------------------------
 
 using namespace std;
 
@@ -19,31 +19,30 @@ class MixingModel : public BCModel {
 public:
 
   // Constructors and destructor
-  MixingModel(vector<string> nParam, int combination, bool phig12_i, bool noagamma_i, bool nokspipi_i, bool nok3pi_i, bool nokp_i, bool rad_i, bool epsK_i, bool ckmcorr_i, bool combgamma_all_i, bool combgamma_delta_i);
+  MixingModel(vector<string> nParam, int combination );
   ~MixingModel();
 
   // Methods to overload, see file MixingModel.cpp
-  void DefineParameters();
-  double LogLikelihood(const std::vector<double> &parameters);
+  void DefineParameters(); // Define the parameters
+  double LogLikelihood(const std::vector<double> &parameters); // Compute the log likelihood
   void MCMCUserIterationInterface();
-  void PrintHistogram();
+  void PrintHistogram(); // This is to print the histograms
 
   //Methods to insert the measurements
   void Add_ChargedB_meas(); //Charged B decay chain modes
-  void Add_NeutralBd_meas(); //Neutral B decay chain modes
-  void Add_NeutralBs_meas(); //B0s, B0d mixing and decay modes
+  void Add_NeutralBd_meas(); //Neutral Bd mixing and decay modes
+  void Add_NeutralBs_meas(); //B0s mixing and decay modes
   void Add_time_dependent_Dmeas(); // D mixing and decay modes
-  void Add_other_meas(); // other support measurements
-  void Add_old_meas(); // old code measurements
+  void Add_other_meas(); // other inputs
+  void Add_old_meas(); // old D analysis measurements
 
   //Histograms
-  void DefineHistograms();
+  void DefineHistograms(); // Function to define the histograms to fill
 
   //Boolean variables to set the combination
-  int comb;
-  bool phig12, noagamma, nokspipi, nok3pi, rad, epsK, ckmcorr, nokp, combgamma_all, combgamma_delta;
+  int comb; // combination variable
   // vector to copy the names of the variables to fill the relative histograms
-  std::vector<string> nVarab;
+  std::vector<string> nVarab; // name of the parameters to fill the histograms
 
 
   map<string,dato> meas;
@@ -53,7 +52,7 @@ public:
 
   //PARAMETERS
 
-  //LHCb Combination parameters
+  //Combination parameters
   double g, x12, y12, r_dk, r_dpi, rD_kpi, d_dk, d_dpi, dD_kpi, //9
   rD_k3pi, dD_k3pi, kD_k3pi, F_pipipipi, //4
   rD_kpipi0, dD_kpipi0, kD_kpipi0, F_pipipi0, F_kkpi0, //5
@@ -67,19 +66,18 @@ public:
   l_dmpi, d_dmpi, beta, // 3
   PhiM12, PhiG12, AD, Delta_totau, DeltaAcp, //5
   //52 total parameters
-  F_kkpipi; //airXiv 20301.10328
+  F_kkpipi, //airXiv 20301.10328
+  // 2401.17934 Bs
+  r_dkstzs, d_dkstzs, k_dkstzs; //3
 
   //old parameter
-  double RCP, RCP_in, RCP_err, Rd, delta_kpi, delta_kpipi;
+  double Rd, Rdkp, d; // rdkpi^2
 
   //auxiliary parameters
-  double x,y, phi12, qop, phi;
-  double xcp, ycp, dx, dy;
-  //old
-  double tauD, d, Rdkp;
+  double x,y, phi12, qop, phi; // other parametrization of the mixing parameters
 
   //OBSERVABLES
-  //LHCb Combination Observables
+  //Combination Observables
   double  acp_dk_uid0, acp_dpi_uid0, afav_dk_uid0, rcp_uid0, rm_dk_uid0, rm_dpi_uid0, rp_dk_uid0, rp_dpi_uid0, //UID0
   aads_dk_k3pi_uid1, aads_dpi_k3pi_uid1, acp_dk_4pi_uid1, acp_dpi_4pi_uid1, afav_dk_k3pi_uid1, rads_dk_k3pi_uid1, rads_dpi_k3pi_uid1, rcp_4pi_uid1, //UID1
   aads_dk_kpipi0_uid2, aads_dpi_kpipi0_uid2, acp_dk_kkpi0_uid2, acp_dk_pipipi0_uid2, acp_dpi_kkpi0_uid2, acp_dpi_pipipi0_uid2, afav_dk_kpipi0_uid2, rads_dk_kpipi0_uid2, rads_dpi_kpipi0_uid2, rcp_kkpi0_uid2, rcp_pipipi0_uid2, //UID2
@@ -116,14 +114,14 @@ public:
   DY_uid29, //UID29
   Rdp_uid30, yp_uid30, xpsq_uid30, Rdm_uid30, ym_uid30, xmsq_uid30; //UID30
 
+  double xcp, ycp, dx, dy; // D Observables CP final states
+
   //old_observables
-  double rm, phiKsBfact, phiKsLHCb,
+  double rm,
   yp_kpp_plus, xp_kpp_plus,
-  yp_kpp_minus, xp_kpp_minus, xp, yp,
+  yp_kpp_minus, xp_kpp_minus,
   xp_plus, xp_plus_sq, yp_plus,
-  xp_minus, xp_minus_sq, yp_minus,
-  ycpksppLHCb, AgksppLHCb, Ag, am,
-  xcpphiKsLHCb, dxphiKsLHCb;
+  xp_minus, xp_minus_sq, yp_minus;
 
   //https://arxiv.org/abs/2208.09402 observables
   double Akpi_BESIII, Akpi_kpipi0_BESIII,
@@ -133,13 +131,22 @@ public:
   double F_pipipipi_BESIII;
 
   //https://arxiv.org/abs/2301.10328
-  double acp_dk_kkpipi_203110328, acp_dpi_kkpipi_203110328, acp_dk_pipipipi_203110328, acp_dpi_pipipipi_203110328,
-         rcp_kpi_kkpipi_203110328, rcp_kpi_pipipipi_203110328;
+  double acp_dk_kkpipi_230110328, acp_dpi_kkpipi_230110328, acp_dk_pipipipi_230110328, acp_dpi_pipipipi_230110328,
+         rcp_kpi_kkpipi_230110328, rcp_kpi_pipipipi_230110328;
+
+  //https://arxiv.org/pdf/2401.17934.pdf
+  //Bd observables
+  double acp_dkstz_kk_240117934Bd, acp_dkstz_pipi_240117934Bd, rcp_dkstz_kk_240117934Bd, rcp_dkstz_pipi_240117934Bd, acp_dkstz_4pi_240117934Bd, rcp_dkstz_4pi_240117934Bd, rp_dkstz_kpi_240117934Bd,
+           rm_dkstz_kpi_240117934Bd, rp_dkstz_k3pi_240117934Bd, rm_dkstz_k3pi_240117934Bd, afav_dkstz_kpi_240117934Bd, afav_dkstz_k3pi_240117934Bd;
+
+  //Bs observables
+  double acp_dkstz_kk_240117934Bs, acp_dkstz_pipi_240117934Bs, rcp_dkstz_kk_240117934Bs, rcp_dkstz_pipi_240117934Bs, acp_dkstz_4pi_240117934Bs, rcp_dkstz_4pi_240117934Bs, rp_dkstz_kpi_240117934Bs,
+            rm_dkstz_kpi_240117934Bs, rp_dkstz_k3pi_240117934Bs, rm_dkstz_k3pi_240117934Bs, afav_dkstz_kpi_240117934Bs, afav_dkstz_k3pi_240117934Bs;
 
   //Methods to calculate the observables and the Log-Likelihood
   double Calculate_ChargedB_observables();
-  double Calculate_time_dependent_neutralBdobservables();
-  double Calculate_time_dependent_neutralBsobservables();
+  double Calculate_neutralBdobservables();
+  double Calculate_neutralBsobservables();
   double Calculate_time_dependent_Dobservables();
   double Calculate_other_observables();
   double Calculate_old_observables();
@@ -160,7 +167,8 @@ public:
   double x_minus(double delta_D);
 
 private:
-  double epsI, d2r, r2d;
+  double d2r, r2d;
+  double tau; // Mean lifetime
 
 };
 // ---------------------------------------------------------
