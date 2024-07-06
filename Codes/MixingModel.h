@@ -19,7 +19,7 @@ class MixingModel : public BCModel {
 public:
 
   // Constructors and destructor
-  MixingModel(vector<string> nParam, int combination );
+  MixingModel(vector<string> nParam, int combination);
   ~MixingModel();
 
   // Methods to overload, see file MixingModel.cpp
@@ -142,6 +142,9 @@ public:
   //Bs observables
   double acp_dkstz_kk_240117934Bs, acp_dkstz_pipi_240117934Bs, rcp_dkstz_kk_240117934Bs, rcp_dkstz_pipi_240117934Bs, acp_dkstz_4pi_240117934Bs, rcp_dkstz_4pi_240117934Bs, rp_dkstz_kpi_240117934Bs,
             rm_dkstz_kpi_240117934Bs, rp_dkstz_k3pi_240117934Bs, rm_dkstz_k3pi_240117934Bs, afav_dkstz_kpi_240117934Bs, afav_dkstz_k3pi_240117934Bs;
+
+  // Slides Ribatti
+  double CKpi, CpKpi, DCKpi, DCpKpi;
 
   //Methods to calculate the observables and the Log-Likelihood
   double Calculate_ChargedB_observables();

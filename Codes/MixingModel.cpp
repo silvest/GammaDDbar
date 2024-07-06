@@ -17,7 +17,7 @@ MixingModel::MixingModel(std::vector<string> nParam, int combination) : BCModel(
   comb = combination; // set the combination type
   r2d = 180. / M_PI; // to go form radiants to degrees
   d2r = M_PI / 180.; // degrees to radiants
-  tau = 4.1e-1; // ps D lifetime 
+  tau = 4.1e-1; // ps D lifetime
   nVarab = nParam; //copy the names of the variables of interest to print the histograms
 
   //------------------------------------------ Inserting the measurements --------------------------------------------------------------------------
@@ -1243,9 +1243,9 @@ void MixingModel::Add_ChargedB_meas(){
 
   //GLW 2301.10328: 6 observables
   CorrData.clear();
-  CorrData.push_back(dato(0.093,0.023,0.002)); //acp_dk_kkpipi
+  CorrData.push_back(dato(0.095,0.023,0.002)); //acp_dk_kkpipi
   CorrData.push_back(dato(-0.009,0.006,0.001)); //acp_dpi_kkpipi
-  CorrData.push_back(dato(0.060,0.013,0.001)); //acp_dk_4pi
+  CorrData.push_back(dato(0.061,0.013,0.002)); //acp_dk_4pi
   CorrData.push_back(dato(-0.0082, 0.0031, 0.0007)); //acp_dpi_4pi
   CorrData.push_back(dato(0.974,0.024,0.015)); // rcp_kkpipi
   CorrData.push_back(dato(0.978,0.014,0.010)); // rcp_4pi
@@ -1373,6 +1373,457 @@ void MixingModel::Add_ChargedB_meas(){
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2306.02940", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
 
+// Belle Dataset
+
+
+  // GGSZ https://link.springer.com/article/10.1007/JHEP02(2022)063
+  //Observables 6:
+  CorrData.clear();
+  CorrData.push_back(dato(0.0924, 0.0327, 0.0029)); //xm_dk
+  CorrData.push_back(dato(0.10, 0.0420, 0.0074)); //ym_dk
+  CorrData.push_back(dato(-0.1128, 0.0315, 0.0029)); //xp_dk
+  CorrData.push_back(dato(-0.0455, 0.0420, 0.0055)); //yp_dk
+  CorrData.push_back(dato(-0.1109, 0.0475, 0.0089)); // xi_x_dpi
+  CorrData.push_back(dato(-0.079, 0.0544, 0.0084)); // xi_y_dpi
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(6,6);
+  Corr(0,0) = 1.;
+  Corr(0,1) = -0.204;
+  Corr(0,2) = -0.051;
+  Corr(0,3) = 0.063;
+  Corr(0,4) = 0.365;
+  Corr(0,5) = -0.151;
+  Corr(1,1) = 1.;
+  Corr(1,2) = 0.014;
+  Corr(1,3) = -0.051;
+  Corr(1,4) = -0.090;
+  Corr(1,5) = 0.404;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.152;
+  Corr(2,4) = -0.330;
+  Corr(2,5) = -0.057;
+  Corr(3,3) = 1.;
+  Corr(3,4) = 0.026;
+  Corr(3,5) = -0.391;
+  Corr(4,4) = 1.;
+  Corr(4,5) = 0.080;
+  Corr(5,5) = 1.;
+  //Correlation Matrix (syst)
+  Corr2.ResizeTo(6,6);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.1035;
+  Corr2(0,2) = 0.2273;
+  Corr2(0,3) = 0.3342;
+  Corr2(0,4) = 0.2474;
+  Corr2(0,5) = 0.1445;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = 0.1986;
+  Corr2(1,3) = -0.1186;
+  Corr2(1,4) = -0.4098;
+  Corr2(1,5) = -0.1025;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.4223;
+  Corr2(2,4) = 0.0627;
+  Corr2(2,5) = -0.3750;
+  Corr2(3,3) = 1.;
+  Corr2(3,4) = 0.1728;
+  Corr2(3,5) = -0.0882;
+  Corr2(4,4) = 1.;
+  Corr2(4,5) = 0.5659;
+  Corr2(5,5) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2110.12125", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+
+  // GGSZ https://link.springer.com/article/10.1007/JHEP10(2019)178
+  //Observables 8:
+  CorrData.clear();
+  CorrData.push_back(dato(0.095, 0.121, 0.030)); //xm_dk
+  CorrData.push_back(dato(0.354, 0.170, 0.045)); //ym_dk
+  CorrData.push_back(dato(-0.03, 0.121, 0.026)); //xp_dk
+  CorrData.push_back(dato(0.22, 0.376, 0.079)); //yp_dk
+  CorrData.push_back(dato(-0.014, 0.021, 0.021)); //xm_dpi
+  CorrData.push_back(dato(-0.033, 0.059, 0.023)); //ym_dpi
+  CorrData.push_back(dato(0.039, 0.024, 0.020)); //xp_dpi
+  CorrData.push_back(dato(-0.196, 0.069, 0.048)); //yp_dpi
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(8,8);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.486;
+  Corr(0,2) = 0.172;
+  Corr(0,3) = -0.231;
+  Corr(0,4) = 0.;
+  Corr(0,5) = 0.;
+  Corr(0,6) = 0.;
+  Corr(0,7) = 0.;
+  Corr(1,1) = 1.;
+  Corr(1,2) = -0.127;
+  Corr(1,3) = 0.179;
+  Corr(1,4) = 0.;
+  Corr(1,5) = 0.;
+  Corr(1,6) = 0.;
+  Corr(1,7) = 0.;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.365;
+  Corr(2,4) = 0.;
+  Corr(2,5) = 0.;
+  Corr(2,6) = 0.;
+  Corr(2,7) = 0.;
+  Corr(3,3) = 1.;
+  Corr(3,4) = 0.;
+  Corr(3,5) = 0.;
+  Corr(3,6) = 0.;
+  Corr(3,7) = 0.;
+  Corr(4,4) = 1.;
+  Corr(4,5) = -0.364;
+  Corr(4,6) = 0.314;
+  Corr(4,7) = 0.050;
+  Corr(5,5) = 1.;
+  Corr(5,6) = 0.347;
+  Corr(5,7) = 0.055;
+  Corr(6,6) = 1.;
+  Corr(6,7) = -0.032;
+  Corr(7,7) = 1.;
+
+  //Correlation Matrix (stat):
+  Corr2.ResizeTo(8,8);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.;
+  Corr2(0,2) = 0.;
+  Corr2(0,3) = 0.;
+  Corr2(0,4) = 0.;
+  Corr2(0,5) = 0.;
+  Corr2(0,6) = 0.;
+  Corr2(0,7) = 0.;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = 0.;
+  Corr2(1,3) = 0.;
+  Corr2(1,4) = 0.;
+  Corr2(1,5) = 0.;
+  Corr2(1,6) = 0.;
+  Corr2(1,7) = 0.;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.;
+  Corr2(2,4) = 0.;
+  Corr2(2,5) = 0.;
+  Corr2(2,6) = 0.;
+  Corr2(2,7) = 0.;
+  Corr2(3,3) = 1.;
+  Corr2(3,4) = 0.;
+  Corr2(3,5) = 0.;
+  Corr2(3,6) = 0.;
+  Corr2(3,7) = 0.;
+  Corr2(4,4) = 1.;
+  Corr2(4,5) = 0.;
+  Corr2(4,6) = 0.;
+  Corr2(4,7) = 0.;
+  Corr2(5,5) = 1.;
+  Corr2(5,6) = 0.;
+  Corr2(5,7) = 0.;
+  Corr2(6,6) = 1.;
+  Corr2(6,7) = 0.;
+  Corr2(7,7) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("1908.09499", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+
+
+  // GGSZ https://journals.aps.org/prd/pdf/10.1103/PhysRevD.81.112002
+  //Observables 8:
+  CorrData.clear();
+  CorrData.push_back(dato(0.024, 0.140, 0.018)); //xm_dstk_dp
+  CorrData.push_back(dato(-0.243, 0.137, 0.022)); //ym_dstk_dp
+  CorrData.push_back(dato(0.133, 0.083, 0.018)); //xp_dstk_dp
+  CorrData.push_back(dato(0.130, 0.120, 0.022)); //yp_dstk_dp
+  CorrData.push_back(dato(0.144, 0.208, 0.025)); //xm_dstk_dg
+  CorrData.push_back(dato(0.196, 0.215, 0.037)); //ym_dstk_dg
+  CorrData.push_back(dato(-0.006, 0.147, 0.025)); //xp_dstk_dg
+  CorrData.push_back(dato(-0.190, 0.177, 0.037)); //yp_dstk_dg
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(8,8);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.440;
+  Corr(0,2) = 0.;
+  Corr(0,3) = 0.;
+  Corr(0,4) = 0.;
+  Corr(0,5) = 0.;
+  Corr(0,6) = 0.;
+  Corr(0,7) = 0.;
+  Corr(1,1) = 1.;
+  Corr(1,2) = 0.;
+  Corr(1,3) = 0.;
+  Corr(1,4) = 0.;
+  Corr(1,5) = 0.;
+  Corr(1,6) = 0.;
+  Corr(1,7) = 0.;
+  Corr(2,2) = 1.;
+  Corr(2,3) = -0.101;
+  Corr(2,4) = 0.;
+  Corr(2,5) = 0.;
+  Corr(2,6) = 0.;
+  Corr(2,7) = 0.;
+  Corr(3,3) = 1.;
+  Corr(3,4) = 0.;
+  Corr(3,5) = 0.;
+  Corr(3,6) = 0.;
+  Corr(3,7) = 0.;
+  Corr(4,4) = 1.;
+  Corr(4,5) = -0.207;
+  Corr(4,6) = 0.;
+  Corr(4,7) = 0.;
+  Corr(5,5) = 1.;
+  Corr(5,6) = 0.;
+  Corr(5,7) = 0.;
+  Corr(6,6) = 1.;
+  Corr(6,7) = 0.08;
+  Corr(7,7) = 1.;
+
+  //Correlation Matrix (stat):
+  Corr2.ResizeTo(8,8);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.;
+  Corr2(0,2) = 0.;
+  Corr2(0,3) = 0.;
+  Corr2(0,4) = 0.;
+  Corr2(0,5) = 0.;
+  Corr2(0,6) = 0.;
+  Corr2(0,7) = 0.;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = 0.;
+  Corr2(1,3) = 0.;
+  Corr2(1,4) = 0.;
+  Corr2(1,5) = 0.;
+  Corr2(1,6) = 0.;
+  Corr2(1,7) = 0.;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.;
+  Corr2(2,4) = 0.;
+  Corr2(2,5) = 0.;
+  Corr2(2,6) = 0.;
+  Corr2(2,7) = 0.;
+  Corr2(3,3) = 1.;
+  Corr2(3,4) = 0.;
+  Corr2(3,5) = 0.;
+  Corr2(3,6) = 0.;
+  Corr2(3,7) = 0.;
+  Corr2(4,4) = 1.;
+  Corr2(4,5) = 0.;
+  Corr2(4,6) = 0.;
+  Corr2(4,7) = 0.;
+  Corr2(5,5) = 1.;
+  Corr2(5,6) = 0.;
+  Corr2(5,7) = 0.;
+  Corr2(6,6) = 1.;
+  Corr2(6,7) = 0.;
+  Corr2(7,7) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("Belle_PRD81_2010", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+
+  // ads-dkdpi-kpi-dmix https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.106.231803
+  //Observables 4:
+  CorrData.clear();
+  CorrData.push_back(dato(0.0163, 0.0042, 0.001)); //RADS_dk_kpi
+  CorrData.push_back(dato(-0.39, 0.27, 0.04)); //asup_dk_kpi
+  CorrData.push_back(dato(0.00328, 0.00037, 0.00015)); //RADS_dpi_kpi
+  CorrData.push_back(dato(-0.04, 0.11, 0.02)); //asup_dpi_kpi
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(4,4);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.242;
+  Corr(0,2) = 0.;
+  Corr(0,3) = 0.;
+  Corr(1,1) = 1.;
+  Corr(1,2) = 0.;
+  Corr(1,3) = 0.;
+  Corr(2,2) = 1.;
+  Corr(2,3) = -0.032;
+  Corr(3,3) = 1.;
+
+  //Correlation Matrix (stat):
+  Corr2.ResizeTo(4,4);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.;
+  Corr2(0,2) = 0.;
+  Corr2(0,3) = 0.;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = 0.;
+  Corr2(1,3) = 0.;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.;
+  Corr2(3,3) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("Belle_PRL106_2011", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+
+  // ads-dkdpi-kpipi0-dmix https://journals.aps.org/prd/abstract/10.1103/PhysRevD.88.091104
+  //Observables 4:
+  CorrData.clear();
+  CorrData.push_back(dato(0.0198, 0.0062, 0.0024)); //RADS_dk_kpipi0
+  CorrData.push_back(dato(0.41, 0.307, 0.05)); // asup_dk_kpipi0
+  CorrData.push_back(dato(0.00189, 0.00054, 0.00024)); //RADS_dpi_kpipi0
+  CorrData.push_back(dato(0.16, 0.27, 0.04)); //asup_dpi_kpipi0
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(4,4);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.;
+  Corr(0,2) = 0.;
+  Corr(0,3) = 0.;
+  Corr(1,1) = 1.;
+  Corr(1,2) = 0.;
+  Corr(1,3) = 0.;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.;
+  Corr(3,3) = 1.;
+
+  //Correlation Matrix (stat):
+  Corr2.ResizeTo(4,4);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.;
+  Corr2(0,2) = 0.;
+  Corr2(0,3) = 0.;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = 0.;
+  Corr2(1,3) = 0.;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.;
+  Corr2(3,3) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("Belle_PRD88_2013", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+  // glw-dkdpi-KKKpi0-kpi-dmix https://arxiv.org/abs/2308.05048
+  //Observables 4:
+  CorrData.clear();
+  CorrData.push_back(dato(-0.167, 0.057, 0.006)); //acp_dk_k0pi0
+  CorrData.push_back(dato(1.151, 0.074, 0.019)); // Rcp_dk_k0pi0
+  CorrData.push_back(dato(0.125, 0.058, 0.014)); // acp_dk_kk
+  CorrData.push_back(dato(1.164, 0.081, 0.036)); // Rcp_dk_kk
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(4,4);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.056;
+  Corr(0,2) = 0.;
+  Corr(0,3) = 0.;
+  Corr(1,1) = 1.;
+  Corr(1,2) = 0.;
+  Corr(1,3) = -0.081;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.060;
+  Corr(3,3) = 1.;
+
+  //Correlation Matrix (stat):
+  Corr2.ResizeTo(4,4);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = -0.490;
+  Corr2(0,2) = 0.542;
+  Corr2(0,3) = 0.005;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = -0.128;
+  Corr2(1,3) = -0.063;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.342;
+  Corr2(3,3) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2308.05048", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+
+  //glw-dstk-hh-dmix https://journals.aps.org/prd/abstract/10.1103/PhysRevD.73.051106
+  //Observables 8:
+  CorrData.clear();
+  CorrData.push_back(dato(-0.12,0.14,0.05)); //acp_dk_CPm
+  CorrData.push_back(dato(1.17, 0.14, 0.14)); //rcp_dk_CPm
+  CorrData.push_back(dato(0.06, 0.14, 0.05)); //acp_dk_CPp
+  CorrData.push_back(dato(1.13, 0.16, 0.08)); // rcp_dk_CPp
+  CorrData.push_back(dato(0.13, 0.30, 0.08));// acp_dstk_dp_CPm
+  CorrData.push_back(dato(1.15, 0.31, 0.12));// rcp_dstk_dp_CPm
+  CorrData.push_back(dato(-0.20, 0.22, 0.04));// acp_dstk_dp_CPp
+  CorrData.push_back(dato(1.41, 0.25, 0.06));// rcp_dstk_dp_CPp
+
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(8,8);
+  Corr(0,0) = 1.;
+  Corr(0,1) = 0.;
+  Corr(0,2) = 0.;
+  Corr(0,3) = 0.;
+  Corr(0,4) = 0.;
+  Corr(0,5) = 0.;
+  Corr(0,6) = 0.;
+  Corr(0,7) = 0.;
+  Corr(1,1) = 1.;
+  Corr(1,2) = 0.;
+  Corr(1,3) = 0.;
+  Corr(1,4) = 0.;
+  Corr(1,5) = 0.;
+  Corr(1,6) = 0.;
+  Corr(1,7) = 0.;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.;
+  Corr(2,4) = 0.;
+  Corr(2,5) = 0.;
+  Corr(2,6) = 0.;
+  Corr(2,7) = 0.;
+  Corr(3,3) = 1.;
+  Corr(3,4) = 0.;
+  Corr(3,5) = 0.;
+  Corr(3,6) = 0.;
+  Corr(3,7) = 0.;
+  Corr(4,4) = 1.;
+  Corr(4,5) = 0.;
+  Corr(4,6) = 0.;
+  Corr(4,7) = 0.;
+  Corr(5,5) = 1.;
+  Corr(5,6) = 0.;
+  Corr(5,7) = 0.;
+  Corr(6,6) = 1.;
+  Corr(6,7) = 0.;
+  Corr(7,7) = 1.;
+
+  //Correlation Matrix (stat):
+  Corr2.ResizeTo(8,8);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.;
+  Corr2(0,2) = 0.;
+  Corr2(0,3) = 0.;
+  Corr2(0,4) = 0.;
+  Corr2(0,5) = 0.;
+  Corr2(0,6) = 0.;
+  Corr2(0,7) = 0.;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = 0.;
+  Corr2(1,3) = 0.;
+  Corr2(1,4) = 0.;
+  Corr2(1,5) = 0.;
+  Corr2(1,6) = 0.;
+  Corr2(1,7) = 0.;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.;
+  Corr2(2,4) = 0.;
+  Corr2(2,5) = 0.;
+  Corr2(2,6) = 0.;
+  Corr2(2,7) = 0.;
+  Corr2(3,3) = 1.;
+  Corr2(3,4) = 0.;
+  Corr2(3,5) = 0.;
+  Corr2(3,6) = 0.;
+  Corr2(3,7) = 0.;
+  Corr2(4,4) = 1.;
+  Corr2(4,5) = 0.;
+  Corr2(4,6) = 0.;
+  Corr2(4,7) = 0.;
+  Corr2(5,5) = 1.;
+  Corr2(5,6) = 0.;
+  Corr2(5,7) = 0.;
+  Corr2(6,6) = 1.;
+  Corr2(6,7) = 0.;
+  Corr2(7,7) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("Belle_PRD73_2006", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
   //-------------------------------------------  Other useful inputs for the parameters of the Time Integrated B Decay Chain -------------------------------------------------------------------------
 
@@ -1840,7 +2291,7 @@ void MixingModel::Add_NeutralBs_meas(){
   vector<dato> CorrData;
   TMatrixDSym Corr, Corr2;
 
-  //-------------------------------------- Time Integrated B0d decay-------------------------------------------------------------------------
+  //-------------------------------------- Time Integrated B0s decay-------------------------------------------------------------------------
 
   if (comb == 2){  // If treating it separately from the Bd counterpart
 
@@ -3150,10 +3601,10 @@ void MixingModel::Add_time_dependent_Dmeas(){
   //https://arxiv.org/pdf/2208.06512.pdf
   //Observables 4:
   CorrData.clear();
-  CorrData.push_back(dato(0.0040,0.0004,0.0002));//xcp
-  CorrData.push_back(dato(0.0055,0.0012,0.0006));//ycp
-  CorrData.push_back(dato(-0.0003,0.0002,0.0000));// dx
-  CorrData.push_back(dato(0.0003,0.0003,0.0001));//dy
+  CorrData.push_back(dato(0.00401,0.00045,0.0002));//xcp
+  CorrData.push_back(dato(0.00551,0.0012,0.0006));//ycp
+  CorrData.push_back(dato(-0.00029,0.0002,0.00001));// dx
+  CorrData.push_back(dato(0.00031,0.00035,0.00013));//dy
 
   //Correlation Matrix (stat):
   Corr.ResizeTo(4,4);
@@ -3182,6 +3633,70 @@ void MixingModel::Add_time_dependent_Dmeas(){
   Corr2(3,3) = 1.;
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCb_kspp_Au2022", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+
+  // Ribatti 2024 Slides
+  //Observables 6:
+  CorrData.clear();
+
+  // DIRECT CPV (putting to 0 manually)
+  CorrData.push_back(dato(0.003431, 0.00002, 0.0));//RdKpi
+  CorrData.push_back(dato(51.4e-4,3.5e-4,0.));// CKpi
+  CorrData.push_back(dato(13.1e-6,3.7e-6,0.0));// CpKpi
+  CorrData.push_back(dato(-7.1e-3,6.0e-3,0.0));// AD
+  CorrData.push_back(dato(3.0e-4, 3.6e-4, 0.0));// DCKpi
+  CorrData.push_back(dato(-1.9e-6, 3.8e-6,0.0));// DCpKpi
+
+  //Correlation Matrix (stat):
+  Corr.ResizeTo(6,6);
+  Corr(0,0) = 1.;
+  Corr(0,1) = -92.4e-2;
+  Corr(0,2) = 80e-2;
+  Corr(0,3) = 0.9e-2;
+  Corr(0,4) = -0.8e-2;
+  Corr(0,5) = 0.1e-2;
+  Corr(1,1) = 1.;
+  Corr(1,2) = -0.941;
+  Corr(1,3) = -1.4e-2;
+  Corr(1,4) = 1.4e-2;
+  Corr(1,5) = -0.7e-2;
+  Corr(2,2) = 1.;
+  Corr(2,3) = 0.7e-2;
+  Corr(2,4) = -0.7e-2;
+  Corr(2,5) = 0.1e-2;
+  Corr(3,3) = 1.;
+  Corr(3,4) = -91.5e-2;
+  Corr(3,5) = 79.4e-2;
+  Corr(4,4) = 1.;
+  Corr(4,5) = -94.1e-2;
+  Corr(5,5) = 1.;
+
+  //Correlation Matrix (syst)
+  Corr2.ResizeTo(6,6);
+  Corr2(0,0) = 1.;
+  Corr2(0,1) = 0.;
+  Corr2(0,2) = 0.;
+  Corr2(0,3) = 0.;
+  Corr2(0,4) = 0.;
+  Corr2(0,5) = 0.;
+  Corr2(1,1) = 1.;
+  Corr2(1,2) = 0.;
+  Corr2(1,3) = 0.;
+  Corr2(1,4) = 0.;
+  Corr2(1,5) = 0.;
+  Corr2(2,2) = 1.;
+  Corr2(2,3) = 0.;
+  Corr2(2,4) = 0.;
+  Corr2(2,5) = 0.;
+  Corr2(3,3) = 1.;
+  Corr2(3,4) = 0.;
+  Corr2(3,5) = 0.;
+  Corr2(4,4) = 1.;
+  Corr2(4,5) = 0.;
+  Corr2(5,5) = 1.;
+
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("Slides_Rib", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
 
 }
@@ -3256,7 +3771,7 @@ void MixingModel::Add_other_meas(){
   //21. PDF: d4pi_dmixing_cleo (UID20) https://www.sciencedirect.com/science/article/pii/S0370269315003809?via%3Dihub
 
   //Observables 1:
-  meas.insert(pair<string,dato>("UID20", dato(0.737,0.028,0.))); //Fpipipipi
+  meas.insert(pair<string,dato>("UID20", dato(0.737,0.028,0.0))); //Fpipipipi
 
   //22. PDF: CleoDhhpi0Diluition (UID21) https://www.sciencedirect.com/science/article/pii/S0370269315003809?via%3Dihub
 
@@ -3471,8 +3986,8 @@ void MixingModel::Add_old_meas(){
   CorrData.clear();
 
   CorrData.push_back(dato(0.303e-2, 0.016e-2, 0.010e-2)); // RD_exp_babar_kp
-  CorrData.push_back(dato(-0.022e-2, 0.030e-2, 0.021e-2)); // xp2plus_exp_babar_kp
-  CorrData.push_back(dato(0.97e-2, 0.44e-2 , 0.31e-2)); // ypplus_exp_babar_kp
+  CorrData.push_back(dato(-0.024e-2, 0.043e-2, 0.030e-2)); // xp2plus_exp_babar_kp
+  CorrData.push_back(dato(0.98e-2, 0.64e-2 , 0.45e-2)); // ypplus_exp_babar_kp
 
   Corr.ResizeTo(3, 3);
 
@@ -4567,6 +5082,89 @@ double MixingModel::Calculate_ChargedB_observables(){
 
   ll1 += meas.at("UID24").logweight(k_dkst_uid24);
 
+    // GGSZ 2110.12125
+    //Observables 6:
+    corr.ResizeTo(6);
+    corr(0) = xm_dk_uid3;
+    corr(1) = ym_dk_uid3;
+    corr(2) = xp_dk_uid3;
+    corr(3) = yp_dk_uid3;
+    corr(4) = xi_x_dpi_uid3;
+    corr(5) = xi_y_dpi_uid3;
+    ll1 += corrmeas.at("2110.12125").logweight(corr);
+
+    // GGSZ 1908.09449
+    //Observables 8:
+    corr.ResizeTo(8);
+    corr(0) = xm_dk_uid3;
+    corr(1) = ym_dk_uid3;
+    corr(2) = xp_dk_uid3;
+    corr(3) = yp_dk_uid3;
+    corr(4) = r_dpi * cos(d_dpi - g);
+    corr(5) = r_dpi * sin(d_dpi - g);
+    corr(6) = r_dpi * cos(d_dpi + g);
+    corr(7) = r_dpi * sin(d_dpi + g);
+    ll1 += corrmeas.at("1908.09499").logweight(corr);
+
+
+    // GGSZ Belle_PRD81_2010
+    //Observables 8:
+    corr.ResizeTo(8);
+    corr(0) = r_dstk * cos(d_dstk - g);
+    corr(1) = r_dstk * sin(d_dstk - g);
+    corr(2) = r_dstk * cos(d_dstk + g);
+    corr(3) = r_dstk * sin(d_dstk + g);
+    corr(4) = - r_dstk * cos(d_dstk - g);
+    corr(5) = - r_dstk * sin(d_dstk - g);
+    corr(6) = - r_dstk * cos(d_dstk + g);
+    corr(7) = - r_dstk * sin(d_dstk + g);
+    ll1 += corrmeas.at("Belle_PRD81_2010").logweight(corr);
+
+
+    // ADS Belle_PRL106_2011
+    //Observables 4:
+    corr.ResizeTo(4);
+    corr(0) = Rads(r_dk, rD_kpi, d_dk, dD_kpi, 1., 1., 1.);
+    corr(1) = Asup(r_dk, rD_kpi, d_dk, dD_kpi, 1., 1., 1.);
+    corr(2) = Rads(r_dpi, rD_kpi, d_dpi, dD_kpi, 1., 1., 1.);
+    corr(3) = Asup(r_dpi, rD_kpi, d_dpi, dD_kpi, 1., 1., 1.);
+    ll1 += corrmeas.at("Belle_PRL106_2011").logweight(corr);
+
+
+    // ADS Belle_PRD88_2013
+    //Observables 4:
+    corr.ResizeTo(4);
+    corr(0) = Rads(r_dk, rD_kpipi0, d_dk, dD_kpipi0, 1., kD_kpipi0, 1.);
+    corr(1) = Asup(r_dk, rD_kpipi0, d_dk, dD_kpipi0, 1., kD_kpipi0, 1.);
+    corr(2) = Rads(r_dpi, rD_kpipi0, d_dpi, dD_kpipi0, 1., kD_kpipi0, 1.);
+    corr(3) = Asup(r_dpi, rD_kpipi0, d_dpi, dD_kpipi0, 1., kD_kpipi0, 1.);
+    ll1 += corrmeas.at("Belle_PRD88_2013").logweight(corr);
+
+
+    // GLW 2308.05048
+    //Observables 4:
+    corr.ResizeTo(4);
+    corr(0) = Acp(r_dk, d_dk, 1., 0., 1.);
+    corr(1) = Rcp_h(r_dk, d_dk, r_dk, rD_kpi, d_dk, dD_kpi, 1., 1., 0., 1.  ) / Rcp_h(r_dpi, d_dpi, r_dpi, rD_kpi, d_dpi, dD_kpi, 1., 1., 0., 1.  );
+    corr(2) = Acp(r_dk, d_dk, 1., 1., 1.);
+    corr(3) = Rcp_h(r_dk, d_dk, r_dk, rD_kpi, d_dk, dD_kpi, 1., 1., 1., 1.  ) / Rcp_h(r_dpi, d_dpi, r_dpi, rD_kpi, d_dpi, dD_kpi, 1., 1., 1., 1.  );;
+    ll1 += corrmeas.at("2308.05048").logweight(corr);
+
+
+    //glw-dstk-hh-dmix https://journals.aps.org/prd/abstract/10.1103/PhysRevD.73.051106
+    //Observables 8:
+    corr.ResizeTo(8);
+    corr(0) = Acp(r_dk, d_dk, 1., 0., 1.);
+    corr(1) = Rcp_h(r_dk, d_dk, r_dk, rD_kpi, d_dk, dD_kpi, 1., 1., 0., 1.  ) / Rcp_h(r_dpi, d_dpi, r_dpi, rD_kpi, d_dpi, dD_kpi, 1., 1., 0., 1.  );
+    corr(2) = Acp(r_dk, d_dk, 1., 1., 1.);
+    corr(3) = Rcp_h(r_dk, d_dk, r_dk, rD_kpi, d_dk, dD_kpi, 1., 1., 1., 1.  ) / Rcp_h(r_dpi, d_dpi, r_dpi, rD_kpi, d_dpi, dD_kpi, 1., 1., 1., 1.  );
+    corr(4) = Acp(r_dstk, d_dstk, 1., 0., 1.);
+    corr(5) = Rcp_h(r_dstk, d_dstk, r_dstk, rD_kpi, d_dstk, dD_kpi, 1., 1., 0., 1.  ) / Rcp_h(r_dstpi, d_dstpi, r_dstpi, rD_kpi, d_dstpi, dD_kpi, 1., 1., 0., 1.  );
+    corr(6) = Acp(r_dstk, d_dstk, 1., 1., 1.);
+    corr(7) = Rcp_h(r_dstk, d_dstk, r_dstk, rD_kpi, d_dstk, dD_kpi, 1., 1., 1., 1.  ) / Rcp_h(r_dstpi, d_dstpi, r_dstpi, rD_kpi, d_dstpi, dD_kpi, 1., 1., 1., 1.  );
+    ll1 += corrmeas.at("Belle_PRD73_2006").logweight(corr);
+
+
   return ll1;
 
 }
@@ -4912,6 +5510,7 @@ double MixingModel::Calculate_time_dependent_Dobservables(){
   ym_uid30 = y_minus(dD_kpi);
   xmsq_uid30 = x_minus(dD_kpi) * x_minus(dD_kpi);
 
+
   // https://arxiv.org/abs/2208.09402
   Akpi_BESIII = (- 2 * rD_kpi * cos(dD_kpi) + y) / (1 + rD_kpi * rD_kpi);
   Akpi_kpipi0_BESIII = ( F_pipipi0 * (- 2 * rD_kpi * cos(dD_kpi) + y )  ) / ( 1 + rD_kpi * rD_kpi + (1 - F_pipipi0)  * ( 2 * rD_kpi * cos(dD_kpi) + y  ) );
@@ -5028,6 +5627,29 @@ corr.ResizeTo(6);
   corr(3) = dy;
 
   ll3 += corrmeas.at("LHCb_kspp_Au2022").logweight(corr);
+
+
+  // Slides Ribatti 2024
+  // 6 Observables
+  CKpi = - y12 * cos(PhiG12) * cos(dD_kpi) + x12 * cos(PhiM12) * sin(dD_kpi)  ;
+  CpKpi = 1./4 * (x12*x12 + y12*y12) + 0.25 * Rdp_uid30 * (y12*y12 - x12*x12) ;
+  DCKpi = - y12 * sin(PhiG12) * sin(dD_kpi) - x12 * sin(PhiM12) * cos(dD_kpi);
+  DCpKpi = 0.5 * x12 * y12 * sin(phi12);
+
+  //31. Slides Ribatti 2024
+  //Observables 6:
+
+  // DIRECT CPV
+  corr.ResizeTo(6);
+  corr(0) = Rdp_uid30;
+  corr(1) = CKpi;
+  corr(2) = CpKpi;
+  corr(3) = AD;
+  corr(4) = DCKpi;
+  corr(5) = DCpKpi;
+
+  ll3 += corrmeas.at("Slides_Rib").logweight(corr);
+
 
   return ll3;
 
