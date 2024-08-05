@@ -90,6 +90,7 @@ public:
   acp_dkstz_kk_uid7, acp_dkstz_pipi_uid7, rcp_dkstz_kk_uid7, rcp_dkstz_pipi_uid7, acp_dkstz_4pi_uid7, rcp_dkstz_4pi_uid7, rp_dkstz_kpi_uid7,
   rm_dkstz_kpi_uid7, rp_dkstz_k3pi_uid7, rm_dkstz_k3pi_uid7, afav_dkstz_kpi_uid7, afav_dkstz_k3pi_uid7, //UID7
   xm_dkstz_uid8, ym_dkstz_uid8, xp_dkstz_uid8, yp_dkstz_uid8, //UID8
+  xm_dkstz_230905514, ym_dkstz_230905514, xp_dkstz_230905514, yp_dkstz_230905514, //230905514
   rcp_dkpipi_uid9, afav_dkpipi_kpi_uid9, afav_dpipipi_kpi_uid9, acp_dkpipi_kk_uid9, acp_dkpipi_pipi_uid9, acp_dpipipi_kk_uid9,
   acp_dpipipi_pipi_uid9, rp_dkpipi_uid9, rm_dkpipi_uid9, rp_dpipipi_uid9, rm_dpipipi_uid9, //UID9
   c_dsk_uid10, d_dsk_uid10, db_dsk_uid10, s_dsk_uid10, sb_dsk_uid10, //UID10

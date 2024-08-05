@@ -19,6 +19,7 @@ using namespace std;
 class CorrelatedGaussianObservables {
 public:
   virtual ~CorrelatedGaussianObservables() {};
+  CorrelatedGaussianObservables(vector<dato> v_i, const TMatrixDSym& corr_1, const TMatrixDSym& corr_2, const TMatrixDSym& corr_3) ;
   CorrelatedGaussianObservables(vector<dato> v_i, const TMatrixDSym& corr_1, const TMatrixDSym& corr_2) ;
   CorrelatedGaussianObservables(vector<dato> v_i, const TMatrixDSym& corr_i) ;
   CorrelatedGaussianObservables(const CorrelatedGaussianObservables& orig)

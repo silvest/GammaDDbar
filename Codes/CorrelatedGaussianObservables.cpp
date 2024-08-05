@@ -48,6 +48,32 @@ CorrelatedGaussianObservables::CorrelatedGaussianObservables(vector<dato> v_i,
 
   }
 
+CorrelatedGaussianObservables::CorrelatedGaussianObservables(vector<dato> v_i,
+        const TMatrixDSym& corr_1, const TMatrixDSym& corr_2, const TMatrixDSym& corr_3)
+  {
+    Int_t n = v_i.size(), i=0;
+    Obs.ResizeTo(n);
+    TVectorD Sig1(n), Sig2(n), Sig3(n);
+
+    for(vector<dato>::iterator it = v_i.begin(); it != v_i.end(); ++it) {
+      Sig1(i) = it->getSigma1();
+      Sig2(i) = it->getSigma2();
+      Sig3(i) = it->getSigma3();
+      Obs(i++) = it->getMean();
+    }
+
+    Cov.ResizeTo(n, n);
+    for(int i = 0; i < n; i++)
+      for(int j = i; j < n; j++)
+	      Cov(i,j) = Sig1(i)*corr_1(i,j)*Sig1(j) + Sig2(i)*corr_2(i,j)*Sig2(j) + Sig3(i)*corr_3(i,j)*Sig3(j);
+
+    //    norm = 1./sqrt(pow(2.*M_PI,n)*Cov.Determinant());
+
+    Cov.InvertFast(); //Calcola l'inversa
+
+  }
+
+
 double CorrelatedGaussianObservables::logweight(const TVectorD& v) {
     int n = Obs.GetNrows();
     double chisq = 0.;
