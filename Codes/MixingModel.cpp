@@ -3658,133 +3658,53 @@ void MixingModel::Add_time_dependent_Dmeas()
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID15", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
-  // 17. PDF: charm-kpi (UID16) https://journals.aps.org/prd/abstract/10.1103/PhysRevD.97.031101
-  // Observables 6:
+  // Delta ACP and ACPKK together because of correlations https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.122.211803 and https://arxiv.org/abs/2209.03179
+
+  meas.insert(pair<string, dato>("DYKKmDYpipi", dato(3.3e-4, 2.7e-4, 0.2e-4))); // DYKKmDYpipi
+  meas.insert(pair<string, dato>("tavepitaggedOverTauD", dato(1.74, 0.1, 0.))); // tpitaggedOverTauD
+  meas.insert(pair<string, dato>("tavemutaggedOverTauD", dato(1.21, 0.01, 0.))); // tmutaggedOverTauD
+  meas.insert(pair<string, dato>("DeltaACPpitagged", dato(-0.00182, 0.00032, 0.00009))); // DeltaACPpitagged
+  meas.insert(pair<string, dato>("DeltaACPmutagged", dato(-0.0009, 0.0008, 0.0005))); // DeltaACPmutagged
+  meas.insert(pair<string, dato>("DeltatmutaggedOverTauD",dato(-0.003, 0.001, 0.))); // DeltatmutaggedOverTauD
+
+  // Observables 3:
   CorrData.clear();
-  /* Direct CPV Allowed
+  CorrData.push_back(dato(7.315e-13, 0.02e-13, 0.)); // tKKCDp
+  CorrData.push_back(dato(6.868e-13, 0.014e-13, 0.)); // tKKCDs
+  CorrData.push_back(dato(0.135, 0.002, 0.));    // DeltatpitaggedOverTauD
 
-  CorrData.push_back(dato(0.00345,0.00004,0.00002));//Rdp
-  CorrData.push_back(dato(0.00501,0.00064,0.00038));//yp
-  CorrData.push_back(dato(0.00006,0.00003,0.00002));// xpsq
-  CorrData.push_back(dato(0.00345,0.00004,0.00002));// Rdm
-  CorrData.push_back(dato(0.00554,0.00064,0.00038));// ym
-  CorrData.push_back(dato(0.00002,0.00003,0.00002));// xmsq
-
-  //Correlation Matrix (stat):
-  Corr.ResizeTo(6,6);
-  Corr(0,0) = 1.;
-  Corr(0,1) = -0.94;
-  Corr(0,2) = 0.84;
-  Corr(0,3) = -0.01;
-  Corr(0,4) = -0.003;
-  Corr(0,5) = 0.002;
-  Corr(1,1) = 1.;
-  Corr(1,2) = -0.96;
-  Corr(1,3) = -0.003;
-  Corr(1,4) = 0.004;
-  Corr(1,5) = -0.003;
-  Corr(2,2) = 1.;
-  Corr(2,3) = 0.002;
-  Corr(2,4) = -0.003;
-  Corr(2,5) = 0.003;
-  Corr(3,3) = 1.;
-  Corr(3,4) = -0.94;
-  Corr(3,5) = 0.85;
-  Corr(4,4) = 1.;
-  Corr(4,5) = -0.96;
-  Corr(5,5) = 1.;
-
-  //Correlation Matrix (syst)
-  Corr2.ResizeTo(6,6);
-  Corr2(0,0) = 1.;
-  Corr2(0,1) = 0.;
-  Corr2(0,2) = 0.;
-  Corr2(0,3) = 0.;
-  Corr2(0,4) = 0.;
-  Corr2(0,5) = 0.;
-  Corr2(1,1) = 1.;
-  Corr2(1,2) = 0.;
-  Corr2(1,3) = 0.;
-  Corr2(1,4) = 0.;
-  Corr2(1,5) = 0.;
-  Corr2(2,2) = 1.;
-  Corr2(2,3) = 0.;
-  Corr2(2,4) = 0.;
-  Corr2(2,5) = 0.;
-  Corr2(3,3) = 1.;
-  Corr2(3,4) = 0.;
-  Corr2(3,5) = 0.;
-  Corr2(4,4) = 1.;
-  Corr2(4,5) = 0.;
-  Corr2(5,5) = 1.;
-
-  */
-
-  // NO direct CPV There is only the total correlation matrix including stat and syst
-  CorrData.push_back(dato(0.00345, 0.000031, 0.));   // Rd
-  CorrData.push_back(dato(0.00501, 0.00056, 0.0));   // yp
-  CorrData.push_back(dato(0.000061, 0.000030, 0.0)); // xpsq
-  CorrData.push_back(dato(0.00554, 0.00056, 0.0));   // ym
-  CorrData.push_back(dato(0.000016, 0.000030, 0.0)); // xmsq
 
   // Correlation Matrix (stat):
-  Corr.ResizeTo(5, 5);
+  Corr.ResizeTo(3, 3);
   Corr(0, 0) = 1.;
-  Corr(0, 1) = -0.88;
-  Corr(0, 2) = 0.75;
-  Corr(0, 3) = -0.88;
-  Corr(0, 4) = 0.75;
+  Corr(0, 1) = 0.74;
+  Corr(0, 2) = 0.23;
   Corr(1, 1) = 1.;
-  Corr(1, 2) = -0.94;
-  Corr(1, 3) = 0.76;
-  Corr(1, 4) = -0.64;
+  Corr(1, 2) = 0.25;
   Corr(2, 2) = 1.;
-  Corr(2, 3) = -0.64;
-  Corr(2, 4) = 0.55;
-  Corr(3, 3) = 1.;
-  Corr(3, 4) = -0.95;
-  Corr(4, 4) = 1.;
 
   // Correlation Matrix (syst)
-  Corr2.ResizeTo(5, 5);
-  Corr2(0, 0) = 1.;
-  Corr2(0, 1) = 0.;
-  Corr2(0, 2) = 0.;
-  Corr2(0, 3) = 0.;
-  Corr2(0, 4) = 0.;
-  Corr2(1, 1) = 1.;
-  Corr2(1, 2) = 0.;
-  Corr2(1, 3) = 0.;
-  Corr2(1, 4) = 0.;
-  Corr2(2, 2) = 1.;
-  Corr2(2, 3) = 0.;
-  Corr2(2, 4) = 0.;
-  Corr2(3, 3) = 1.;
-  Corr2(3, 4) = 0.;
-  Corr2(4, 4) = 1.;
+  Corr2.ResizeTo(3, 3);
+  Corr2.UnitMatrix();
 
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID16", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
-
-  // 18. PDF: charm-deltaacp-diff (UID17) https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.122.211803
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("tausforDACP", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
   // Observables 2:
   CorrData.clear();
-  CorrData.push_back(dato(0.115, 0.002, 0.));      // dtotau
-  CorrData.push_back(dato(-0.00154, 0.00029, 0.)); // dacp
+  CorrData.push_back(dato(13.6e-4, 8.8e-4, 1.6e-4)); // ACPKKDp
+  CorrData.push_back(dato(2.8e-4, 6.7e-4, 2.0e-4)); // ACPKKDs
 
-  // Correlation Matrix (stat):
   Corr.ResizeTo(2, 2);
   Corr(0, 0) = 1.;
-  Corr(0, 1) = 0.;
+  Corr(0, 1) = 0.05;
   Corr(1, 1) = 1.;
 
-  // Correlation Matrix (syst)
   Corr2.ResizeTo(2, 2);
   Corr2(0, 0) = 1.;
-  Corr2(0, 1) = 0.;
+  Corr2(0, 1) = 0.28;
   Corr2(1, 1) = 1.;
 
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID17", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("ACPKK", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
   // 29. PDF: Charm_ycp_minus_ycp_rs_lhcb-r1 (UID28) https://journals.aps.org/prd/abstract/10.1103/PhysRevD.105.092013
   meas.insert(pair<string, dato>("UID28", dato(0.00696, 0.00026, 0.00013))); // ycp  // new measurement https://arxiv.org/abs/2202.09106
@@ -3973,67 +3893,74 @@ void MixingModel::Add_time_dependent_Dmeas()
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCb_kspp_Au2022", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
-  // Ribatti 2024 Slides
-  // Observables 6:
+  // https://arxiv.org/abs/2407.18001
+  // Observables 9:
   CorrData.clear();
 
-  // DIRECT CPV (putting to 0 manually)
-  CorrData.push_back(dato(0.003431, 0.00002, 0.0)); // RdKpi
-  CorrData.push_back(dato(51.4e-4, 3.5e-4, 0.));    // CKpi
-  CorrData.push_back(dato(13.1e-6, 3.7e-6, 0.0));   // CpKpi
-  CorrData.push_back(dato(-7.1e-3, 6.0e-3, 0.0));   // AD
-  CorrData.push_back(dato(3.0e-4, 3.6e-4, 0.0));    // DCKpi
-  CorrData.push_back(dato(-1.9e-6, 3.8e-6, 0.0));   // DCpKpi
+  // Fit in Appendix B
+  CorrData.push_back(dato(0.003427, 0.000019, 0.0)); // RKpi
+  CorrData.push_back(dato(52.8e-4, 3.3e-4, 0.));    // CKpi
+  CorrData.push_back(dato(12.0e-6, 3.5e-6, 0.0));   // CpKpi
+  CorrData.push_back(dato(-8.2e-3, 5.9e-3, 0.0));   // AtildeKpi
+  CorrData.push_back(dato(3.2e-4, 3.6e-4, 0.0));    // DCtildeKpi
+  CorrData.push_back(dato(-2.0e-6, 3.8e-6, 0.0));   // DCtildepKpi
+  CorrData.push_back(dato(-0.9e-2, 2.0e-2, 0.0));   // AKpi
+  CorrData.push_back(dato(-0.1e-3, 1.0e-3, 0.0));   // DeltaCKpi
+  CorrData.push_back(dato(4.6e-6, 9.8e-6, 0.0));    // DeltaCpKpi
 
   // Correlation Matrix (stat):
-  Corr.ResizeTo(6, 6);
+  Corr.ResizeTo(9, 9);
   Corr(0, 0) = 1.;
-  Corr(0, 1) = -92.4e-2;
-  Corr(0, 2) = 80e-2;
-  Corr(0, 3) = 0.9e-2;
-  Corr(0, 4) = -0.8e-2;
-  Corr(0, 5) = 0.1e-2;
+  Corr(0, 1) = -92.7e-2;
+  Corr(0, 2) = 80.3e-2;
+  Corr(0, 3) = 0.8e-2;
+  Corr(0, 4) = -0.7e-2;
+  Corr(0, 5) = 0.e-2;
+  Corr(0, 6) = 0.3e-2;
+  Corr(0, 7) = -0.2e-2;
+  Corr(0, 8) = 0.2e-2;
   Corr(1, 1) = 1.;
-  Corr(1, 2) = -0.941;
+  Corr(1, 2) = -94.3e-2;
   Corr(1, 3) = -1.4e-2;
-  Corr(1, 4) = 1.4e-2;
-  Corr(1, 5) = -0.7e-2;
+  Corr(1, 4) = 1.3e-2;
+  Corr(1, 5) = -0.6e-2;
+  Corr(1, 6) = -0.5e-2;
+  Corr(1, 7) = 0.4e-2;
+  Corr(1, 8) = -0.4e-2;
   Corr(2, 2) = 1.;
   Corr(2, 3) = 0.7e-2;
-  Corr(2, 4) = -0.7e-2;
-  Corr(2, 5) = 0.1e-2;
+  Corr(2, 4) = -0.6e-2;
+  Corr(2, 5) = 0.e-2;
+  Corr(2, 6) = 0.3e-2;
+  Corr(2, 7) = -0.3e-2;
+  Corr(2, 8) = 0.3e-2;
   Corr(3, 3) = 1.;
-  Corr(3, 4) = -91.5e-2;
-  Corr(3, 5) = 79.4e-2;
+  Corr(3, 4) = -93.4e-2;
+  Corr(3, 5) = 81.e-2;
+  Corr(3, 6) = 0.e-2;
+  Corr(3, 7) = 0.e-2;
+  Corr(3, 8) = 0.e-2;
   Corr(4, 4) = 1.;
-  Corr(4, 5) = -94.1e-2;
+  Corr(4, 5) = -94.3e-2;
+  Corr(4, 6) = 0.e-2;
+  Corr(4, 7) = 0.e-2;
+  Corr(4, 8) = 0.e-2;
   Corr(5, 5) = 1.;
+  Corr(5, 6) = 0.e-2;
+  Corr(5, 7) = 0.e-2;
+  Corr(5, 8) = 0.e-2;
+  Corr(6, 6) = 1.;
+  Corr(6, 7) = -93.8e-2;
+  Corr(6, 8) = 81.1e-2;
+  Corr(7, 7) = 1.;
+  Corr(7, 8) = -94.3e-2;
+  Corr(8, 8) = 1.;
 
   // Correlation Matrix (syst)
-  Corr2.ResizeTo(6, 6);
-  Corr2(0, 0) = 1.;
-  Corr2(0, 1) = 0.;
-  Corr2(0, 2) = 0.;
-  Corr2(0, 3) = 0.;
-  Corr2(0, 4) = 0.;
-  Corr2(0, 5) = 0.;
-  Corr2(1, 1) = 1.;
-  Corr2(1, 2) = 0.;
-  Corr2(1, 3) = 0.;
-  Corr2(1, 4) = 0.;
-  Corr2(1, 5) = 0.;
-  Corr2(2, 2) = 1.;
-  Corr2(2, 3) = 0.;
-  Corr2(2, 4) = 0.;
-  Corr2(2, 5) = 0.;
-  Corr2(3, 3) = 1.;
-  Corr2(3, 4) = 0.;
-  Corr2(3, 5) = 0.;
-  Corr2(4, 4) = 1.;
-  Corr2(4, 5) = 0.;
-  Corr2(5, 5) = 1.;
+  Corr2.ResizeTo(9, 9);
+  Corr2.UnitMatrix();
 
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("Slides_Rib", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2407.18001", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 }
 // ---------------------------------------------------------
 
@@ -4481,17 +4408,19 @@ void MixingModel::DefineParameters()
     AddParameter("PhiM12", -0.2, 0.3, "#phi_{M}");
     AddParameter("PhiG12", -0.2, 0.2, "#phi_{#Gamma}");
 
+    AddParameter("adKK", -.1, .1, "a_{d}^{KK}");
+    AddParameter("adpipi", -.1, .1, "a_{d}^{#pi#pi}");
+    AddParameter("DYKKmDYpipi", -0.1, 0.1, "#Delta Y^{KK} - #Delta Y^{#pi#pi}");
+    AddParameter("tavepitaggedOverTauD", 1., 3., "t_{ave}^{#pi tagged}/#tau_{D}");
+    AddParameter("tavemutaggedOverTauD", 1.1, 1.3, "t_{ave}^{#mu tagged}/#tau_{D}");
+    AddParameter("DeltatmutaggedOverTauD", -0.01, 0.01, "#Delta t^{#mu untagged}/#tau_{D}");
+    AddParameter("DeltatpitaggedOverTauD", -0.01, 0.01, "#Delta t^{#pi tagged}/#tau_{D}");
+    AddParameter("tKKCDp",7.e-13,7.5e-13,"t_{KK}^{C_{D^{+}}");
+    AddParameter("tKKCDs",6.5e-13,7.3e-13,"t_{KK}^{C_{D_{s}}");
+
+
     // 16. PDF: charm-kspipi (UID15)
     // Parametri:4
-
-    // 17. PDF: charm-kpi (UID16)
-    // Parametri:7
-    //  AddParameter("AD", -4e-2, 3e-2, "A_D"); Only when direct CPV allowed
-
-    // 18. PDF: charm-deltaacp-diff (UID17)
-    // Parametri: 6
-    AddParameter("Delta_totau", 0.1, 0.13, "<#Delta t>");
-    AddParameter("DeltaAcp", -3.5e-3, 0., "#Delta a_{CP}");
 
     // 19. PDF: charm-k3pi (UID18)
     // Parametri: 2
@@ -4613,16 +4542,18 @@ void MixingModel::DefineParameters()
     AddParameter("PhiM12", -0.2, 0.3, "#phi_{M}");
     AddParameter("PhiG12", -0.2, 0.2, "#phi_{#Gamma}");
 
+    AddParameter("adKK", -.1, .1, "a_{d}^{KK}");
+    AddParameter("adpipi", -.1, .1, "a_{d}^{#pi#pi}");
+    AddParameter("DYKKmDYpipi", -0.1, 0.1, "#Delta Y^{KK} - #Delta Y^{#pi#pi}");
+    AddParameter("tavepitaggedOverTauD", 1., 3., "t_{ave}^{#pi tagged}/#tau_{D}");
+    AddParameter("tavemutaggedOverTauD", 1.1, 1.3, "t_{ave}^{#mu tagged}/#tau_{D}");
+    AddParameter("DeltatmutaggedOverTauD", -0.01, 0.01, "#Delta t^{#mu untagged}/#tau_{D}");
+    AddParameter("DeltatpitaggedOverTauD", -0.01, 0.01, "#Delta t^{#pi tagged}/#tau_{D}");
+    AddParameter("tKKCDp",7.e-13,7.5e-13,"t_{KK}^{C_{D^{+}}");
+    AddParameter("tKKCDs",6.5e-13,7.3e-13,"t_{KK}^{C_{D_{s}}");
+
     // 16. PDF: charm-kspipi (UID15)
     // Parametri:4
-
-    // 17. PDF: charm-kpi (UID16)
-    // Parametri:7
-
-    // 18. PDF: charm-deltaacp-diff (UID17)
-    // Parametri: 6
-    AddParameter("Delta_totau", 0.1, 0.13, "<#Delta t>");
-    AddParameter("DeltaAcp", -3.5e-3, 0., "#Delta a_{CP}");
 
     // 19. PDF: charm-k3pi (UID18)
     // Parametri: 2
@@ -4747,16 +4678,19 @@ void MixingModel::DefineParameters()
     AddParameter("PhiM12", -0.2, 0.3, "#phi_{M}");
     AddParameter("PhiG12", -0.2, 0.2, "#phi_{#Gamma}");
 
+    AddParameter("adKK", -.1, .1, "a_{d}^{KK}");
+    AddParameter("adpipi", -.1, .1, "a_{d}^{#pi#pi}");
+    AddParameter("DYKKmDYpipi", -0.1, 0.1, "#Delta Y^{KK} - #Delta Y^{#pi#pi}");
+    AddParameter("tavepitaggedOverTauD", 1., 3., "t_{ave}^{#pi tagged}/#tau_{D}");
+    AddParameter("tavemutaggedOverTauD", 1.1, 1.3, "t_{ave}^{#mu tagged}/#tau_{D}");
+    AddParameter("DeltatmutaggedOverTauD", -0.01, 0.01, "#Delta t^{#mu untagged}/#tau_{D}");
+    AddParameter("DeltatpitaggedOverTauD", -0.01, 0.01, "#Delta t^{#pi tagged}/#tau_{D}");
+    AddParameter("tKKCDp",7.e-13,7.5e-13,"t_{KK}^{C_{D^{+}}");
+    AddParameter("tKKCDs",6.5e-13,7.3e-13,"t_{KK}^{C_{D_{s}}");
+
+
     // 16. PDF: charm-kspipi (UID15)
     // Parametri:4
-
-    // 17. PDF: charm-kpi (UID16)
-    // Parametri:7
-
-    // 18. PDF: charm-deltaacp-diff (UID17)
-    // Parametri: 6
-    AddParameter("Delta_totau", 0.1, 0.13, "<#Delta t>");
-    AddParameter("DeltaAcp", -3.5e-3, 0., "#Delta a_{CP}");
 
     // 19. PDF: charm-k3pi (UID18)
     // Parametri: 2
@@ -4910,16 +4844,19 @@ void MixingModel::DefineParameters()
     AddParameter("PhiM12", -0.2, 0.3, "#phi_{M}");
     AddParameter("PhiG12", -0.2, 0.2, "#phi_{#Gamma}");
 
+    AddParameter("adKK", -.1, .1, "a_{d}^{KK}");
+    AddParameter("adpipi", -.1, .1, "a_{d}^{#pi#pi}");
+    AddParameter("DYKKmDYpipi", -0.1, 0.1, "#Delta Y^{KK} - #Delta Y^{#pi#pi}");
+    AddParameter("tavepitaggedOverTauD", 1., 3., "t_{ave}^{#pi tagged}/#tau_{D}");
+    AddParameter("tavemutaggedOverTauD", 1.1, 1.3, "t_{ave}^{#mu tagged}/#tau_{D}");
+    AddParameter("DeltatmutaggedOverTauD", -0.01, 0.01, "#Delta t^{#mu untagged}/#tau_{D}");
+    AddParameter("DeltatpitaggedOverTauD", -0.01, 0.01, "#Delta t^{#pi tagged}/#tau_{D}");
+    AddParameter("tKKCDp",7.e-13,7.5e-13,"t_{KK}^{C_{D^{+}}");
+    AddParameter("tKKCDs",6.5e-13,7.3e-13,"t_{KK}^{C_{D_{s}}");
+
+
     // 16. PDF: charm-kspipi (UID15)
     // Parametri:4
-
-    // 17. PDF: charm-kpi (UID16)
-    // Parametri:7
-
-    // 18. PDF: charm-deltaacp-diff (UID17)
-    // Parametri: 6
-    AddParameter("Delta_totau", 0.1, 0.13, "<#Delta t>");
-    AddParameter("DeltaAcp", -3.5e-3, 0., "#Delta a_{CP}");
 
     // 19. PDF: charm-k3pi (UID18)
     // Parametri: 2
@@ -5771,6 +5708,7 @@ double MixingModel::Calculate_neutralBsobservables()
     corr(23) = afav_dkstz_k3pi_240117934Bs;
 
     ll2 += corrmeas.at("2401.17934").logweight(corr);
+  
   }
 
   // 11. PDF: dsk (UID10)
@@ -5827,20 +5765,6 @@ double MixingModel::Calculate_time_dependent_Dobservables()
   dx_uid15 = dx;
   dy_uid15 = dy;
 
-  // 17. PDF: charm-kpi (UID16)
-  //  6 Observables
-  Rdp_uid16 = rD_kpi * rD_kpi * (1. + AD);
-  yp_uid16 = y_plus(dD_kpi);
-  xpsq_uid16 = x_plus(dD_kpi) * x_plus(dD_kpi);
-  Rdm_uid16 = rD_kpi * rD_kpi * (1. - AD); // Necessary only if using direct CPV data
-  ym_uid16 = y_minus(dD_kpi);
-  xmsq_uid16 = x_minus(dD_kpi) * x_minus(dD_kpi);
-
-  // 18. PDF: charm-deltaacp-diff (UID17)
-  //  2 Observables
-  dtotau_uid17 = Delta_totau;
-  dacp_uid17 = DeltaAcp - 0.5 * Delta_totau * (y * cos(phi) * (qop - 1. / qop) - x * sin(phi) * (qop + 1. / qop));
-
   // 29. PDF: Charm_ycp_minus_ycp_rs_lhcb-r1 (UID28)
   //  1 Osservabile
   ycp_uid28 = ycp + 0.5 * rD_kpi * (cos(phi) * (-y * cos(dD_kpi) - x * sin(dD_kpi)) * (qop + 1. / qop) + sin(phi) * (-y * sin(dD_kpi) + x * cos(dD_kpi)) * (qop - 1. / qop));
@@ -5868,6 +5792,18 @@ double MixingModel::Calculate_time_dependent_Dobservables()
   // https://arxiv.org/pdf/2208.06512.pdf
   // they are the same of xcp, ycp, dx, dy
 
+  // Kpi together with Delta ACP
+  double tKKpitaggedOverTauD = tavepitaggedOverTauD + 0.5 * DeltatpitaggedOverTauD;
+  double tKKmutaggedOverTauD = tavemutaggedOverTauD + 0.5 * DeltatmutaggedOverTauD;
+  double tpipipitaggedOverTauD = tavepitaggedOverTauD - 0.5 * DeltatpitaggedOverTauD;
+  double tpipimutaggedOverTauD = tavemutaggedOverTauD - 0.5 * DeltatmutaggedOverTauD;
+  double DYKK = DY_uid29 + 0.5 * DYKKmDYpipi;
+  double DYpipi = DY_uid29 - 0.5 * DYKKmDYpipi;
+  double DeltaACP_pitagged = adKK - adpipi + tKKpitaggedOverTauD * DYKK - tpipipitaggedOverTauD * DYpipi;
+  double DeltaACP_mutagged = adKK - adpipi + tKKmutaggedOverTauD * DYKK - tpipimutaggedOverTauD * DYpipi;
+  double ACPKKDp = adKK + tKKCDp / tauD * DYKK;
+  double ACPKKDs = adKK + tKKCDs / tauD * DYKK;
+
   //----------------------------------------------- Contribution to the LogLikelihood -------------------------------------------------------------------------
   TVectorD corr(8);
 
@@ -5890,37 +5826,6 @@ double MixingModel::Calculate_time_dependent_Dobservables()
   corr(3) = dy_uid15;
 
   ll3 += corrmeas.at("UID15").logweight(corr);
-
-  // 17. PDF: charm-kpi (UID16)
-  // Observables 6:
-
-  /* DIRECT CPV
-  corr.ResizeTo(6);
-    corr(0) = Rdp_uid16;
-    corr(1) = yp_uid16;
-    corr(2) = xpsq_uid16;
-    corr(3) = Rdm_uid16;
-    corr(4) = ym_uid16;
-    corr(5) = xmsq_uid16;
-  */
-
-  // NO DIRECT CPV
-  corr.ResizeTo(5);
-  corr(0) = Rdp_uid16;
-  corr(1) = yp_uid16;
-  corr(2) = xpsq_uid16;
-  corr(3) = ym_uid16;
-  corr(4) = xmsq_uid16;
-
-  ll3 += corrmeas.at("UID16").logweight(corr);
-
-  // 18. PDF: charm-deltaacp-diff (UID17)
-  // Observables 2:
-  corr.ResizeTo(2);
-  corr(0) = dtotau_uid17;
-  corr(1) = dacp_uid17;
-
-  ll3 += corrmeas.at("UID17").logweight(corr);
 
   // 29. PDF: Charm_ycp_minus_ycp_rs_lhcb-r1 (UID28)
   // Observables 1:
@@ -5951,7 +5856,7 @@ double MixingModel::Calculate_time_dependent_Dobservables()
   corr(3) = ym_uid30;
   corr(4) = xmsq_uid30;
 
-  ll3 += corrmeas.at("UID30").logweight(corr);
+  //ll3 += corrmeas.at("UID30").logweight(corr);
 
   // https://arxiv.org/abs/2208.09402
   corr.ResizeTo(2);
@@ -5974,26 +5879,58 @@ double MixingModel::Calculate_time_dependent_Dobservables()
 
   ll3 += corrmeas.at("LHCb_kspp_Au2022").logweight(corr);
 
-  // Slides Ribatti 2024
-  // 6 Observables
+  // Kpi together with Delta ACP
+
+  ll3 += meas.at("DYKKmDYpipi").logweight(DYKKmDYpipi);
+  ll3 += meas.at("tavepitaggedOverTauD").logweight(tavepitaggedOverTauD);
+  ll3 += meas.at("tavemutaggedOverTauD").logweight(tavemutaggedOverTauD);
+  ll3 += meas.at("DeltaACPpitagged").logweight(DeltaACP_pitagged);
+  ll3 += meas.at("DeltaACPmutagged").logweight(DeltaACP_mutagged);
+  ll3 += meas.at("DeltatmutaggedOverTauD").logweight(DeltatmutaggedOverTauD);
+
+  corr.ResizeTo(3);
+  corr(0) = tKKCDp;
+  corr(1) = tKKCDs;
+  corr(2) = DeltatpitaggedOverTauD;
+
+  ll3 += corrmeas.at("tausforDACP").logweight(corr);
+
+  corr.ResizeTo(2);
+  corr(0) = ACPKKDp;
+  corr(1) = ACPKKDs;
+
+  ll3 += corrmeas.at("ACPKK").logweight(corr);
+
   CKpi = -y12 * cos(PhiG12) * cos(dD_kpi) + x12 * cos(PhiM12) * sin(dD_kpi);
-  CpKpi = 1. / 4 * (x12 * x12 + y12 * y12) + 0.25 * Rdp_uid30 * (y12 * y12 - x12 * x12);
+  CpKpi = 1. / 4. * (x12 * x12 + y12 * y12) + 0.25 * Rdp_uid30 * (y12 * y12 - x12 * x12);
   DCKpi = -y12 * sin(PhiG12) * sin(dD_kpi) - x12 * sin(PhiM12) * cos(dD_kpi);
   DCpKpi = 0.5 * x12 * y12 * sin(phi12);
+  double AtildeKpi = - 2. * adKK;
+  double DCtildeKpi = DCKpi - CKpi * adKK - 2. * rD_kpi * DYKK;
+  double DCtildepKpi = DCpKpi - 2. * CpKpi * adKK - 2. * rD_kpi * CKpi * DYKK;
 
-  // 31. Slides Ribatti 2024
-  // Observables 6:
-
-  // DIRECT CPV
-  corr.ResizeTo(6);
+/*   std::cout << "CKpi: " << CKpi << std::endl;
+  std::cout << "CpKpi: " << CpKpi << std::endl;
+  std::cout << "AtildeKpi: " << AtildeKpi << std::endl;
+  std::cout << "DCtildeKpi: " << DCtildeKpi << std::endl;
+  std::cout << "DCtildepKpi: " << DCtildepKpi << std::endl;
+  std::cout << "AD: " << AD << std::endl;
+  std::cout << "DCKpi: " << DCKpi << std::endl;
+  std::cout << "DCpKpi: " << DCpKpi << std::endl;
+  std::cout << "Rdp_uid30: " << Rdp_uid30 << std::endl;
+ */
+  corr.ResizeTo(9);
   corr(0) = Rdp_uid30;
   corr(1) = CKpi;
   corr(2) = CpKpi;
-  corr(3) = AD;
-  corr(4) = DCKpi;
-  corr(5) = DCpKpi;
+  corr(3) = AtildeKpi;
+  corr(4) = DCtildeKpi;
+  corr(5) = DCtildepKpi;
+  corr(6) = AD;
+  corr(7) = DCKpi;
+  corr(8) = DCpKpi;
 
-  ll3 += corrmeas.at("Slides_Rib").logweight(corr);
+  ll3 += corrmeas.at("2407.18001").logweight(corr);
 
   return ll3;
 }
@@ -6279,12 +6216,18 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     PhiM12 = parameters[35];
     PhiG12 = parameters[36];
 
-    // 18. PDF: charm-deltaacp-diff (UID17)
-    Delta_totau = parameters[37];
-    DeltaAcp = parameters[38];
+    adKK = parameters[37];
+    adpipi = parameters[38];
+    DYKKmDYpipi = parameters[39];
+    tavepitaggedOverTauD = parameters[40];
+    tavemutaggedOverTauD = parameters[41];
+    DeltatmutaggedOverTauD = parameters[42];
+    DeltatpitaggedOverTauD = parameters[43];
+    tKKCDp = parameters[44];
+    tKKCDs = parameters[45];
 
     // https://arxiv.org/abs/2301.10328
-    F_kkpipi = parameters[39];
+    F_kkpipi = parameters[46];
 
     // General parameters
     AD = 0.; // NO direct CPV for CF/DCS
@@ -6355,8 +6298,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["phipphig12"] = remainder(PhiG12 + phi, 2. * M_PI) * r2d;
     obs["phimphig12"] = remainder(-PhiG12 + phi, 2. * M_PI) * r2d;
     obs["AD"] = AD;
-    obs["Delta_totau"] = Delta_totau;
-    obs["DeltaAcp"] = DeltaAcp;
+    obs["adKK"] = adKK;
+    obs["adpipi"] = adpipi;
     obs["qopm1"] = (qop - 1) * 100;
     obs["qop"] = qop;
     obs["phi"] = phi * r2d;
@@ -6412,9 +6355,15 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     PhiM12 = parameters[23];
     PhiG12 = parameters[24];
 
-    // 18. PDF: charm-deltaacp-diff (UID17)
-    Delta_totau = parameters[25];
-    DeltaAcp = parameters[26];
+    adKK = parameters[25];
+    adpipi = parameters[26];
+    DYKKmDYpipi = parameters[27];
+    tavepitaggedOverTauD = parameters[28];
+    tavemutaggedOverTauD = parameters[29];
+    DeltatmutaggedOverTauD = parameters[30];
+    DeltatpitaggedOverTauD = parameters[31];
+    tKKCDp = parameters[32];
+    tKKCDs = parameters[33];
 
     // General parameters
     AD = 0.; // NO direct CPV for CF/DCS
@@ -6474,8 +6423,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["phipphig12"] = remainder(PhiG12 + phi, 2. * M_PI) * r2d;
     obs["phimphig12"] = remainder(-PhiG12 + phi, 2. * M_PI) * r2d;
     obs["AD"] = AD;
-    obs["Delta_totau"] = Delta_totau;
-    obs["DeltaAcp"] = DeltaAcp;
+    obs["adKK"] = adKK;
+    obs["adpipi"] = adpipi;
     obs["qopm1"] = (qop - 1) * 100;
     obs["qop"] = qop;
     obs["phi"] = phi * r2d;
@@ -6531,14 +6480,20 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     PhiM12 = parameters[23];
     PhiG12 = parameters[24];
 
-    // 18. PDF: charm-deltaacp-diff (UID17)
-    Delta_totau = parameters[25];
-    DeltaAcp = parameters[26];
+    adKK = parameters[25];
+    adpipi = parameters[26];
+    DYKKmDYpipi = parameters[27];
+    tavepitaggedOverTauD = parameters[28];
+    tavemutaggedOverTauD = parameters[29];
+    DeltatmutaggedOverTauD = parameters[30];
+    DeltatpitaggedOverTauD = parameters[31];
+    tKKCDp = parameters[32];
+    tKKCDs = parameters[33];
 
     // 2401.17934 Bs part
-    r_dkstzs = parameters[27];
-    d_dkstzs = parameters[28];
-    k_dkstzs = parameters[29];
+    r_dkstzs = parameters[34];
+    d_dkstzs = parameters[35];
+    k_dkstzs = parameters[36];
 
     // General parameters
     AD = 0.; // NO direct CPV for CF/DCS
@@ -6605,8 +6560,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["phipphig12"] = remainder(PhiG12 + phi, 2. * M_PI) * r2d;
     obs["phimphig12"] = remainder(-PhiG12 + phi, 2. * M_PI) * r2d;
     obs["AD"] = AD;
-    obs["Delta_totau"] = Delta_totau;
-    obs["DeltaAcp"] = DeltaAcp;
+    obs["adKK"] = adKK;
+    obs["adpipi"] = adpipi;
     obs["qopm1"] = (qop - 1) * 100;
     obs["qop"] = qop;
     obs["phi"] = phi * r2d;
@@ -6696,17 +6651,23 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     PhiM12 = parameters[47];
     PhiG12 = parameters[48];
 
-    // 18. PDF: charm-deltaacp-diff (UID17)
-    Delta_totau = parameters[49];
-    DeltaAcp = parameters[50];
+    adKK = parameters[49];
+    adpipi = parameters[50];
+    DYKKmDYpipi = parameters[51];
+    tavepitaggedOverTauD = parameters[52];
+    tavemutaggedOverTauD = parameters[53];
+    DeltatmutaggedOverTauD = parameters[54];
+    DeltatpitaggedOverTauD = parameters[55];
+    tKKCDp = parameters[56];
+    tKKCDs = parameters[57];
 
     // https://arxiv.org/abs/2301.10328
-    F_kkpipi = parameters[51];
+    F_kkpipi = parameters[58];
 
     // 2401.17934 Bs part
-    r_dkstzs = parameters[52];
-    d_dkstzs = parameters[53];
-    k_dkstzs = parameters[54];
+    r_dkstzs = parameters[59];
+    d_dkstzs = parameters[60];
+    k_dkstzs = parameters[61];
 
     // General parameters
     AD = 0.; // NO direct CPV for CF/DCS
@@ -6799,8 +6760,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["phipphig12"] = remainder(PhiG12 + phi, 2. * M_PI) * r2d;
     obs["phimphig12"] = remainder(-PhiG12 + phi, 2. * M_PI) * r2d;
     obs["AD"] = AD;
-    obs["Delta_totau"] = Delta_totau;
-    obs["DeltaAcp"] = DeltaAcp;
+    obs["adKK"] = adKK;
+    obs["adpipi"] = adpipi;
     obs["qopm1"] = (qop - 1) * 100;
     obs["qop"] = qop;
     obs["phi"] = phi * r2d;

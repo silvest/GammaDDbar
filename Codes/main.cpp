@@ -76,6 +76,7 @@ int main(int argc, char ** argv)
   m.SetNIterationsPreRunMax(Npre);
   m.SetNIterationsRun(Nevents);
   m.SetProposeMultivariate(true);
+  m.SetInitialPositionScheme(BCEngineMCMC::kInitCenter);
 
   BCLog::OutSummary("Test model created");
   // run MCMC and marginalize posterior wrt. all parameters

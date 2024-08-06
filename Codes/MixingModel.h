@@ -64,8 +64,8 @@ public:
   l_dsk, d_dsk, phis, //3
   l_dskpipi, d_dskpipi, k_dskpipi, //3
   l_dmpi, d_dmpi, beta, // 3
-  PhiM12, PhiG12, AD, Delta_totau, DeltaAcp, //5
-  //52 total parameters
+  PhiM12, PhiG12, AD, adKK, adpipi, DYKKmDYpipi, tavepitaggedOverTauD, tavemutaggedOverTauD, DeltatmutaggedOverTauD, DeltatpitaggedOverTauD, tKKCDp, tKKCDs, //12
+  //59 total parameters
   F_kkpipi, //airXiv 20301.10328
   // 2401.17934 Bs
   r_dkstzs, d_dkstzs, k_dkstzs; //3
@@ -116,6 +116,8 @@ public:
   Rdp_uid30, yp_uid30, xpsq_uid30, Rdm_uid30, ym_uid30, xmsq_uid30; //UID30
 
   double xcp, ycp, dx, dy; // D Observables CP final states
+
+  double tauD = 410.3e-15; // D mean lifetime
 
   //old_observables
   double rm,
