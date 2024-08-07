@@ -4415,8 +4415,8 @@ void MixingModel::DefineParameters()
     AddParameter("tavemutaggedOverTauD", 1.1, 1.3, "t_{ave}^{#mu tagged}/#tau_{D}");
     AddParameter("DeltatmutaggedOverTauD", -0.01, 0.01, "#Delta t^{#mu untagged}/#tau_{D}");
     AddParameter("DeltatpitaggedOverTauD", -0.01, 0.01, "#Delta t^{#pi tagged}/#tau_{D}");
-    AddParameter("tKKCDp",7.e-13,7.5e-13,"t_{KK}^{C_{D^{+}}");
-    AddParameter("tKKCDs",6.5e-13,7.3e-13,"t_{KK}^{C_{D_{s}}");
+    AddParameter("tKKCDp",7.e-13,7.5e-13,"t_{KK}^{C_{D^{+}}}");
+    AddParameter("tKKCDs",6.5e-13,7.3e-13,"t_{KK}^{C_{D_{s}}}");
 
 
     // 16. PDF: charm-kspipi (UID15)
@@ -6147,7 +6147,7 @@ double MixingModel::Calculate_old_observables()
   corr(1) = x * sin(dD_kpi) - y * cos(dD_kpi);
   corr(2) = (x * cos(dD_kpi) + y * sin(dD_kpi)) * (x * cos(dD_kpi) + y * sin(dD_kpi));
 
-  llo += corrmeas.at("kpi_cdf").logweight(corr);
+  //llo += corrmeas.at("kpi_cdf").logweight(corr);
 
   return llo;
 }
