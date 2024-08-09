@@ -3470,53 +3470,101 @@ void MixingModel::Add_NeutralBs_meas()
 
   //-------------------------------------- Time Dependent B0s decay-------------------------------------------------------------------------
 
-  // 11. PDF: dsk (UID10) https://link.springer.com/article/10.1007/JHEP03(2018)059
+  // 11. PDF: dsk (UID10) https://link.springer.com/article/10.1007/JHEP03(2018)059 as updated in LHCb-PAPER-2024-020 (Run I)
 
   // Observables 5:
   CorrData.clear();
-  CorrData.push_back(dato(0.73, 0.14, 0.05)); // c_dsk
-  CorrData.push_back(dato(0.39, 0.28, 0.15)); // d_dsk
-  CorrData.push_back(dato(0.31, 0.28, 0.15)); // db_dsk
-  CorrData.push_back(dato(-0.52, 0.2, 0.07)); // s_dsk
-  CorrData.push_back(dato(-0.49, 0.2, 0.07)); // sb_dsk
+  CorrData.push_back(dato(0.75, 0.14, 0.04)); // c_dsk
+  CorrData.push_back(dato(0.38, 0.28, 0.15)); // d_dsk
+  CorrData.push_back(dato(0.30, 0.28, 0.15)); // db_dsk
+  CorrData.push_back(dato(-0.53, 0.21, 0.06)); // s_dsk
+  CorrData.push_back(dato(-0.45, 0.20, 0.06)); // sb_dsk
 
   // Correlation Matrix (stat):
   Corr.ResizeTo(5, 5);
   Corr(0, 0) = 1.;
-  Corr(0, 1) = 0.09;
-  Corr(0, 2) = 0.08;
-  Corr(0, 3) = 0.01;
-  Corr(0, 4) = -0.06;
+  Corr(0, 1) = 0.114;
+  Corr(0, 2) = 0.098;
+  Corr(0, 3) = 0.018;
+  Corr(0, 4) = -0.054;
   Corr(1, 1) = 1.;
-  Corr(1, 2) = 0.51;
-  Corr(1, 3) = -0.08;
-  Corr(1, 4) = 0.;
+  Corr(1, 2) = 0.546;
+  Corr(1, 3) = -0.088;
+  Corr(1, 4) = -0.024;
   Corr(2, 2) = 1.;
-  Corr(2, 3) = -0.04;
-  Corr(2, 4) = 0.;
+  Corr(2, 3) = -0.051;
+  Corr(2, 4) = -0.024;
   Corr(3, 3) = 1.;
-  Corr(3, 4) = 0.;
+  Corr(3, 4) = 0.001;
   Corr(4, 4) = 1.;
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(5, 5);
   Corr2(0, 0) = 1.;
-  Corr2(0, 1) = 0.05;
-  Corr2(0, 2) = 0.03;
-  Corr2(0, 3) = 0.03;
+  Corr2(0, 1) = 0.07;
+  Corr2(0, 2) = 0.05;
+  Corr2(0, 3) = 0.04;
   Corr2(0, 4) = -0.01;
   Corr2(1, 1) = 1.;
-  Corr2(1, 2) = 0.42;
+  Corr2(1, 2) = 0.53;
   Corr2(1, 3) = 0.02;
   Corr2(1, 4) = 0.02;
   Corr2(2, 2) = 1.;
   Corr2(2, 3) = 0.03;
   Corr2(2, 4) = 0.03;
   Corr2(3, 3) = 1.;
-  Corr2(3, 4) = 0.01;
+  Corr2(3, 4) = 0.02;
   Corr2(4, 4) = 1.;
 
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID10", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("BSDSKRun1", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+
+ // 11. PDF: dsk (UID10) LHCb-PAPER-2024-020 (Run II)
+
+  // Observables 5:
+  CorrData.clear();
+  CorrData.push_back(dato(0.791, 0.061, 0.022)); // c_dsk
+  CorrData.push_back(dato(-0.051, 0.134, 0.058)); // d_dsk
+  CorrData.push_back(dato(-0.303, 0.125, 0.055)); // db_dsk
+  CorrData.push_back(dato(-0.571, 0.084, 0.023)); // s_dsk
+  CorrData.push_back(dato(-0.503, 0.084, 0.025)); // sb_dsk
+
+  // Correlation Matrix (stat):
+  Corr.ResizeTo(5, 5);
+  Corr(0, 0) = 1.;
+  Corr(0, 1) = 0.134;
+  Corr(0, 2) = 0.130;
+  Corr(0, 3) = 0.039;
+  Corr(0, 4) = 0.022;
+  Corr(1, 1) = 1.;
+  Corr(1, 2) = 0.501;
+  Corr(1, 3) = -0.108;
+  Corr(1, 4) = -0.036;
+  Corr(2, 2) = 1.;
+  Corr(2, 3) = -0.056;
+  Corr(2, 4) = -0.067;
+  Corr(3, 3) = 1.;
+  Corr(3, 4) = 0.006;
+  Corr(4, 4) = 1.;
+
+  // Correlation Matrix (syst)
+  Corr2.ResizeTo(5, 5);
+  Corr2(0, 0) = 1.;
+  Corr2(0, 1) = 0.008;
+  Corr2(0, 2) = 0.012;
+  Corr2(0, 3) = -0.08;
+  Corr2(0, 4) = -0.246;
+  Corr2(1, 1) = 1.;
+  Corr2(1, 2) = 0.878;
+  Corr2(1, 3) = 0.004;
+  Corr2(1, 4) = -0.022;
+  Corr2(2, 2) = 1.;
+  Corr2(2, 3) = -0.002;
+  Corr2(2, 4) = -0.022;
+  Corr2(3, 3) = 1.;
+  Corr2(3, 4) = 0.085;
+  Corr2(4, 4) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("BSDSKRun2", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
   // 12. PDF: dskpipi (UID11) https://link.springer.com/article/10.1007/JHEP03(2021)137
 
@@ -5720,7 +5768,8 @@ double MixingModel::Calculate_neutralBsobservables()
   corr(3) = s_dsk_uid10;
   corr(4) = sb_dsk_uid10;
 
-  ll2 += corrmeas.at("UID10").logweight(corr);
+  ll2 += corrmeas.at("BSDSKRun1").logweight(corr);
+  ll2 += corrmeas.at("BSDSKRun2").logweight(corr);
 
   // 12. PDF: dskpipi (UID11)
   // Observables 5:
