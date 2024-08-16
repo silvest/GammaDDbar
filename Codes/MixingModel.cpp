@@ -993,7 +993,7 @@ void MixingModel::Add_ChargedB_meas()
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID5", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
-  // 7. PDF: glwads-dkst-hh-h3pi-dmix (UID6) https://inspirehep.net/literature/1624171
+  /* // 7. PDF: glwads-dkst-hh-h3pi-dmix (UID6) https://inspirehep.net/literature/1624171
   // Observables 12:
   CorrData.clear();
   CorrData.push_back(dato(-0.004, 0.023, 0.008));  // afav_dkst_kpi
@@ -1172,6 +1172,186 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(11, 11) = 1.;
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID6", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+ */
+  // 7. PDF: glwads-dkst-hh-h3pi-dmix LHCb-PAPER-2024-023
+  // Observables 12:
+  CorrData.clear();
+  CorrData.push_back(dato(-0.024, 0.014, 0.002));  // afav_dkst_kpi
+  CorrData.push_back(dato(0.14, 0.04, 0.001));     // acp_dkst_kk
+  CorrData.push_back(dato(0.31, 0.09, 0.05));     // acp_dkst_pipi
+  CorrData.push_back(dato(-0.73, 0.16, 0.03));     // asup_dkst_kpi
+  CorrData.push_back(dato(1.10, 0.05, 0.01));     // rcp_dkst_kk
+  CorrData.push_back(dato(0.96, 0.09, 0.05));     // rcp_dkst_pipi
+  CorrData.push_back(dato(0.0098, 0.0019, 0.0002));   // rsup_dkst_kpi
+  CorrData.push_back(dato(-0.024, 0.018, 0.002)); // afav_dkst_k3pi
+  CorrData.push_back(dato(0.04, 0.06, 0.03));    // acp_dkst_pipipipi
+  CorrData.push_back(dato(-.19, 0.22, 0.01));     // asup_dkst_k3pi
+  CorrData.push_back(dato(1.05, 0.07, 0.05));  // rcp_dkst_pipipipi
+  CorrData.push_back(dato(0.0118, 0.0026, 0.0001));  // rsup_dkst_k3pi
+
+  // Correlation Matrix (stat):
+  Corr.ResizeTo(12, 12);
+  Corr(0, 0) = 1.;
+  Corr(0, 1) = 0.;
+  Corr(0, 2) = 0.0;
+  Corr(0, 3) = 0.0;
+  Corr(0, 4) = 0.0;
+  Corr(0, 5) = 0.0;
+  Corr(0, 6) = 0.0;
+  Corr(0, 7) = 0.;
+  Corr(0, 8) = 0.;
+  Corr(0, 9) = 0.;
+  Corr(0, 10) = 0.;
+  Corr(0, 11) = 0.;
+  Corr(1, 1) = 1.;
+  Corr(1, 2) = 0.0;
+  Corr(1, 3) = 0.0;
+  Corr(1, 4) = -0.019;
+  Corr(1, 5) = 0.0;
+  Corr(1, 6) = 0.0;
+  Corr(1, 7) = 0.;
+  Corr(1, 8) = 0.;
+  Corr(1, 9) = 0.;
+  Corr(1, 10) = 0.;
+  Corr(1, 11) = 0.;
+  Corr(2, 2) = 1.;
+  Corr(2, 3) = 0.;
+  Corr(2, 4) = 0.0;
+  Corr(2, 5) = -0.085;
+  Corr(2, 6) = 0.0;
+  Corr(2, 7) = 0.0;
+  Corr(2, 8) = 0.;
+  Corr(2, 9) = 0.;
+  Corr(2, 10) = 0.0;
+  Corr(2, 11) = 0.;
+  Corr(3, 3) = 1.;
+  Corr(3, 4) = 0.0;
+  Corr(3, 5) = 0.0;
+  Corr(3, 6) = 0.183;
+  Corr(3, 7) = 0.;
+  Corr(3, 8) = 0.;
+  Corr(3, 9) = 0.;
+  Corr(3, 10) = 0.;
+  Corr(3, 11) = 0.;
+  Corr(4, 4) = 1.;
+  Corr(4, 5) = 0.055;
+  Corr(4, 6) = 0.028;
+  Corr(4, 7) = 0.;
+  Corr(4, 8) = 0.;
+  Corr(4, 9) = 0.;
+  Corr(4, 10) = 0.;
+  Corr(4, 11) = 0.;
+  Corr(5, 5) = 1.;
+  Corr(5, 6) = 0.02;
+  Corr(5, 7) = 0.;
+  Corr(5, 8) = 0.;
+  Corr(5, 9) = 0.;
+  Corr(5, 10) = 0.;
+  Corr(5, 11) = 0.;
+  Corr(6, 6) = 1.;
+  Corr(6, 7) = 0.;
+  Corr(6, 8) = 0.;
+  Corr(6, 9) = 0.;
+  Corr(6, 10) = 0.;
+  Corr(6, 11) = 0.;
+  Corr(7, 7) = 1.;
+  Corr(7, 8) = 0.0;
+  Corr(7, 9) = 0.;
+  Corr(7, 10) = 0.0;
+  Corr(7, 11) = 0.;
+  Corr(8, 8) = 1.;
+  Corr(8, 9) = 0.0;
+  Corr(8, 10) = -0.22;
+  Corr(8, 11) = 0.;
+  Corr(9, 9) = 1.;
+  Corr(9, 10) = 0.0;
+  Corr(9, 11) = 0.04;
+  Corr(10, 10) = 1.;
+  Corr(10, 11) = 0.029;
+  Corr(11, 11) = 1.;
+
+  // Correlation Matrix (syst)
+  Corr2.ResizeTo(12, 12);
+  Corr2(0, 0) = 1.;
+  Corr2(0, 1) = 0.314;
+  Corr2(0, 2) = 0.0;
+  Corr2(0, 3) = -0.014;
+  Corr2(0, 4) = 0.;
+  Corr2(0, 5) = 0.0;
+  Corr2(0, 6) = -0.016;
+  Corr2(0, 7) = 0.918;
+  Corr2(0, 8) = 0.01;
+  Corr2(0, 9) = -0.169;
+  Corr2(0, 10) = 0.0;
+  Corr2(0, 11) = 0.;
+  Corr2(1, 1) = 1.;
+  Corr2(1, 2) = 0.;
+  Corr2(1, 3) = -0.017;
+  Corr2(1, 4) = -0.039;
+  Corr2(1, 5) = 0.0;
+  Corr2(1, 6) = -0.011;
+  Corr2(1, 7) = 0.319;
+  Corr2(1, 8) = 0.032;
+  Corr2(1, 9) = 0.155;
+  Corr2(1, 10) = -0.019;
+  Corr2(1, 11) = 0.048;
+  Corr2(2, 2) = 1.;
+  Corr2(2, 3) = 0.;
+  Corr2(2, 4) = 0.0;
+  Corr2(2, 5) = -0.292;
+  Corr2(2, 6) = 0.0;
+  Corr2(2, 7) = 0.;
+  Corr2(2, 8) = 0.;
+  Corr2(2, 9) = 0.;
+  Corr2(2, 10) = 0.;
+  Corr2(2, 11) = 0.0;
+  Corr2(3, 3) = 1.;
+  Corr2(3, 4) = 0.0;
+  Corr2(3, 5) = 0.0;
+  Corr2(3, 6) = 0.220;
+  Corr2(3, 7) = -0.017;
+  Corr2(3, 8) = 0.;
+  Corr2(3, 9) = 0.086;
+  Corr2(3, 10) = 0.0;
+  Corr2(3, 11) = 0.023;
+  Corr2(4, 4) = 1.;
+  Corr2(4, 5) = 0.051;
+  Corr2(4, 6) = 0.0;
+  Corr2(4, 7) = 0.0;
+  Corr2(4, 8) = 0.0;
+  Corr2(4, 9) = 0.0;
+  Corr2(4, 10) = 0.0;
+  Corr2(4, 11) = 0.0;
+  Corr2(5, 5) = 1.;
+  Corr2(5, 6) = 0.0;
+  Corr2(5, 7) = 0.0;
+  Corr2(5, 8) = 0.;
+  Corr2(5, 9) = 0.;
+  Corr2(5, 10) = 0.0;
+  Corr(5, 11) = 0.0;
+  Corr2(6, 6) = 1.;
+  Corr2(6, 7) = 0.0;
+  Corr2(6, 8) = 0.0;
+  Corr2(6, 9) = -0.013;
+  Corr2(6, 10) = 0.0;
+  Corr2(6, 11) = 0.063;
+  Corr2(7, 7) = 1.;
+  Corr2(7, 8) = 0.013;
+  Corr2(7, 9) = -0.173;
+  Corr2(7, 10) = 0.0;
+  Corr2(7, 11) = 0.013;
+  Corr2(8, 8) = 1.;
+  Corr2(8, 9) = 0.0;
+  Corr2(8, 10) = -0.605;
+  Corr2(8, 11) = 0.025;
+  Corr2(9, 9) = 1.;
+  Corr2(9, 10) = 0.0;
+  Corr2(9, 11) = 0.345;
+  Corr2(10, 10) = 1.;
+  Corr2(10, 11) = 0.0;
+  Corr2(11, 11) = 1.;
+
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCB-PAPER-2024-023-GLWADS", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
   // 10. PDF: glwads-dhpipi-hh-dmix (UID9) https://journals.aps.org/prd/abstract/10.1103/PhysRevD.92.112005
   // Observables 11:
@@ -5158,20 +5338,20 @@ double MixingModel::Calculate_ChargedB_observables()
   rp_dstpi_dg_uid5 = Rp(r_dstpi, rD_kpi, d_dstpi + M_PI, dD_kpi, 1., 1., 2 * 0.523);
   rp_dstpi_dp_uid5 = Rp(r_dstpi, rD_kpi, d_dstpi, dD_kpi, 1., 1., 2 * 0.523);
 
-  // 7. PDF: glwads-dkst-hh-h3pi-dmix-newvars (UID6)
+  // 7. PDF: glwads-dkst-hh-h3pi-dmix-newvars (LHCb-PAPER-2024-023)
   // 12 Observables
-  afav_dkst_kpi_uid6 = Afav(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.594);
-  acp_dkst_kk_uid6 = Acp(r_dkst, d_dkst, k_dkst, 1., 2 * 0.594);
-  acp_dkst_pipi_uid6 = Acp(r_dkst, d_dkst, k_dkst, 1., 2 * 0.594);
-  rcp_dkst_kk_uid6 = Rcp_h(r_dkst, d_dkst, r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 1., 2 * 0.594);
-  rcp_dkst_pipi_uid6 = Rcp_h(r_dkst, d_dkst, r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 1., 2 * 0.594);
-  rp_dkst_kpi_uid6 = Rp(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.594);
-  rm_dkst_kpi_uid6 = Rm(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.594);
-  afav_dkst_k3pi_uid6 = Afav(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
-  acp_dkst_pipipipi_uid6 = Acp(r_dkst, d_dkst, k_dkst, F_pipipipi, 2 * 0.594);
-  rcp_dkst_pipipipi_uid6 = Rcp_h(r_dkst, d_dkst, r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, F_pipipipi, 2 * 0.594);
-  rp_dkst_k3pi_uid6 = Rp(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
-  rm_dkst_k3pi_uid6 = Rm(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
+  afav_dkst_kpi = Afav(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.594);
+  acp_dkst_kk = Acp(r_dkst, d_dkst, k_dkst, 1., 2 * 0.594);
+  acp_dkst_pipi = Acp(r_dkst, d_dkst, k_dkst, 1., 2 * 0.594);
+  asup_dkst_kpi = Asup(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.594);
+  rcp_dkst_kk = Rcp_h(r_dkst, d_dkst, r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 1., 2 * 0.594);
+  rcp_dkst_pipi = Rcp_h(r_dkst, d_dkst, r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 1., 2 * 0.594);
+  rsup_dkst_kpi = Rads(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.594);
+  afav_dkst_k3pi = Afav(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
+  acp_dkst_pipipipi = Acp(r_dkst, d_dkst, k_dkst, F_pipipipi, 2 * 0.594);
+  asup_dkst_k3pi = Asup(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
+  rcp_dkst_pipipipi = Rcp_h(r_dkst, d_dkst, r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, F_pipipipi, 2 * 0.594);
+  rsup_dkst_k3pi = Rads(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
 
   // 10. PDF: glwads-dhpipi-hh-dmix (UID9)
   //  11 Observables
@@ -5316,23 +5496,23 @@ double MixingModel::Calculate_ChargedB_observables()
 
   ll1 += corrmeas.at("UID5").logweight(corr);
 
-  // 7. PDF: glwads-dkst-hh-h3pi-dmix (UID6)
+  // 7. PDF: glwads-dkst-hh-h3pi-dmix (LHCb-PAPER-2024-023)
   // Observables 12:
   corr.ResizeTo(12);
-  corr(0) = afav_dkst_kpi_uid6;
-  corr(1) = acp_dkst_kk_uid6;
-  corr(2) = acp_dkst_pipi_uid6;
-  corr(3) = rcp_dkst_kk_uid6;
-  corr(4) = rcp_dkst_pipi_uid6;
-  corr(5) = rp_dkst_kpi_uid6;
-  corr(6) = rm_dkst_kpi_uid6;
-  corr(7) = afav_dkst_k3pi_uid6;
-  corr(8) = acp_dkst_pipipipi_uid6;
-  corr(9) = rcp_dkst_pipipipi_uid6;
-  corr(10) = rp_dkst_k3pi_uid6;
-  corr(11) = rm_dkst_k3pi_uid6;
+  corr(0) = afav_dkst_kpi;
+  corr(1) = acp_dkst_kk;
+  corr(2) = acp_dkst_pipi;
+  corr(3) = asup_dkst_kpi;
+  corr(4) = rcp_dkst_kk;
+  corr(5) = rcp_dkst_pipi;
+  corr(6) = rsup_dkst_kpi;
+  corr(7) = afav_dkst_k3pi;
+  corr(8) = acp_dkst_pipipipi;
+  corr(9) = asup_dkst_k3pi;
+  corr(10) = rcp_dkst_pipipipi;
+  corr(11) = rsup_dkst_k3pi;
 
-  ll1 += corrmeas.at("UID6").logweight(corr);
+  ll1 += corrmeas.at("LHCB-PAPER-2024-023-GLWADS").logweight(corr);
 
   // 10. PDF: glwads-dhpipi-hh-dmix (UID9)
   // Observables 11:

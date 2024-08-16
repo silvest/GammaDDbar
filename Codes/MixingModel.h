@@ -85,8 +85,9 @@ public:
   afav_dpi_kskpi_uid4, asup_dpi_kskpi_uid4, afav_dk_kskpi_uid4, asup_dk_kskpi_uid4, rfavsup_dpi_kskpi_uid4, rfav_dkdpi_kskpi_uid4, rsup_dkdpi_kskpi_uid4, //UID4
   acp_dstk_dg_uid5, acp_dstk_dp_uid5, afav_dstk_dg_uid5, afav_dstk_dp_uid5, rcp_dg_uid5, rcp_dp_uid5, rm_dstk_dg_uid5, rm_dstk_dp_uid5,  rp_dstk_dg_uid5, rp_dstk_dp_uid5, acp_dstpi_dg_uid5, acp_dstpi_dp_uid5,
   rm_dstpi_dg_uid5, rm_dstpi_dp_uid5, rp_dstpi_dg_uid5, rp_dstpi_dp_uid5, //UID5
-  afav_dkst_kpi_uid6, acp_dkst_kk_uid6, acp_dkst_pipi_uid6, rcp_dkst_kk_uid6, rcp_dkst_pipi_uid6, rp_dkst_kpi_uid6, rm_dkst_kpi_uid6, afav_dkst_k3pi_uid6,
-  acp_dkst_pipipipi_uid6, rcp_dkst_pipipipi_uid6, rp_dkst_k3pi_uid6, rm_dkst_k3pi_uid6, //UID6
+  afav_dkst_kpi, acp_dkst_kk, acp_dkst_pipi, rcp_dkst_kk, rcp_dkst_pipi, rp_dkst_kpi_uid6, rm_dkst_kpi_uid6, afav_dkst_k3pi,
+  acp_dkst_pipipipi, rcp_dkst_pipipipi, rp_dkst_k3pi_uid6, rm_dkst_k3pi_uid6, //UID6
+  asup_dkst_kpi, asup_dkst_k3pi, rsup_dkst_kpi, rsup_dkst_k3pi, //LHCb-PAPER-2024-023
   acp_dkstz_kk_uid7, acp_dkstz_pipi_uid7, rcp_dkstz_kk_uid7, rcp_dkstz_pipi_uid7, acp_dkstz_4pi_uid7, rcp_dkstz_4pi_uid7, rp_dkstz_kpi_uid7,
   rm_dkstz_kpi_uid7, rp_dkstz_k3pi_uid7, rm_dkstz_k3pi_uid7, afav_dkstz_kpi_uid7, afav_dkstz_k3pi_uid7, //UID7
   xm_dkstz_uid8, ym_dkstz_uid8, xp_dkstz_uid8, yp_dkstz_uid8, //UID8
