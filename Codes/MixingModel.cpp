@@ -414,17 +414,48 @@ void MixingModel::Add_ChargedB_meas()
   if (comb == 0)
   {
 
-    // 4. PDF: ggsz-dh (UID3) https://link.springer.com/article/10.1007/JHEP02(2021)169
+    // GGSZ LHCb only ChargedB
+    // Observables 22
+
+    // https://link.springer.com/article/10.1007/JHEP02(2021)169
     // Observables 6:
     CorrData.clear();
-    CorrData.push_back(dato(0.0568, 0.0096, 0.0030));     // xm_dk
-    CorrData.push_back(dato(0.06550, 0.01140, 0.004300)); // ym_dk
-    CorrData.push_back(dato(-0.09300, 0.0098, 0.003));    // xp_dk
-    CorrData.push_back(dato(-0.0125, 0.0123, 0.0038));    // yp_dk
-    CorrData.push_back(dato(-0.05470, 0.0199, 0.0035));   // xi_x_dpi
-    CorrData.push_back(dato(0.00710, 0.02330, 0.0057));   // xi_y_dpi
+    CorrData.push_back(dato(0.0568, 0.0096, 0.0020, 0.0023));     // xm_dk
+    CorrData.push_back(dato(0.06550, 0.01140, 0.0025, 0.0035)); // ym_dk
+    CorrData.push_back(dato(-0.09300, 0.0098, 0.0024, 0.0018));    // xp_dk
+    CorrData.push_back(dato(-0.0125, 0.0123, 0.0026, 0.0028));    // yp_dk
+    CorrData.push_back(dato(-0.05470, 0.0199, 0.0032, 0.0014));   // xi_x_dpi
+    CorrData.push_back(dato(0.00710, 0.02330, 0.0054, 0.0018));   // xi_y_dpi
+
+    // GGSZ https://arxiv.org/abs/2310.04277 LHCb
+    // Observables 6:
+    CorrData.push_back(dato(11.42e-2, 3.16e-2, 1.26e-2, 0.41e-2));  // xp_dstk
+    CorrData.push_back(dato(-8.91e-2, 3.55e-2, 2.04e-2, 0.23e-2));  // xm_dstk
+    CorrData.push_back(dato(3.60e-2, 4.41e-2, 2.12e-2, 0.30e-2));   // yp_dstk
+    CorrData.push_back(dato(-16.75e-2, 3.98e-2, 1.48e-2, 0.64e-2)); // ym_dstk
+    CorrData.push_back(dato(0.51e-2, 5.00e-2, 2.66e-2, 0.93e-2));   // Re xi_dstpi
+    CorrData.push_back(dato(7.92e-2, 5.04e-2, 3.78e-2, 0.83e-2));   // Im xi_dstpi
+
+    // GGSZ https://arxiv.org/abs/2311.10434 LHCb
+    // Observables 6:
+    CorrData.push_back(dato(-6.3e-2, 2.9e-2, 1.1e-2, 0.6e-2)); // xm_dstk
+    CorrData.push_back(dato(-4.8e-2, 5.7e-2, 1.4e-2, 1.5e-2)); // ym_dstk
+    CorrData.push_back(dato(6.0e-2, 2.6e-2, 0.9e-2, 0.2e-2));  // xp_dstk
+    CorrData.push_back(dato(5.4e-2, 2.9e-2, 0.9e-2, 0.4e-2));  // yp_dstk
+    CorrData.push_back(dato(11.5e-2, 9.4e-2, 3.3e-2, 2.3e-2)); // Re xi_dstpi
+    CorrData.push_back(dato(-0.9e-2, 9.7e-2, 2.5e-2, 2.1e-2)); // Im xi_dstpi
+
+    // LHCB-PAPER-2024-023
+    CorrData.push_back(dato(0.135, 0.056, 0.019, 0.009)); // xm_dkst
+    CorrData.push_back(dato(-0.170, 0.108, 0.013, 0.039)); // ym_dkst
+    CorrData.push_back(dato(0.003, 0.052, 0.018, 0.004)); // xp_dkst
+    CorrData.push_back(dato(0.054, 0.061, 0.009, 0.019)); // yp_dkst
+
+
     // Correlation Matrix (stat):
-    Corr.ResizeTo(6, 6);
+    Corr.ResizeTo(22, 22);
+    Corr = 0.;
+
     Corr(0, 0) = 1.;
     Corr(0, 1) = -0.125;
     Corr(0, 2) = -0.013;
@@ -446,178 +477,411 @@ void MixingModel::Add_ChargedB_meas()
     Corr(4, 4) = 1.;
     Corr(4, 5) = 0.15;
     Corr(5, 5) = 1.;
-    // Correlation Matrix (syst)
-    Corr2.ResizeTo(6, 6);
-    Corr2(0, 0) = 1.;
-    Corr2(0, 1) = 0.30;
-    Corr2(0, 2) = 0.16;
-    Corr2(0, 3) = 0.58;
-    Corr2(0, 4) = 0.27;
-    Corr2(0, 5) = 0.23;
-    Corr2(1, 1) = 1.;
-    Corr2(1, 2) = 0.44;
-    Corr2(1, 3) = 0.22;
-    Corr2(1, 4) = 0.18;
-    Corr2(1, 5) = 0.17;
-    Corr2(2, 2) = 1.;
-    Corr2(2, 3) = 0.45;
-    Corr2(2, 4) = 0.41;
-    Corr2(2, 5) = 0.31;
-    Corr2(3, 3) = 1.;
-    Corr2(3, 4) = 0.35;
-    Corr2(3, 5) = 0.24;
-    Corr2(4, 4) = 1.;
-    Corr2(4, 5) = 0.50;
-    Corr2(5, 5) = 1.;
 
-    corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID3", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
-  } // end of if comb == 0
-  else if (comb == 3)
-  {
-
-    // https://link.springer.com/article/10.1007/JHEP02(2021)169 and https://arxiv.org/abs/2309.05514
-    // Observables 6:
-    CorrData.clear();
-    CorrData.push_back(dato(0.074, 0.086, 0.005, 0.011));       // xp_dkstz
-    CorrData.push_back(dato(-0.215, 0.086, 0.004, 0.013));      // xm_dkstz
-    CorrData.push_back(dato(-0.336, 0.105, 0.017, 0.009));      // yp_dkstz
-    CorrData.push_back(dato(-0.012, 0.128, 0.024, 0.011));      // ym_dkstz
-    CorrData.push_back(dato(0.0568, 0.0096, 0.0020, 0.0023));   // xm_dk
-    CorrData.push_back(dato(0.06550, 0.01140, 0.0025, 0.0035)); // ym_dk
-    CorrData.push_back(dato(-0.09300, 0.0098, 0.0024, 0.0018)); // xp_dk
-    CorrData.push_back(dato(-0.0125, 0.0123, 0.0026, 0.0028));  // yp_dk
-    CorrData.push_back(dato(-0.05470, 0.0199, 0.0032, 0.0014)); // xi_x_dpi
-    CorrData.push_back(dato(0.00710, 0.02330, 0.0054, 0.0018)); // xi_y_dpi
-
-    // Correlation Matrix (stat):
-    Corr.ResizeTo(10, 10);
-    Corr = 0.;
-    Corr(0, 0) = 1.;
-    Corr(0, 1) = 0.;
-    Corr(0, 2) = 0.18;
-    Corr(0, 3) = 0.;
-    Corr(1, 1) = 1.;
-    Corr(1, 2) = 0.;
-    Corr(1, 3) = 0.08;
-    Corr(2, 2) = 1.;
-    Corr(2, 3) = 0.;
-    Corr(3, 3) = 1.;
-    Corr(4, 4) = 1.;
-    Corr(4, 5) = -0.125;
-    Corr(4, 6) = -0.013;
-    Corr(4, 7) = 0.019;
-    Corr(4, 8) = 0.037;
-    Corr(4, 9) = -0.161;
-    Corr(5, 5) = 1.;
-    Corr(5, 6) = -0.011;
-    Corr(5, 7) = -0.010;
-    Corr(5, 8) = 0.097;
-    Corr(5, 9) = 0.041;
     Corr(6, 6) = 1.;
-    Corr(6, 7) = 0.105;
-    Corr(6, 8) = -0.108;
-    Corr(6, 9) = 0.032;
+    Corr(6, 7) = -0.05;
+    Corr(6, 8) = -0.08;
+    Corr(6, 9) = -0.08;
+    Corr(6, 10) = -0.16;
+    Corr(6, 11) = -0.14;
     Corr(7, 7) = 1.;
-    Corr(7, 8) = -0.07;
-    Corr(7, 9) = -0.147;
+    Corr(7, 8) = 0.03;
+    Corr(7, 9) = -0.08;
+    Corr(7, 10) = 0.25;
+    Corr(7, 11) = 0.06;
     Corr(8, 8) = 1.;
-    Corr(8, 9) = 0.15;
+    Corr(8, 9) = -0.09;
+    Corr(8, 10) = 0.;
+    Corr(8, 11) = -0.19;
     Corr(9, 9) = 1.;
+    Corr(9, 10) = 0.;
+    Corr(9, 11) = 0.33;
+    Corr(10, 10) = 1.;
+    Corr(10, 11) = 0.18;
+    Corr(11, 11) = 1.;
+
+    Corr(12, 12) = 1.;
+    Corr(12, 13) = 0.420;
+    Corr(12, 14) = 0.158;
+    Corr(12, 15) = 0.105;
+    Corr(12, 16) = 0.445;
+    Corr(12, 17) = 0.422;
+    Corr(13, 13) = 1.;
+    Corr(13, 14) = 0.115;
+    Corr(13, 15) = 0.232;
+    Corr(13, 16) = 0.765;
+    Corr(13, 17) = 0.631;
+    Corr(14, 14) = 1.;
+    Corr(14, 15) = -0.095;
+    Corr(14, 16) = 0.012;
+    Corr(14, 17) = 0.409;
+    Corr(15, 15) = 1.;
+    Corr(15, 16) = 0.263;
+    Corr(15, 17) = 0.112;
+    Corr(16, 16) = 1.;
+    Corr(16, 17) = 0.597;
+    Corr(17, 17) = 1.;
+
+    Corr(18,18) = 1.;
+    Corr(18,19) = 0.448;
+    Corr(18,20) = 0.;
+    Corr(18,21) = 0.;
+    Corr(19,19) = 1.;
+    Corr(19,20) = 0.;
+    Corr(19,21) = 0.;
+    Corr(20,20) = 1.;
+    Corr(20,21) = -0.144;
+    Corr(21,21) = 1.;
+
 
     // Correlation Matrix (syst)
-    Corr2.ResizeTo(10, 10);
+    Corr2.ResizeTo(22, 22);
     Corr2 = 0.;
+
+
     Corr2(0, 0) = 1.;
-    Corr2(0, 1) = -0.02;
-    Corr2(0, 2) = 0.05;
-    Corr2(0, 3) = 0.;
+    Corr2(0, 1) = 0.864;
+    Corr2(0, 2) = 0.734;
+    Corr2(0, 3) = 0.897;
+    Corr2(0, 4) = 0.349;
+    Corr2(0, 5) = 0.318;
     Corr2(1, 1) = 1.;
-    Corr2(1, 2) = 0.05;
-    Corr2(1, 3) = 0.04;
+    Corr2(1, 2) = 0.874;
+    Corr2(1, 3) = 0.903;
+    Corr2(1, 4) = 0.408;
+    Corr2(1, 5) = 0.362;
     Corr2(2, 2) = 1.;
-    Corr2(2, 3) = -0.07;
+    Corr2(2, 3) = 0.771;
+    Corr2(2, 4) = 0.563;
+    Corr2(2, 5) = 0.447;
     Corr2(3, 3) = 1.;
+    Corr2(3, 4) = 0.507;
+    Corr2(3, 5) = 0.451;
     Corr2(4, 4) = 1.;
-    Corr2(4, 5) = 0.864;
-    Corr2(4, 6) = 0.734;
-    Corr2(4, 7) = 0.897;
-    Corr2(4, 8) = 0.349;
-    Corr2(4, 9) = 0.318;
+    Corr2(4, 5) = 0.484;
     Corr2(5, 5) = 1.;
-    Corr2(5, 6) = 0.874;
-    Corr2(5, 7) = 0.903;
-    Corr2(5, 8) = 0.408;
-    Corr2(5, 9) = 0.362;
+
     Corr2(6, 6) = 1.;
-    Corr2(6, 7) = 0.771;
-    Corr2(6, 8) = 0.563;
-    Corr2(6, 9) = 0.447;
+    Corr2(6, 7) = 0.26;
+    Corr2(6, 8) = 0.44;
+    Corr2(6, 9) = 0.07;
+    Corr2(6, 10) = -0.59;
+    Corr2(6, 11) = 0.24;
     Corr2(7, 7) = 1.;
-    Corr2(7, 8) = 0.507;
-    Corr2(7, 9) = 0.451;
+    Corr2(7, 8) = -0.21;
+    Corr2(7, 9) = -0.58;
+    Corr2(7, 10) = -0.53;
+    Corr2(7, 11) = -0.39;
     Corr2(8, 8) = 1.;
-    Corr2(8, 9) = 0.484;
+    Corr2(8, 9) = -0.04;
+    Corr2(8, 10) = 0.08;
+    Corr2(8, 11) = 0.44;
     Corr2(9, 9) = 1.;
+    Corr2(9, 10) = -0.24;
+    Corr2(9, 11) = -0.03;
+    Corr2(10, 10) = 1.;
+    Corr2(10, 11) = 0.57;
+    Corr2(11, 11) = 1.;
 
-    Corr3.ResizeTo(10, 10);
+    Corr2(12, 12) = 1.;
+    Corr2(12, 13) = 0.630;
+    Corr2(12, 14) = -0.241;
+    Corr2(12, 15) = -0.016;
+    Corr2(12, 16) = 0.602;
+    Corr2(12, 17) = 0.083;
+    Corr2(13, 13) = 1.;
+    Corr2(13, 14) = 0.008;
+    Corr2(13, 15) = 0.154;
+    Corr2(13, 16) = 0.735;
+    Corr2(13, 17) = 0.230;
+    Corr2(14, 14) = 1.;
+    Corr2(14, 15) = 0.515;
+    Corr2(14, 16) = 0.232;
+    Corr2(14, 17) = 0.618;
+    Corr2(15, 15) = 1.;
+    Corr2(15, 16) = 0.237;
+    Corr2(15, 17) = 0.112;
+    Corr2(16, 16) = 1.;
+    Corr2(16, 17) = -0.201;
+    Corr2(17, 17) = 1.;
+
+    Corr2(18,18) = 1.;
+    Corr2(18,19) = 0.319;
+    Corr2(18,20) = 0.030;
+    Corr2(18,21) = -0.158;
+    Corr2(19,19) = 1.;
+    Corr2(19,20) = 0.022;
+    Corr2(19,21) = -0.478;
+    Corr2(20,20) = 1.;
+    Corr2(20,21) = -0.055;
+    Corr2(21,21) = 1.;
+
+    // Correlation Matrix (syst)
+    Corr3.ResizeTo(22, 22);
+    Corr3 = 0.;
+
+
     Corr3(0, 0) = 1.;
-    Corr3(0, 1) = -0.14;
-    Corr3(0, 2) = 0.34;
-    Corr3(0, 3) = -0.09;
-    Corr3(0, 4) = -0.29;
-    Corr3(0, 5) = -0.11;
-    Corr3(0, 6) = -0.06;
-    Corr3(0, 7) = -0.06;
-    Corr3(0, 8) = -0.16;
-    Corr3(0, 9) = 0.30;
+    Corr3(0, 1) = -0.047;
+    Corr3(0, 2) = -0.490;
+    Corr3(0, 3) = 0.322;
+    Corr3(0, 4) = 0.189;
+    Corr3(0, 5) = 0.144;
+    Corr3(0, 6) = 0.27;
+    Corr3(0, 7) = 0.07;
+    Corr3(0, 8) = 0.;
+    Corr3(0, 9) = 0.21;
+    Corr3(0, 10) = -0.23;
+    Corr3(0, 11) = -0.05;
+    Corr3(0, 12) = 0.08;
+    Corr3(0, 13) = 0.09;
+    Corr3(0, 14) = 0.29;
+    Corr3(0, 15) = 0.38;
+    Corr3(0, 16) = 0.21;
+    Corr3(0, 17) = 0.06;
+    Corr3(0, 18) = -0.27;
+    Corr3(0, 19) = -0.07;
+    Corr3(0, 20) = 0.20;
+    Corr3(0, 21) = -0.04;
     Corr3(1, 1) = 1.;
-    Corr3(1, 2) = -0.04;
-    Corr3(1, 3) = 0.17;
-    Corr3(1, 4) = -0.31;
-    Corr3(1, 5) = 0.22;
-    Corr3(1, 6) = 0.48;
-    Corr3(1, 7) = -0.49;
-    Corr3(1, 8) = 0.04;
-    Corr3(1, 9) = 0.12;
+    Corr3(1, 2) = 0.059;
+    Corr3(1, 3) = -0.237;
+    Corr3(1, 4) = -0.13;
+    Corr3(1, 5) = -0.117;
+    Corr3(1, 6) = 0.09;
+    Corr3(1, 7) = 0.04;
+    Corr3(1, 8) = 0.17;
+    Corr3(1, 9) = - 0.05;
+    Corr3(1, 10) = 0.07;
+    Corr3(1, 11) = 0.11;
+    Corr3(1, 12) = 0.12;
+    Corr3(1, 13) = 0.07;
+    Corr3(1, 14) = 0.22;
+    Corr3(1, 15) = 0.14;
+    Corr3(1, 16) = 0.24;
+    Corr3(1, 17) = 0.35;
+    Corr3(1, 18) = -0.53;
+    Corr3(1, 19) = -0.65;
+    Corr3(1, 20) = -0.24;
+    Corr3(1, 21) = 0.46;
     Corr3(2, 2) = 1.;
-    Corr3(2, 3) = -0.04;
-    Corr3(2, 4) = 0.35;
-    Corr3(2, 5) = 0.12;
-    Corr3(2, 6) = 0.03;
-    Corr3(2, 7) = 0.27;
-    Corr3(2, 8) = 0.29;
-    Corr3(2, 9) = 0.32;
+    Corr3(2, 3) = 0.061;
+    Corr3(2, 4) = 0.004;
+    Corr3(2, 5) = -0.139;
+    Corr3(2, 6) = -0.14;
+    Corr3(2, 7) = 0.04;
+    Corr3(2, 8) = -0.16;
+    Corr3(2, 9) = -0.07;
+    Corr3(2, 10) = 0.09;
+    Corr3(2, 11) = 0.05;
+    Corr3(2, 12) = -0.16;
+    Corr3(2, 13) = -0.17;
+    Corr3(2, 14) = -0.01;
+    Corr3(2, 15) = -0.06;
+    Corr3(2, 16) = -0.20;
+    Corr3(2, 17) = -0.07;
+    Corr3(2, 18) = -0.14;
+    Corr3(2, 19) = 0.;
+    Corr3(2, 20) = -0.16;
+    Corr3(2, 21) = 0.01;
     Corr3(3, 3) = 1.;
-    Corr3(3, 4) = 0.13;
-    Corr3(3, 5) = 0.22;
-    Corr3(3, 6) = -0.15;
-    Corr3(3, 7) = -0.01;
-    Corr3(3, 8) = 0.21;
-    Corr3(3, 9) = 0.36;
+    Corr3(3, 4) = 0.14;
+    Corr3(3, 5) = -0.199;
+    Corr3(3, 6) = 0.1;
+    Corr3(3, 7) = -0.03;
+    Corr3(3, 8) = -0.2;
+    Corr3(3, 9) = 0.09;
+    Corr3(3, 10) = -0.09;
+    Corr3(3, 11) = 0.;
+    Corr3(3, 12) = -0.05;
+    Corr3(3, 13) = -0.05;
+    Corr3(3, 14) = 0.41;
+    Corr3(3, 15) = -0.17;
+    Corr3(3, 16) = -0.08;
+    Corr3(3, 17) = 0.;
+    Corr3(3, 18) = -0.42;
+    Corr3(3, 19) = -0.25;
+    Corr3(3, 20) = 0.27;
+    Corr3(3, 21) = -0.08;
     Corr3(4, 4) = 1.;
-    Corr3(4, 5) = -0.05;
-    Corr3(4, 6) = -0.49;
-    Corr3(4, 7) = 0.32;
-    Corr3(4, 8) = 0.19;
-    Corr3(4, 9) = 0.14;
+    Corr3(4, 5) = 0.638;
+    Corr3(4, 6) = 0.11;
+    Corr3(4, 7) = 0.09;
+    Corr3(4, 8) = 0.02;
+    Corr3(4, 9) = 0.05;
+    Corr3(4, 10) = -0.1;
+    Corr3(4, 11) = 0.06;
+    Corr3(4, 12) = -0.47;
+    Corr3(4, 13) = -0.50;
+    Corr3(4, 14) = -0.23;
+    Corr3(4, 15) = 0.54;
+    Corr3(4, 16) = -0.41;
+    Corr3(4, 17) = -0.50;
+    Corr3(4, 18) = 0.01;
+    Corr3(4, 19) = 0.27;
+    Corr3(4, 20) = -0.08;
+    Corr3(4, 21) = -0.28;
     Corr3(5, 5) = 1.;
-    Corr3(5, 6) = 0.06;
-    Corr3(5, 7) = -0.24;
-    Corr3(5, 8) = -0.12;
-    Corr3(5, 9) = -0.12;
-    Corr3(6, 6) = 1.;
-    Corr3(6, 7) = 0.06;
-    Corr3(6, 8) = 0.;
-    Corr3(6, 9) = -0.14;
-    Corr3(7, 7) = 1.;
-    Corr3(7, 8) = 0.12;
-    Corr3(7, 9) = -0.20;
-    Corr3(8, 8) = 1.;
-    Corr3(8, 9) = 0.64;
-    Corr3(9, 9) = 1.;
+    Corr3(5, 6) = 0.08;
+    Corr3(5, 7) = 0.04;
+    Corr3(5, 8) = 0.16;
+    Corr3(5, 9) = 0.03;
+    Corr3(5, 10) = -0.05;
+    Corr3(5, 11) = 0.02;
+    Corr3(5, 12) = -0.37;
+    Corr3(5, 13) = -0.54;
+    Corr3(5, 14) = -0.13;
+    Corr3(5, 15) = 0.56;
+    Corr3(5, 16) = -0.42;
+    Corr3(5, 17) = -0.54;
+    Corr3(5, 18) = 0.30;
+    Corr3(5, 19) = 0.53;
+    Corr3(5, 20) = 0.32;
+    Corr3(5, 21) = -0.53;
 
-    corrmeas.insert(pair<string, CorrelatedGaussianObservables>("DKst0Pcomb", CorrelatedGaussianObservables(CorrData, Corr, Corr2, Corr3)));
-  }
+
+    Corr3(6, 6) = 1.;
+    Corr3(6, 7) = 0.26;
+    Corr3(6, 8) = 0.44;
+    Corr3(6, 9) = 0.07;
+    Corr3(6, 10) = -0.59;
+    Corr3(6, 11) = 0.24;
+    Corr3(6, 12) = 0.03;
+    Corr3(6, 13) = 0.01;
+    Corr3(6, 14) = 0.11;
+    Corr3(6, 15) = 0.16;
+    Corr3(6, 16) = 0.07;
+    Corr3(6, 17) = 0.04;
+    Corr3(6, 18) = -0.03;
+    Corr3(6, 19) = -0.05;
+    Corr3(6, 20) = 0.01;
+    Corr3(6, 21) = 0.04;
+    Corr3(7, 7) = 1.;
+    Corr3(7, 8) = -0.21;
+    Corr3(7, 9) = -0.58;
+    Corr3(7, 10) = -0.53;
+    Corr3(7, 11) = -0.39;
+    Corr3(7, 12) = -0.02;
+    Corr3(7, 13) = -0.03;
+    Corr3(7, 14) = -0.04;
+    Corr3(7, 15) = 0.1;
+    Corr3(7, 16) = -0.02;
+    Corr3(7, 17) = -0.04;
+    Corr3(7, 18) = -0.05;
+    Corr3(7, 19) = -0.05;
+    Corr3(7, 20) = 0.01;
+    Corr3(7, 21) = 0.02;
+    Corr3(8, 8) = 1.;
+    Corr3(8, 9) = -0.04;
+    Corr3(8, 10) = 0.08;
+    Corr3(8, 11) = 0.44;
+    Corr3(8, 12) = 0.19;
+    Corr3(8, 13) = 0.26;
+    Corr3(8, 14) = -0.20;
+    Corr3(8, 15) = 0.14;
+    Corr3(8, 16) = 0.26;
+    Corr3(8, 17) = 0.17;
+    Corr3(8, 18) = -0.03;
+    Corr3(8, 19) = -0.05;
+    Corr3(8, 20) = 0.03;
+    Corr3(8, 21) = 0.02;
+    Corr3(9, 9) = 1.;
+    Corr3(9, 10) = -0.24;
+    Corr3(9, 11) = -0.03;
+    Corr3(9, 12) = 0.04;
+    Corr3(9, 13) = 0.05;
+    Corr3(9, 14) = 0.05;
+    Corr3(9, 15) = 0.1;
+    Corr3(9, 16) = 0.06;
+    Corr3(9, 17) = 0.03;
+    Corr3(9, 18) = 0.02;
+    Corr3(9, 19) = 0.02;
+    Corr3(9, 20) = -0.02;
+    Corr3(9, 21) = -0.01;
+    Corr3(10, 10) = 1.;
+    Corr3(10, 11) = 0.57;
+    Corr3(10, 12) = 0.04;
+    Corr3(10, 13) = 0.02;
+    Corr3(10, 14) = 0.01;
+    Corr3(10, 15) = -0.16;
+    Corr3(10, 16) = 0.;
+    Corr3(10, 17) = 0.05;
+    Corr3(10, 18) = 0.06;
+    Corr3(10, 19) = 0.06;
+    Corr3(10, 20) = 0.;
+    Corr3(10, 21) = -0.02;
+    Corr3(11, 11) = 1.;
+    Corr3(11, 12) = 0.01;
+    Corr3(11, 13) = 0.01;
+    Corr3(11, 14) = 0.07;
+    Corr3(11, 15) = -0.04;
+    Corr3(11, 16) = 0.02;
+    Corr3(11, 17) = 0.06;
+    Corr3(11, 18) = 0.05;
+    Corr3(11, 19) = 0.03;
+    Corr3(11, 20) = -0.01;
+    Corr3(11, 21) = 0.01;
+
+    Corr3(12, 12) = 1.;
+    Corr3(12, 13) = 0.886;
+    Corr3(12, 14) = -0.117;
+    Corr3(12, 15) = -0.063;
+    Corr3(12, 16) = 0.916;
+    Corr3(12, 17) = 0.904;
+    Corr3(12, 18) = -0.04;
+    Corr3(12, 19) = -0.01;
+    Corr3(12, 20) = 0.03;
+    Corr3(12, 21) = 0.04;
+    Corr3(13, 13) = 1.;
+    Corr3(13, 14) = -0.124;
+    Corr3(13, 15) = -0.115;
+    Corr3(13, 16) = 0.935;
+    Corr3(13, 17) = 0.889;
+    Corr3(13, 18) = -0.03;
+    Corr3(13, 19) = 0.;
+    Corr3(13, 20) = 0.02;
+    Corr3(13, 21) = 0.01;
+    Corr3(14, 14) = 1.;
+    Corr3(14, 15) = -0.280;
+    Corr3(14, 16) = -0.130;
+    Corr3(14, 17) = 0.063;
+    Corr3(14, 18) = 0.01;
+    Corr3(14, 19) = 0.04;
+    Corr3(14, 20) = -0.04;
+    Corr3(14, 21) = 0.;
+    Corr3(15, 15) = 1.;
+    Corr3(15, 16) = 0.085;
+    Corr3(15, 17) = -0.077;
+    Corr3(15, 18) = -0.02;
+    Corr3(15, 19) = -0.05;
+    Corr3(15, 20) = 0.01;
+    Corr3(15, 21) = 0.01;
+    Corr3(16, 16) = 1.;
+    Corr3(16, 17) = 0.941;
+    Corr3(16, 18) = -0.04;
+    Corr3(16, 19) = -0.02;
+    Corr3(16, 20) = 0.01;
+    Corr3(16, 21) = 0.02;
+    Corr3(17, 17) = 1.;
+    Corr3(17, 18) = -0.04;
+    Corr3(17, 19) = -0.01;
+    Corr3(17, 20) = 0.;
+    Corr3(17, 21) = 0.03;
+
+    Corr3(18,18) = 1.;
+    Corr3(18,19) = 0.71;
+    Corr3(18,20) = -0.01;
+    Corr3(18,21) = -0.02;
+    Corr3(19,19) = 1.;
+    Corr3(19,20) = -0.05;
+    Corr3(19,21) = -0.29;
+    Corr3(20,20) = 1.;
+    Corr3(20,21) = -0.15;
+    Corr3(21,21) = 1.;
+
+
+    corrmeas.insert(pair<string, CorrelatedGaussianObservables>("GGSZ_LHCb_Cb", CorrelatedGaussianObservables(CorrData, Corr, Corr2, Corr3)));
+  } // end of if comb == 0
 
   // 5. PDF: glwads-dkdpi-kskpi-dmix (UID4) https://link.springer.com/article/10.1007/JHEP06(2020)058
   // Observables 7:
@@ -1697,170 +1961,6 @@ void MixingModel::Add_ChargedB_meas()
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2306.02940", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
-  // GGSZ https://arxiv.org/abs/2311.10434 LHCb
-
-  // Observables 6:
-  CorrData.clear();
-  CorrData.push_back(dato(-6.3e-2, 2.9e-2, 1.1e-2, 0.6e-2)); // xm_dstk
-  CorrData.push_back(dato(-4.8e-2, 5.7e-2, 1.4e-2, 1.5e-2)); // ym_dstk
-  CorrData.push_back(dato(6.0e-2, 2.6e-2, 0.9e-2, 0.2e-2));  // xp_dstk
-  CorrData.push_back(dato(5.4e-2, 2.9e-2, 0.9e-2, 0.4e-2));  // yp_dstk
-  CorrData.push_back(dato(11.5e-2, 9.4e-2, 3.3e-2, 2.3e-2)); // Re xi_dstpi
-  CorrData.push_back(dato(-0.9e-2, 9.7e-2, 2.5e-2, 2.1e-2)); // Im xi_dstpi
-  // Correlation Matrix (stat):
-  Corr.ResizeTo(6, 6);
-  Corr(0, 0) = 1.;
-  Corr(0, 1) = 0.420;
-  Corr(0, 2) = 0.158;
-  Corr(0, 3) = 0.105;
-  Corr(0, 4) = 0.445;
-  Corr(0, 5) = 0.422;
-  Corr(1, 1) = 1.;
-  Corr(1, 2) = 0.115;
-  Corr(1, 3) = 0.232;
-  Corr(1, 4) = 0.765;
-  Corr(1, 5) = 0.631;
-  Corr(2, 2) = 1.;
-  Corr(2, 3) = -0.095;
-  Corr(2, 4) = 0.012;
-  Corr(2, 5) = 0.409;
-  Corr(3, 3) = 1.;
-  Corr(3, 4) = 0.263;
-  Corr(3, 5) = 0.112;
-  Corr(4, 4) = 1.;
-  Corr(4, 5) = 0.597;
-  Corr(5, 5) = 1.;
-  // Correlation Matrix (syst)
-  Corr2.ResizeTo(6, 6);
-  Corr2(0, 0) = 1.;
-  Corr2(0, 1) = 0.630;
-  Corr2(0, 2) = -0.241;
-  Corr2(0, 3) = -0.016;
-  Corr2(0, 4) = 0.602;
-  Corr2(0, 5) = 0.083;
-  Corr2(1, 1) = 1.;
-  Corr2(1, 2) = 0.008;
-  Corr2(1, 3) = 0.154;
-  Corr2(1, 4) = 0.735;
-  Corr2(1, 5) = 0.230;
-  Corr2(2, 2) = 1.;
-  Corr2(2, 3) = 0.515;
-  Corr2(2, 4) = 0.232;
-  Corr2(2, 5) = 0.618;
-  Corr2(3, 3) = 1.;
-  Corr2(3, 4) = 0.237;
-  Corr2(3, 5) = 0.112;
-  Corr2(4, 4) = 1.;
-  Corr2(4, 5) = -0.201;
-  Corr2(5, 5) = 1.;
-
-  Corr3.ResizeTo(6, 6);
-  Corr3(0, 0) = 1.;
-  Corr3(0, 1) = 0.886;
-  Corr3(0, 2) = -0.117;
-  Corr3(0, 3) = -0.063;
-  Corr3(0, 4) = 0.916;
-  Corr3(0, 5) = 0.904;
-  Corr3(1, 1) = 1.;
-  Corr3(1, 2) = -0.124;
-  Corr3(1, 3) = -0.115;
-  Corr3(1, 4) = 0.935;
-  Corr3(1, 5) = 0.889;
-  Corr3(2, 2) = 1.;
-  Corr3(2, 3) = -0.280;
-  Corr3(2, 4) = -0.130;
-  Corr3(2, 5) = 0.063;
-  Corr3(3, 3) = 1.;
-  Corr3(3, 4) = 0.085;
-  Corr3(3, 5) = -0.077;
-  Corr3(4, 4) = 1.;
-  Corr3(4, 5) = 0.941;
-  Corr3(5, 5) = 1.;
-
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2311.10434", CorrelatedGaussianObservables(CorrData, Corr, Corr2, Corr3)));
-
-  // GGSZ https://arxiv.org/abs/2310.04277 LHCb
-
-  // Observables 6:
-  CorrData.clear();
-  CorrData.push_back(dato(11.42e-2, 3.16e-2, 1.26e-2, 0.41e-2));  // xp_dstk
-  CorrData.push_back(dato(-8.91e-2, 3.55e-2, 2.04e-2, 0.23e-2));  // xm_dstk
-  CorrData.push_back(dato(3.60e-2, 4.41e-2, 2.12e-2, 0.30e-2));   // yp_dstk
-  CorrData.push_back(dato(-16.75e-2, 3.98e-2, 1.48e-2, 0.64e-2)); // ym_dstk
-  CorrData.push_back(dato(0.51e-2, 5.00e-2, 2.66e-2, 0.93e-2));   // Re xi_dstpi
-  CorrData.push_back(dato(7.92e-2, 5.04e-2, 3.78e-2, 0.83e-2));   // Im xi_dstpi
-  // Correlation Matrix (stat):
-  Corr.ResizeTo(6, 6);
-  Corr(0, 0) = 1.;
-  Corr(0, 1) = 0.25;
-  Corr(0, 2) = -0.16;
-  Corr(0, 3) = 0.18;
-  Corr(0, 4) = 0.;
-  Corr(0, 5) = 0.;
-  Corr(1, 1) = 1.;
-  Corr(1, 2) = -0.05;
-  Corr(1, 3) = 0.06;
-  Corr(1, 4) = -0.08;
-  Corr(1, 5) = 0.03;
-  Corr(2, 2) = 1.;
-  Corr(2, 3) = -0.14;
-  Corr(2, 4) = -0.08;
-  Corr(2, 5) = -0.08;
-  Corr(3, 3) = 1.;
-  Corr(3, 4) = 0.33;
-  Corr(3, 5) = -0.19;
-  Corr(4, 4) = 1.;
-  Corr(4, 5) = -0.09;
-  Corr(5, 5) = 1.;
-  // Correlation Matrix (syst)
-  Corr2.ResizeTo(6, 6);
-  Corr2(0, 0) = 1.;
-  Corr2(0, 1) = -0.01;
-  Corr2(0, 2) = 0.01;
-  Corr2(0, 3) = 0.02;
-  Corr2(0, 4) = -0.02;
-  Corr2(0, 5) = -0.05;
-  Corr2(1, 1) = 1.;
-  Corr2(1, 2) = -0.01;
-  Corr2(1, 3) = 0.;
-  Corr2(1, 4) = -0.01;
-  Corr2(1, 5) = 0.06;
-  Corr2(2, 2) = 1.;
-  Corr2(2, 3) = -0.01;
-  Corr2(2, 4) = 0.01;
-  Corr2(2, 5) = -0.10;
-  Corr2(3, 3) = 1.;
-  Corr2(3, 4) = -0.09;
-  Corr2(3, 5) = -0.02;
-  Corr2(4, 4) = 1.;
-  Corr2(4, 5) = 0.02;
-  Corr2(5, 5) = 1.;
-
-  Corr3.ResizeTo(6, 6);
-  Corr3(0, 0) = 1.;
-  Corr3(0, 1) = 0.26;
-  Corr3(0, 2) = -0.58;
-  Corr3(0, 3) = -0.21;
-  Corr3(0, 4) = -0.53;
-  Corr3(0, 5) = -0.39;
-  Corr3(1, 1) = 1.;
-  Corr3(1, 2) = 0.07;
-  Corr3(1, 3) = 0.44;
-  Corr3(1, 4) = -0.59;
-  Corr3(1, 5) = 0.24;
-  Corr3(2, 2) = 1.;
-  Corr3(2, 3) = -0.04;
-  Corr3(2, 4) = -0.24;
-  Corr3(2, 5) = -0.03;
-  Corr3(3, 3) = 1.;
-  Corr3(3, 4) = 0.08;
-  Corr3(3, 5) = 0.44;
-  Corr3(4, 4) = 1.;
-  Corr3(4, 5) = 0.57;
-  Corr3(5, 5) = 1.;
-
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2310.04277", CorrelatedGaussianObservables(CorrData, Corr, Corr2, Corr3)));
-
   // Belle Dataset
 
   // GGSZ https://link.springer.com/article/10.1007/JHEP02(2022)063
@@ -2774,6 +2874,604 @@ void MixingModel::Add_NeutralBd_meas()
 
     corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2309.05514", CorrelatedGaussianObservables(CorrData, Corr, Corr2, Corr3)));
   }
+  else if (comb == 3)
+  {
+
+    // GGSZ LHCb ChargedB + NeutralBd
+    // Observables 26
+
+    // https://link.springer.com/article/10.1007/JHEP02(2021)169
+    // Observables 6:
+    CorrData.clear();
+    CorrData.push_back(dato(0.0568, 0.0096, 0.0020, 0.0023));     // xm_dk
+    CorrData.push_back(dato(0.06550, 0.01140, 0.0025, 0.0035)); // ym_dk
+    CorrData.push_back(dato(-0.09300, 0.0098, 0.0024, 0.0018));    // xp_dk
+    CorrData.push_back(dato(-0.0125, 0.0123, 0.0026, 0.0028));    // yp_dk
+    CorrData.push_back(dato(-0.05470, 0.0199, 0.0032, 0.0014));   // xi_x_dpi
+    CorrData.push_back(dato(0.00710, 0.02330, 0.0054, 0.0018));   // xi_y_dpi
+
+    // GGSZ https://arxiv.org/abs/2310.04277 LHCb
+    // Observables 6:
+    CorrData.push_back(dato(11.42e-2, 3.16e-2, 1.26e-2, 0.41e-2));  // xp_dstk
+    CorrData.push_back(dato(-8.91e-2, 3.55e-2, 2.04e-2, 0.23e-2));  // xm_dstk
+    CorrData.push_back(dato(3.60e-2, 4.41e-2, 2.12e-2, 0.30e-2));   // yp_dstk
+    CorrData.push_back(dato(-16.75e-2, 3.98e-2, 1.48e-2, 0.64e-2)); // ym_dstk
+    CorrData.push_back(dato(0.51e-2, 5.00e-2, 2.66e-2, 0.93e-2));   // Re xi_dstpi
+    CorrData.push_back(dato(7.92e-2, 5.04e-2, 3.78e-2, 0.83e-2));   // Im xi_dstpi
+
+    // GGSZ https://arxiv.org/abs/2311.10434 LHCb
+    // Observables 6:
+    CorrData.push_back(dato(-6.3e-2, 2.9e-2, 1.1e-2, 0.6e-2)); // xm_dstk
+    CorrData.push_back(dato(-4.8e-2, 5.7e-2, 1.4e-2, 1.5e-2)); // ym_dstk
+    CorrData.push_back(dato(6.0e-2, 2.6e-2, 0.9e-2, 0.2e-2));  // xp_dstk
+    CorrData.push_back(dato(5.4e-2, 2.9e-2, 0.9e-2, 0.4e-2));  // yp_dstk
+    CorrData.push_back(dato(11.5e-2, 9.4e-2, 3.3e-2, 2.3e-2)); // Re xi_dstpi
+    CorrData.push_back(dato(-0.9e-2, 9.7e-2, 2.5e-2, 2.1e-2)); // Im xi_dstpi
+
+    // LHCB-PAPER-2024-023
+    CorrData.push_back(dato(0.135, 0.056, 0.019, 0.009)); // xm_dkst
+    CorrData.push_back(dato(-0.170, 0.108, 0.013, 0.039)); // ym_dkst
+    CorrData.push_back(dato(0.003, 0.052, 0.018, 0.004)); // xp_dkst
+    CorrData.push_back(dato(0.054, 0.061, 0.009, 0.019)); // yp_dkst
+
+    // https://link.springer.com/article/10.1007/JHEP02(2021)169 and https://arxiv.org/abs/2309.05514
+    // Observables 6:
+    CorrData.push_back(dato(0.074, 0.086, 0.005, 0.011));       // xp_dkstz
+    CorrData.push_back(dato(-0.215, 0.086, 0.004, 0.013));      // xm_dkstz
+    CorrData.push_back(dato(-0.336, 0.105, 0.017, 0.009));      // yp_dkstz
+    CorrData.push_back(dato(-0.012, 0.128, 0.024, 0.011));      // ym_dkstz
+
+
+    // Correlation Matrix (stat):
+    Corr.ResizeTo(26, 26);
+    Corr = 0.;
+
+    Corr(0, 0) = 1.;
+    Corr(0, 1) = -0.125;
+    Corr(0, 2) = -0.013;
+    Corr(0, 3) = 0.019;
+    Corr(0, 4) = 0.037;
+    Corr(0, 5) = -0.161;
+    Corr(1, 1) = 1.;
+    Corr(1, 2) = -0.011;
+    Corr(1, 3) = -0.010;
+    Corr(1, 4) = 0.097;
+    Corr(1, 5) = 0.041;
+    Corr(2, 2) = 1.;
+    Corr(2, 3) = 0.105;
+    Corr(2, 4) = -0.108;
+    Corr(2, 5) = 0.032;
+    Corr(3, 3) = 1.;
+    Corr(3, 4) = -0.07;
+    Corr(3, 5) = -0.147;
+    Corr(4, 4) = 1.;
+    Corr(4, 5) = 0.15;
+    Corr(5, 5) = 1.;
+
+    Corr(6, 6) = 1.;
+    Corr(6, 7) = -0.05;
+    Corr(6, 8) = -0.08;
+    Corr(6, 9) = -0.08;
+    Corr(6, 10) = -0.16;
+    Corr(6, 11) = -0.14;
+    Corr(7, 7) = 1.;
+    Corr(7, 8) = 0.03;
+    Corr(7, 9) = -0.08;
+    Corr(7, 10) = 0.25;
+    Corr(7, 11) = 0.06;
+    Corr(8, 8) = 1.;
+    Corr(8, 9) = -0.09;
+    Corr(8, 10) = 0.;
+    Corr(8, 11) = -0.19;
+    Corr(9, 9) = 1.;
+    Corr(9, 10) = 0.;
+    Corr(9, 11) = 0.33;
+    Corr(10, 10) = 1.;
+    Corr(10, 11) = 0.18;
+    Corr(11, 11) = 1.;
+
+    Corr(12, 12) = 1.;
+    Corr(12, 13) = 0.420;
+    Corr(12, 14) = 0.158;
+    Corr(12, 15) = 0.105;
+    Corr(12, 16) = 0.445;
+    Corr(12, 17) = 0.422;
+    Corr(13, 13) = 1.;
+    Corr(13, 14) = 0.115;
+    Corr(13, 15) = 0.232;
+    Corr(13, 16) = 0.765;
+    Corr(13, 17) = 0.631;
+    Corr(14, 14) = 1.;
+    Corr(14, 15) = -0.095;
+    Corr(14, 16) = 0.012;
+    Corr(14, 17) = 0.409;
+    Corr(15, 15) = 1.;
+    Corr(15, 16) = 0.263;
+    Corr(15, 17) = 0.112;
+    Corr(16, 16) = 1.;
+    Corr(16, 17) = 0.597;
+    Corr(17, 17) = 1.;
+
+    Corr(18,18) = 1.;
+    Corr(18,19) = 0.448;
+    Corr(18,20) = 0.;
+    Corr(18,21) = 0.;
+    Corr(19,19) = 1.;
+    Corr(19,20) = 0.;
+    Corr(19,21) = 0.;
+    Corr(20,20) = 1.;
+    Corr(20,21) = -0.144;
+    Corr(21,21) = 1.;
+
+    Corr(22, 22) = 1.;
+    Corr(22, 23) = 0.;
+    Corr(22, 24) = 0.18;
+    Corr(22, 25) = 0.;
+    Corr(23, 23) = 1.;
+    Corr(23, 24) = 0.;
+    Corr(23, 25) = 0.08;
+    Corr(24, 24) = 1.;
+    Corr(24, 25) = 0.;
+    Corr(25, 25) = 1.;
+
+
+    // Correlation Matrix (syst)
+    Corr2.ResizeTo(26, 26);
+    Corr2 = 0.;
+
+
+    Corr2(0, 0) = 1.;
+    Corr2(0, 1) = 0.864;
+    Corr2(0, 2) = 0.734;
+    Corr2(0, 3) = 0.897;
+    Corr2(0, 4) = 0.349;
+    Corr2(0, 5) = 0.318;
+    Corr2(1, 1) = 1.;
+    Corr2(1, 2) = 0.874;
+    Corr2(1, 3) = 0.903;
+    Corr2(1, 4) = 0.408;
+    Corr2(1, 5) = 0.362;
+    Corr2(2, 2) = 1.;
+    Corr2(2, 3) = 0.771;
+    Corr2(2, 4) = 0.563;
+    Corr2(2, 5) = 0.447;
+    Corr2(3, 3) = 1.;
+    Corr2(3, 4) = 0.507;
+    Corr2(3, 5) = 0.451;
+    Corr2(4, 4) = 1.;
+    Corr2(4, 5) = 0.484;
+    Corr2(5, 5) = 1.;
+
+    Corr2(6, 6) = 1.;
+    Corr2(6, 7) = 0.26;
+    Corr2(6, 8) = 0.44;
+    Corr2(6, 9) = 0.07;
+    Corr2(6, 10) = -0.59;
+    Corr2(6, 11) = 0.24;
+    Corr2(7, 7) = 1.;
+    Corr2(7, 8) = -0.21;
+    Corr2(7, 9) = -0.58;
+    Corr2(7, 10) = -0.53;
+    Corr2(7, 11) = -0.39;
+    Corr2(8, 8) = 1.;
+    Corr2(8, 9) = -0.04;
+    Corr2(8, 10) = 0.08;
+    Corr2(8, 11) = 0.44;
+    Corr2(9, 9) = 1.;
+    Corr2(9, 10) = -0.24;
+    Corr2(9, 11) = -0.03;
+    Corr2(10, 10) = 1.;
+    Corr2(10, 11) = 0.57;
+    Corr2(11, 11) = 1.;
+
+    Corr2(12, 12) = 1.;
+    Corr2(12, 13) = 0.630;
+    Corr2(12, 14) = -0.241;
+    Corr2(12, 15) = -0.016;
+    Corr2(12, 16) = 0.602;
+    Corr2(12, 17) = 0.083;
+    Corr2(13, 13) = 1.;
+    Corr2(13, 14) = 0.008;
+    Corr2(13, 15) = 0.154;
+    Corr2(13, 16) = 0.735;
+    Corr2(13, 17) = 0.230;
+    Corr2(14, 14) = 1.;
+    Corr2(14, 15) = 0.515;
+    Corr2(14, 16) = 0.232;
+    Corr2(14, 17) = 0.618;
+    Corr2(15, 15) = 1.;
+    Corr2(15, 16) = 0.237;
+    Corr2(15, 17) = 0.112;
+    Corr2(16, 16) = 1.;
+    Corr2(16, 17) = -0.201;
+    Corr2(17, 17) = 1.;
+
+    Corr2(18,18) = 1.;
+    Corr2(18,19) = 0.319;
+    Corr2(18,20) = 0.030;
+    Corr2(18,21) = -0.158;
+    Corr2(19,19) = 1.;
+    Corr2(19,20) = 0.022;
+    Corr2(19,21) = -0.478;
+    Corr2(20,20) = 1.;
+    Corr2(20,21) = -0.055;
+    Corr2(21,21) = 1.;
+
+    Corr2(22, 22) = 1.;
+    Corr2(22, 23) = -0.02;
+    Corr2(22, 24) = 0.05;
+    Corr2(22, 25) = 0.;
+    Corr2(23, 23) = 1.;
+    Corr2(23, 24) = 0.05;
+    Corr2(23, 25) = 0.04;
+    Corr2(24, 24) = 1.;
+    Corr2(24, 25) = -0.07;
+    Corr2(25, 25) = 1.;
+
+    // Correlation Matrix (syst)
+    Corr3.ResizeTo(26, 26);
+    Corr3 = 0.;
+
+
+    Corr3(0, 0) = 1.;
+    Corr3(0, 1) = -0.047;
+    Corr3(0, 2) = -0.490;
+    Corr3(0, 3) = 0.322;
+    Corr3(0, 4) = 0.189;
+    Corr3(0, 5) = 0.144;
+    Corr3(0, 6) = 0.27;
+    Corr3(0, 7) = 0.07;
+    Corr3(0, 8) = 0.;
+    Corr3(0, 9) = 0.21;
+    Corr3(0, 10) = -0.23;
+    Corr3(0, 11) = -0.05;
+    Corr3(0, 12) = 0.08;
+    Corr3(0, 13) = 0.09;
+    Corr3(0, 14) = 0.29;
+    Corr3(0, 15) = 0.38;
+    Corr3(0, 16) = 0.21;
+    Corr3(0, 17) = 0.06;
+    Corr3(0, 18) = -0.27;
+    Corr3(0, 19) = -0.07;
+    Corr3(0, 20) = 0.20;
+    Corr3(0, 21) = -0.04;
+    Corr3(0, 22) = -0.29;
+    Corr3(0, 23) = -0.31;
+    Corr3(0, 24) = 0.35;
+    Corr3(0, 25) = 0.13;
+    Corr3(1, 1) = 1.;
+    Corr3(1, 2) = 0.059;
+    Corr3(1, 3) = -0.237;
+    Corr3(1, 4) = -0.13;
+    Corr3(1, 5) = -0.117;
+    Corr3(1, 6) = 0.09;
+    Corr3(1, 7) = 0.04;
+    Corr3(1, 8) = 0.17;
+    Corr3(1, 9) = - 0.05;
+    Corr3(1, 10) = 0.07;
+    Corr3(1, 11) = 0.11;
+    Corr3(1, 12) = 0.12;
+    Corr3(1, 13) = 0.07;
+    Corr3(1, 14) = 0.22;
+    Corr3(1, 15) = 0.14;
+    Corr3(1, 16) = 0.24;
+    Corr3(1, 17) = 0.35;
+    Corr3(1, 18) = -0.53;
+    Corr3(1, 19) = -0.65;
+    Corr3(1, 20) = -0.24;
+    Corr3(1, 21) = 0.46;
+    Corr3(1, 22) = -0.11;
+    Corr3(1, 23) = 0.22;
+    Corr3(1, 24) = 0.12;
+    Corr3(1, 25) = 0.22;
+    Corr3(2, 2) = 1.;
+    Corr3(2, 3) = 0.061;
+    Corr3(2, 4) = 0.004;
+    Corr3(2, 5) = -0.139;
+    Corr3(2, 6) = -0.14;
+    Corr3(2, 7) = 0.04;
+    Corr3(2, 8) = -0.16;
+    Corr3(2, 9) = -0.07;
+    Corr3(2, 10) = 0.09;
+    Corr3(2, 11) = 0.05;
+    Corr3(2, 12) = -0.16;
+    Corr3(2, 13) = -0.17;
+    Corr3(2, 14) = -0.01;
+    Corr3(2, 15) = -0.06;
+    Corr3(2, 16) = -0.20;
+    Corr3(2, 17) = -0.07;
+    Corr3(2, 18) = -0.14;
+    Corr3(2, 19) = 0.;
+    Corr3(2, 20) = -0.16;
+    Corr3(2, 21) = 0.01;
+    Corr3(2, 22) = -0.06;
+    Corr3(2, 23) = 0.48;
+    Corr3(2, 24) = 0.03;
+    Corr3(2, 25) = -0.15;
+    Corr3(3, 3) = 1.;
+    Corr3(3, 4) = 0.14;
+    Corr3(3, 5) = -0.199;
+    Corr3(3, 6) = 0.1;
+    Corr3(3, 7) = -0.03;
+    Corr3(3, 8) = -0.2;
+    Corr3(3, 9) = 0.09;
+    Corr3(3, 10) = -0.09;
+    Corr3(3, 11) = 0.;
+    Corr3(3, 12) = -0.05;
+    Corr3(3, 13) = -0.05;
+    Corr3(3, 14) = 0.41;
+    Corr3(3, 15) = -0.17;
+    Corr3(3, 16) = -0.08;
+    Corr3(3, 17) = 0.;
+    Corr3(3, 18) = -0.42;
+    Corr3(3, 19) = -0.25;
+    Corr3(3, 20) = 0.27;
+    Corr3(3, 21) = -0.08;
+    Corr3(3, 22) = -0.06;
+    Corr3(3, 23) = -0.49;
+    Corr3(3, 24) = 0.27;
+    Corr3(3, 25) = -0.01;
+    Corr3(4, 4) = 1.;
+    Corr3(4, 5) = 0.638;
+    Corr3(4, 6) = 0.11;
+    Corr3(4, 7) = 0.09;
+    Corr3(4, 8) = 0.02;
+    Corr3(4, 9) = 0.05;
+    Corr3(4, 10) = -0.1;
+    Corr3(4, 11) = 0.06;
+    Corr3(4, 12) = -0.47;
+    Corr3(4, 13) = -0.50;
+    Corr3(4, 14) = -0.23;
+    Corr3(4, 15) = 0.54;
+    Corr3(4, 16) = -0.41;
+    Corr3(4, 17) = -0.50;
+    Corr3(4, 18) = 0.01;
+    Corr3(4, 19) = 0.27;
+    Corr3(4, 20) = -0.08;
+    Corr3(4, 21) = -0.28;
+    Corr3(4, 22) = -0.16;
+    Corr3(4, 23) = 0.04;
+    Corr3(4, 24) = 0.29;
+    Corr3(4, 25) = 0.21;
+    Corr3(5, 5) = 1.;
+    Corr3(5, 6) = 0.08;
+    Corr3(5, 7) = 0.04;
+    Corr3(5, 8) = 0.16;
+    Corr3(5, 9) = 0.03;
+    Corr3(5, 10) = -0.05;
+    Corr3(5, 11) = 0.02;
+    Corr3(5, 12) = -0.37;
+    Corr3(5, 13) = -0.54;
+    Corr3(5, 14) = -0.13;
+    Corr3(5, 15) = 0.56;
+    Corr3(5, 16) = -0.42;
+    Corr3(5, 17) = -0.54;
+    Corr3(5, 18) = 0.30;
+    Corr3(5, 19) = 0.53;
+    Corr3(5, 20) = 0.32;
+    Corr3(5, 21) = -0.53;
+    Corr3(5, 22) = 0.30;
+    Corr3(5, 23) = 0.12;
+    Corr3(5, 24) = 0.32;
+    Corr3(5, 25) = 0.36;
+
+    Corr3(6, 6) = 1.;
+    Corr3(6, 7) = 0.26;
+    Corr3(6, 8) = 0.44;
+    Corr3(6, 9) = 0.07;
+    Corr3(6, 10) = -0.59;
+    Corr3(6, 11) = 0.24;
+    Corr3(6, 12) = 0.03;
+    Corr3(6, 13) = 0.01;
+    Corr3(6, 14) = 0.11;
+    Corr3(6, 15) = 0.16;
+    Corr3(6, 16) = 0.07;
+    Corr3(6, 17) = 0.04;
+    Corr3(6, 18) = -0.03;
+    Corr3(6, 19) = -0.05;
+    Corr3(6, 20) = 0.01;
+    Corr3(6, 21) = 0.04;
+    Corr3(6, 22) = -0.05;
+    Corr3(6, 23) = -0.14;
+    Corr3(6, 24) = 0.15;
+    Corr3(6, 25) = 0.04;
+    Corr3(7, 7) = 1.;
+    Corr3(7, 8) = -0.21;
+    Corr3(7, 9) = -0.58;
+    Corr3(7, 10) = -0.53;
+    Corr3(7, 11) = -0.39;
+    Corr3(7, 12) = -0.02;
+    Corr3(7, 13) = -0.03;
+    Corr3(7, 14) = -0.04;
+    Corr3(7, 15) = 0.1;
+    Corr3(7, 16) = -0.02;
+    Corr3(7, 17) = -0.04;
+    Corr3(7, 18) = -0.05;
+    Corr3(7, 19) = -0.05;
+    Corr3(7, 20) = 0.01;
+    Corr3(7, 21) = 0.02;
+    Corr3(7, 22) = 0.02;
+    Corr3(7, 23) = 0.05;
+    Corr3(7, 24) = 0.08;
+    Corr3(7, 25) = 0.02;
+    Corr3(8, 8) = 1.;
+    Corr3(8, 9) = -0.04;
+    Corr3(8, 10) = 0.08;
+    Corr3(8, 11) = 0.44;
+    Corr3(8, 12) = 0.19;
+    Corr3(8, 13) = 0.26;
+    Corr3(8, 14) = -0.20;
+    Corr3(8, 15) = 0.14;
+    Corr3(8, 16) = 0.26;
+    Corr3(8, 17) = 0.17;
+    Corr3(8, 18) = -0.03;
+    Corr3(8, 19) = -0.05;
+    Corr3(8, 20) = 0.03;
+    Corr3(8, 21) = 0.02;
+    Corr3(8, 22) = 0.15;
+    Corr3(8, 23) = 0.06;
+    Corr3(8, 24) = -0.04;
+    Corr3(8, 25) = 0.19;
+    Corr3(9, 9) = 1.;
+    Corr3(9, 10) = -0.24;
+    Corr3(9, 11) = -0.03;
+    Corr3(9, 12) = 0.04;
+    Corr3(9, 13) = 0.05;
+    Corr3(9, 14) = 0.05;
+    Corr3(9, 15) = 0.1;
+    Corr3(9, 16) = 0.06;
+    Corr3(9, 17) = 0.03;
+    Corr3(9, 18) = 0.02;
+    Corr3(9, 19) = 0.02;
+    Corr3(9, 20) = -0.02;
+    Corr3(9, 21) = -0.01;
+    Corr3(9, 22) = -0.06;
+    Corr3(9, 23) = -0.04;
+    Corr3(9, 24) = 0.11;
+    Corr3(9, 25) = 0.01;
+    Corr3(10, 10) = 1.;
+    Corr3(10, 11) = 0.57;
+    Corr3(10, 12) = 0.04;
+    Corr3(10, 13) = 0.02;
+    Corr3(10, 14) = 0.01;
+    Corr3(10, 15) = -0.16;
+    Corr3(10, 16) = 0.;
+    Corr3(10, 17) = 0.05;
+    Corr3(10, 18) = 0.06;
+    Corr3(10, 19) = 0.06;
+    Corr3(10, 20) = 0.;
+    Corr3(10, 21) = -0.02;
+    Corr3(10, 22) = 0.04;
+    Corr3(10, 23) = 0.09;
+    Corr3(10, 24) = -0.11;
+    Corr3(10, 25) = 0.05;
+    Corr3(11, 11) = 1.;
+    Corr3(11, 12) = 0.01;
+    Corr3(11, 13) = 0.01;
+    Corr3(11, 14) = 0.07;
+    Corr3(11, 15) = -0.04;
+    Corr3(11, 16) = 0.02;
+    Corr3(11, 17) = 0.06;
+    Corr3(11, 18) = 0.05;
+    Corr3(11, 19) = 0.03;
+    Corr3(11, 20) = -0.01;
+    Corr3(11, 21) = 0.01;
+    Corr3(11, 22) = -0.04;
+    Corr3(11, 23) = 0.01;
+    Corr3(11, 24) = 0.03;
+    Corr3(11, 25) = 0.10;
+
+    Corr3(12, 12) = 1.;
+    Corr3(12, 13) = 0.886;
+    Corr3(12, 14) = -0.117;
+    Corr3(12, 15) = -0.063;
+    Corr3(12, 16) = 0.916;
+    Corr3(12, 17) = 0.904;
+    Corr3(12, 18) = -0.04;
+    Corr3(12, 19) = -0.01;
+    Corr3(12, 20) = 0.03;
+    Corr3(12, 21) = 0.04;
+    Corr3(12, 22) = 0.07;
+    Corr3(12, 23) = -0.08;
+    Corr3(12, 24) = -0.14;
+    Corr3(12, 25) = -0.08;
+    Corr3(13, 13) = 1.;
+    Corr3(13, 14) = -0.124;
+    Corr3(13, 15) = -0.115;
+    Corr3(13, 16) = 0.935;
+    Corr3(13, 17) = 0.889;
+    Corr3(13, 18) = -0.03;
+    Corr3(13, 19) = 0.;
+    Corr3(13, 20) = 0.02;
+    Corr3(13, 21) = 0.01;
+    Corr3(13, 22) = -0.04;
+    Corr3(13, 23) = -0.16;
+    Corr3(13, 24) = -0.24;
+    Corr3(13, 25) = -0.08;
+    Corr3(14, 14) = 1.;
+    Corr3(14, 15) = -0.280;
+    Corr3(14, 16) = -0.130;
+    Corr3(14, 17) = 0.063;
+    Corr3(14, 18) = 0.01;
+    Corr3(14, 19) = 0.04;
+    Corr3(14, 20) = -0.04;
+    Corr3(14, 21) = 0.;
+    Corr3(14, 22) = -0.16;
+    Corr3(14, 23) = -0.18;
+    Corr3(14, 24) = 0.05;
+    Corr3(14, 25) = 0.25;
+    Corr3(15, 15) = 1.;
+    Corr3(15, 16) = 0.085;
+    Corr3(15, 17) = -0.077;
+    Corr3(15, 18) = -0.02;
+    Corr3(15, 19) = -0.05;
+    Corr3(15, 20) = 0.01;
+    Corr3(15, 21) = 0.01;
+    Corr3(15, 22) = -0.07;
+    Corr3(15, 23) = 0.14;
+    Corr3(15, 24) = 0.33;
+    Corr3(15, 25) = 0.14;
+    Corr3(16, 16) = 1.;
+    Corr3(16, 17) = 0.941;
+    Corr3(16, 18) = -0.04;
+    Corr3(16, 19) = -0.02;
+    Corr3(16, 20) = 0.01;
+    Corr3(16, 21) = 0.02;
+    Corr3(16, 22) = -0.08;
+    Corr3(16, 23) = -0.1;
+    Corr3(16, 24) = -0.13;
+    Corr3(16, 25) = 0.03;
+    Corr3(17, 17) = 1.;
+    Corr3(17, 18) = -0.04;
+    Corr3(17, 19) = -0.01;
+    Corr3(17, 20) = 0.;
+    Corr3(17, 21) = 0.03;
+    Corr3(17, 22) = -0.08;
+    Corr3(17, 23) = -0.1;
+    Corr3(17, 24) = -0.18;
+    Corr3(17, 25) = 0.03;
+
+    Corr3(18,18) = 1.;
+    Corr3(18,19) = 0.71;
+    Corr3(18,20) = -0.01;
+    Corr3(18,21) = -0.02;
+    Corr3(18, 22) = 0.05;
+    Corr3(18, 23) = -0.03;
+    Corr3(18, 24) = 0.03;
+    Corr3(18, 25) = -0.03;
+    Corr3(19,19) = 1.;
+    Corr3(19,20) = -0.05;
+    Corr3(19,21) = -0.29;
+    Corr3(19, 22) = 0.06;
+    Corr3(19, 23) = -0.07;
+    Corr3(19, 24) = 0.01;
+    Corr3(19, 25) = -0.04;
+    Corr3(20,20) = 1.;
+    Corr3(20,21) = -0.15;
+    Corr3(20, 22) = 0.09;
+    Corr3(20, 23) = -0.02;
+    Corr3(20, 24) = 0.01;
+    Corr3(20, 25) = -0.02;
+    Corr3(21,21) = 1.;
+    Corr3(21, 22) = -0.03;
+    Corr3(21, 23) = 0.08;
+    Corr3(21, 24) = -0.02;
+    Corr3(21, 25) = 0.01;
+
+    Corr3(22, 22) = 1.;
+    Corr3(22, 23) = -0.14;
+    Corr3(22, 24) = 0.34;
+    Corr3(22, 25) = -0.09;
+    Corr3(23, 23) = 1.;
+    Corr3(23, 24) = -0.04;
+    Corr3(23, 25) = 0.17;
+    Corr3(24, 24) = 1.;
+    Corr3(24, 25) = -0.04;
+    Corr3(25, 25) = 1.;
+
+    corrmeas.insert(pair<string, CorrelatedGaussianObservables>("DKst0Pcomb", CorrelatedGaussianObservables(CorrData, Corr, Corr2, Corr3)));
+  }
+
 
   //-------------------------------------- Time Dependent B0 decay-------------------------------------------------------------------------
 
@@ -5432,9 +6130,10 @@ double MixingModel::Calculate_ChargedB_observables()
 
   if (comb == 0)
   {
-    // 4. PDF: ggsz-dh (UID3)
-    // Observables 6:
-    corr.ResizeTo(6);
+    // 4. GGSZ LHCb ChargedB
+    // Observables 22:
+    corr.ResizeTo(22);
+
     corr(0) = xm_dk_uid3;
     corr(1) = ym_dk_uid3;
     corr(2) = xp_dk_uid3;
@@ -5442,25 +6141,29 @@ double MixingModel::Calculate_ChargedB_observables()
     corr(4) = xi_x_dpi_uid3;
     corr(5) = xi_y_dpi_uid3;
 
-    ll1 += corrmeas.at("UID3").logweight(corr);
-  }
-  else if (comb == 3)
-  {
-    corr.ResizeTo(10);
+    corr(6) = r_dstk * cos(d_dstk + g);
+    corr(7) = r_dstk * cos(d_dstk - g);
+    corr(8) = r_dstk * sin(d_dstk + g);
+    corr(9) = r_dstk * sin(d_dstk - g);
+    corr(10) = r_dstpi / r_dstk * cos(d_dstpi - d_dstk);
+    corr(11) = r_dstpi / r_dstk * sin(d_dstpi - d_dstk);
 
-    corr(0) = xp_dkstz_230905514;
-    corr(1) = xm_dkstz_230905514;
-    corr(2) = yp_dkstz_230905514;
-    corr(3) = ym_dkstz_230905514;
-    corr(4) = xm_dk_uid3;
-    corr(5) = ym_dk_uid3;
-    corr(6) = xp_dk_uid3;
-    corr(7) = yp_dk_uid3;
-    corr(8) = xi_x_dpi_uid3;
-    corr(9) = xi_y_dpi_uid3;
+    corr(12) = r_dstk * cos(d_dstk - g);
+    corr(13) = r_dstk * sin(d_dstk - g);
+    corr(14) = r_dstk * cos(d_dstk + g);
+    corr(15) = r_dstk * sin(d_dstk + g);
+    corr(16) = r_dstpi / r_dstk * cos(d_dstpi - d_dstk);
+    corr(17) = r_dstpi / r_dstk * sin(d_dstpi - d_dstk);
 
-    ll1 += corrmeas.at("DKst0Pcomb").logweight(corr);
+    corr(18) = r_dkst * cos(d_dkst - g);
+    corr(19) = r_dkst * sin(d_dkst - g);
+    corr(20) = r_dkst * cos(d_dkst + g);
+    corr(21) = r_dkst * sin(d_dkst + g);
+
+    ll1 += corrmeas.at("GGSZ_LHCb_Cb").logweight(corr);
+
   }
+
   // 5. PDF: glwads-dkdpi-kskpi-dmix (UID4)
   // Observables 7:
   corr.ResizeTo(7);
@@ -5584,27 +6287,6 @@ double MixingModel::Calculate_ChargedB_observables()
   corr(5) = xi_y_dpi_uid3;
   ll1 += corrmeas.at("2110.12125").logweight(corr);
 
-  // GGSZ 2311.10434
-  // Observables 6:
-  corr.ResizeTo(6);
-  corr(0) = r_dstk * cos(d_dstk - g);
-  corr(1) = r_dstk * sin(d_dstk - g);
-  corr(2) = r_dstk * cos(d_dstk + g);
-  corr(3) = r_dstk * sin(d_dstk + g);
-  corr(4) = r_dstpi / r_dstk * cos(d_dstpi - d_dstk);
-  corr(5) = r_dstpi / r_dstk * sin(d_dstpi - d_dstk);
-  ll1 += corrmeas.at("2311.10434").logweight(corr);
-
-  // GGSZ 2310.04277
-  // Observables 6:
-  corr.ResizeTo(6);
-  corr(0) = r_dstk * cos(d_dstk - g);
-  corr(1) = r_dstk * cos(d_dstk + g);
-  corr(2) = r_dstk * sin(d_dstk - g);
-  corr(3) = r_dstk * sin(d_dstk + g);
-  corr(4) = r_dstpi / r_dstk * cos(d_dstpi - d_dstk);
-  corr(5) = r_dstpi / r_dstk * sin(d_dstpi - d_dstk);
-  ll1 += corrmeas.at("2310.04277").logweight(corr);
 
   // GGSZ 1908.09449
   // Observables 8:
@@ -5801,6 +6483,46 @@ double MixingModel::Calculate_neutralBdobservables()
 
     ll2 += corrmeas.at("2309.05514").logweight(corr);
   }
+  else if (comb == 3)
+  {
+
+    // 4. GGSZ LHCb ChargedB + NeutralBd
+    // Observables 26:
+    corr.ResizeTo(26);
+
+    corr(0) = xm_dk_uid3;
+    corr(1) = ym_dk_uid3;
+    corr(2) = xp_dk_uid3;
+    corr(3) = yp_dk_uid3;
+    corr(4) = xi_x_dpi_uid3;
+    corr(5) = xi_y_dpi_uid3;
+
+    corr(6) = r_dstk * cos(d_dstk + g);
+    corr(7) = r_dstk * cos(d_dstk - g);
+    corr(8) = r_dstk * sin(d_dstk + g);
+    corr(9) = r_dstk * sin(d_dstk - g);
+    corr(10) = r_dstpi / r_dstk * cos(d_dstpi - d_dstk);
+    corr(11) = r_dstpi / r_dstk * sin(d_dstpi - d_dstk);
+
+    corr(12) = r_dstk * cos(d_dstk - g);
+    corr(13) = r_dstk * sin(d_dstk - g);
+    corr(14) = r_dstk * cos(d_dstk + g);
+    corr(15) = r_dstk * sin(d_dstk + g);
+    corr(16) = r_dstpi / r_dstk * cos(d_dstpi - d_dstk);
+    corr(17) = r_dstpi / r_dstk * sin(d_dstpi - d_dstk);
+
+    corr(18) = r_dkst * cos(d_dkst - g);
+    corr(19) = r_dkst * sin(d_dkst - g);
+    corr(20) = r_dkst * cos(d_dkst + g);
+    corr(21) = r_dkst * sin(d_dkst + g);
+
+    corr(22) = xp_dkstz_230905514;
+    corr(23) = xm_dkstz_230905514;
+    corr(24) = yp_dkstz_230905514;
+    corr(25) = ym_dkstz_230905514;
+
+    ll2 += corrmeas.at("DKst0Pcomb").logweight(corr);
+  }
 
   // 9. PDF: ggsz-dkstz-lhcb-md (UID8)
   // Observables 4:
@@ -5936,7 +6658,7 @@ double MixingModel::Calculate_neutralBsobservables()
     corr(23) = afav_dkstz_k3pi_240117934Bs;
 
     ll2 += corrmeas.at("2401.17934").logweight(corr);
-  
+
   }
 
   // 11. PDF: dsk (UID10)

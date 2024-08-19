@@ -2,6 +2,7 @@ g
 rD_kpi
 dD_kpi
 beta_s
+phis
 x12
 y12
 PhiM12
@@ -10,5 +11,3 @@ qop
 qopm1
 phi
 phi12
-M12
-G12
