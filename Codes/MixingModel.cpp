@@ -7259,8 +7259,9 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
 
     obs["x"] = x * 1000;
     obs["y"] = y * 1000;
-    obs["M12"] = 0.5 * x12 / tau * 1000;
-    obs["G12"] = y12 / tau * 1000;
+    obs["M12"] = 0.5 * x12 / tau;
+    obs["G12"] = y12 / tau;
+    obs["ImM12"] = 0.5 * x12 / tau * sin(PhiM12);
   }
   else if (comb == 1)
   {
@@ -7384,8 +7385,10 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
 
     obs["x"] = x * 1000;
     obs["y"] = y * 1000;
-    obs["M12"] = 0.5 * x12 / tau * 1000;
-    obs["G12"] = y12 / tau * 1000;
+    obs["M12"] = 0.5 * x12 / tau ;
+    obs["G12"] = y12 / tau ;
+    obs["ImM12"] = 0.5 * x12 / tau * sin(PhiM12);
+
   }
   else if (comb == 2)
   {
@@ -7521,8 +7524,9 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
 
     obs["x"] = x * 1000;
     obs["y"] = y * 1000;
-    obs["M12"] = 0.5 * x12 / tau * 1000;
-    obs["G12"] = y12 / tau * 1000;
+    obs["M12"] = 0.5 * x12 / tau ;
+    obs["G12"] = y12 / tau ;
+    obs["ImM12"] = 0.5 * x12 / tau * sin(PhiM12);
   }
   else if (comb == 3)
   {
@@ -7721,8 +7725,9 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
 
     obs["x"] = x * 1000;
     obs["y"] = y * 1000;
-    obs["M12"] = 0.5 * x12 / tau * 1000; // 10^-3 ps^-1
-    obs["G12"] = y12 / tau * 1000;
+    obs["M12"] = 0.5 * x12 / tau ; // ps^-1
+    obs["G12"] = y12 / tau ;
+    obs["ImM12"] = 0.5 * x12 / tau * sin(PhiM12);
   }
 
   return ll;
