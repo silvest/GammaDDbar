@@ -6038,18 +6038,18 @@ double MixingModel::Calculate_ChargedB_observables()
 
   // 7. PDF: glwads-dkst-hh-h3pi-dmix-newvars (LHCb-PAPER-2024-023)
   // 12 Observables
-  afav_dkst_kpi = Afav(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.594);
-  acp_dkst_kk = Acp(r_dkst, d_dkst, k_dkst, 1., 2 * 0.594);
-  acp_dkst_pipi = Acp(r_dkst, d_dkst, k_dkst, 1., 2 * 0.594);
-  asup_dkst_kpi = Asup(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.594);
-  rcp_dkst_kk = Rcp_h(r_dkst, d_dkst, r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 1., 2 * 0.594);
-  rcp_dkst_pipi = Rcp_h(r_dkst, d_dkst, r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 1., 2 * 0.594);
-  rsup_dkst_kpi = Rads(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.594);
-  afav_dkst_k3pi = Afav(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
-  acp_dkst_pipipipi = Acp(r_dkst, d_dkst, k_dkst, F_pipipipi, 2 * 0.594);
-  asup_dkst_k3pi = Asup(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
-  rcp_dkst_pipipipi = Rcp_h(r_dkst, d_dkst, r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, F_pipipipi, 2 * 0.594);
-  rsup_dkst_k3pi = Rads(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.594);
+  afav_dkst_kpi = Afav(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.6);
+  acp_dkst_kk = Acp(r_dkst, d_dkst, k_dkst, 1., 2 * 0.6);
+  acp_dkst_pipi = Acp(r_dkst, d_dkst, k_dkst, 1., 2 * 0.6);
+  asup_dkst_kpi = Asup(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.6);
+  rcp_dkst_kk = Rcp_h(r_dkst, d_dkst, r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 1., 2 * 0.6);
+  rcp_dkst_pipi = Rcp_h(r_dkst, d_dkst, r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 1., 2 * 0.6);
+  rsup_dkst_kpi = Rads(r_dkst, rD_kpi, d_dkst, dD_kpi, k_dkst, 1., 2 * 0.6);
+  afav_dkst_k3pi = Afav(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.6);
+  acp_dkst_pipipipi = Acp(r_dkst, d_dkst, k_dkst, F_pipipipi, 2 * 0.6);
+  asup_dkst_k3pi = Asup(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.6);
+  rcp_dkst_pipipipi = Rcp_h(r_dkst, d_dkst, r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, F_pipipipi, 2 * 0.6);
+  rsup_dkst_k3pi = Rads(r_dkst, rD_k3pi, d_dkst, dD_k3pi, k_dkst, kD_k3pi, 2 * 0.6);
 
   // 10. PDF: glwads-dhpipi-hh-dmix (UID9)
   //  11 Observables
