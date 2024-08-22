@@ -5341,7 +5341,7 @@ void MixingModel::DefineParameters()
     AddParameter("tavemutaggedOverTauD", 1.1, 1.3, "t_{ave}^{#mu tagged}/#tau_{D}");
     AddParameter("DeltatmutaggedOverTauD", -0.01, 0.01, "#Delta t^{#mu untagged}/#tau_{D}");
     AddParameter("DeltatpitaggedOverTauD", 0.12, 0.15, "#Delta t^{#pi tagged}/#tau_{D}");
-    AddParameter("tKKCDp",6.e-13,7.5e-13,"t_{KK}^{C_{D^{+}}}");
+    AddParameter("tKKCDp",6.e-13,8e-13,"t_{KK}^{C_{D^{+}}}");
     AddParameter("tKKCDs",6.5e-13,7.3e-13,"t_{KK}^{C_{D_{s}}}");
 
 
@@ -5475,7 +5475,7 @@ void MixingModel::DefineParameters()
     AddParameter("tavemutaggedOverTauD", 1.1, 1.3, "t_{ave}^{#mu tagged}/#tau_{D}");
     AddParameter("DeltatmutaggedOverTauD", -0.01, 0.01, "#Delta t^{#mu untagged}/#tau_{D}");
     AddParameter("DeltatpitaggedOverTauD", 0.12, 0.15, "#Delta t^{#pi tagged}/#tau_{D}");
-    AddParameter("tKKCDp",6.e-13,7.5e-13,"t_{KK}^{C_{D^{+}}}");
+    AddParameter("tKKCDp",6.e-13,8e-13,"t_{KK}^{C_{D^{+}}}");
     AddParameter("tKKCDs",6.5e-13,7.3e-13,"t_{KK}^{C_{D_{s}}}");
 
     // 16. PDF: charm-kspipi (UID15)
@@ -5611,7 +5611,7 @@ void MixingModel::DefineParameters()
     AddParameter("tavemutaggedOverTauD", 1.1, 1.3, "t_{ave}^{#mu tagged}/#tau_{D}");
     AddParameter("DeltatmutaggedOverTauD", -0.01, 0.01, "#Delta t^{#mu untagged}/#tau_{D}");
     AddParameter("DeltatpitaggedOverTauD", 0.12, 0.15, "#Delta t^{#pi tagged}/#tau_{D}");
-    AddParameter("tKKCDp",6.e-13,7.5e-13,"t_{KK}^{C_{D^{+}}}");
+    AddParameter("tKKCDp",6.e-13,8e-13,"t_{KK}^{C_{D^{+}}}");
     AddParameter("tKKCDs",6.5e-13,7.3e-13,"t_{KK}^{C_{D_{s}}}");
 
 
@@ -5777,7 +5777,7 @@ void MixingModel::DefineParameters()
     AddParameter("tavemutaggedOverTauD", 1.1, 1.3, "t_{ave}^{#mu tagged}/#tau_{D}");
     AddParameter("DeltatmutaggedOverTauD", -0.01, 0.01, "#Delta t^{#mu untagged}/#tau_{D}");
     AddParameter("DeltatpitaggedOverTauD", 0.12, 0.15, "#Delta t^{#pi tagged}/#tau_{D}");
-    AddParameter("tKKCDp",6.e-13,7.5e-13,"t_{KK}^{C_{D^{+}}}");
+    AddParameter("tKKCDp",6.e-13,8e-13,"t_{KK}^{C_{D^{+}}}");
     AddParameter("tKKCDs",6.5e-13,7.3e-13,"t_{KK}^{C_{D_{s}}}");
 
 
