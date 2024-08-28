@@ -7249,8 +7249,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["phipphig12"] = remainder(PhiG12 + phi, 2. * M_PI) * r2d;
     obs["phimphig12"] = remainder(-PhiG12 + phi, 2. * M_PI) * r2d;
     obs["AD"] = AD;
-    obs["adKK"] = adKK;
-    obs["adpipi"] = adpipi;
+    obs["adKK"] = adKK * 1000;
+    obs["adpipi"] = adpipi * 1000;
     obs["qopm1"] = (qop - 1) * 100;
     obs["qop"] = qop;
     obs["phi"] = phi * r2d;
@@ -7375,8 +7375,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["phipphig12"] = remainder(PhiG12 + phi, 2. * M_PI) * r2d;
     obs["phimphig12"] = remainder(-PhiG12 + phi, 2. * M_PI) * r2d;
     obs["AD"] = AD;
-    obs["adKK"] = adKK;
-    obs["adpipi"] = adpipi;
+    obs["adKK"] = adKK * 1000;
+    obs["adpipi"] = adpipi * 1000;
     obs["qopm1"] = (qop - 1) * 100;
     obs["qop"] = qop;
     obs["phi"] = phi * r2d;
@@ -7514,8 +7514,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["phipphig12"] = remainder(PhiG12 + phi, 2. * M_PI) * r2d;
     obs["phimphig12"] = remainder(-PhiG12 + phi, 2. * M_PI) * r2d;
     obs["AD"] = AD;
-    obs["adKK"] = adKK;
-    obs["adpipi"] = adpipi;
+    obs["adKK"] = adKK * 1000;
+    obs["adpipi"] = adpipi * 1000;
     obs["qopm1"] = (qop - 1) * 100;
     obs["qop"] = qop;
     obs["phi"] = phi * r2d;
@@ -7715,8 +7715,8 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["phipphig12"] = remainder(PhiG12 + phi, 2. * M_PI) * r2d;
     obs["phimphig12"] = remainder(-PhiG12 + phi, 2. * M_PI) * r2d;
     obs["AD"] = AD;
-    obs["adKK"] = adKK;
-    obs["adpipi"] = adpipi;
+    obs["adKK"] = adKK * 1000;
+    obs["adpipi"] = adpipi * 1000;
     obs["qopm1"] = (qop - 1) * 100;
     obs["qop"] = qop;
     obs["phi"] = phi * r2d;
