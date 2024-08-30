@@ -5045,8 +5045,8 @@ void MixingModel::Add_other_meas()
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID23", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
-  // https://arxiv.org/pdf/2208.10098.pdf
-  meas.insert(pair<string, dato>("Fpipipipi_BESIII", dato(0.735, 0.015, 0.005))); // F_pipipipi
+  // https://arxiv.org/pdf/2408.16279
+  meas.insert(pair<string, dato>("Fpipipipi_BESIII", dato(0.746, 0.010, 0.004))); // F_pipipipi
 }
 // ---------------------------------------------------------
 
