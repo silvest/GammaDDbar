@@ -5150,8 +5150,8 @@ void MixingModel::DefineParameters()
     AddParameter("k_dpipipi", 0., 1., "#kappa_{D #pi #pi #pi}");
 
 
-    AddParameter("PhiM12", 0.034 -M_PI, 0.034 + M_PI - 1e-12, "#phi_{M}");
-    AddParameter("PhiG12", 0.042 -M_PI, 0.042 + M_PI - 1e-12, "#phi_{#Gamma}");
+    AddParameter("PhiM12", 0.034 -2., 0.034 + 2. - 1e-12, "#phi_{M}");
+    AddParameter("PhiG12", 0.042 -2., 0.042 + 2. - 1e-12, "#phi_{#Gamma}");
 
 
     AddParameter("adKK", -.1, .1, "a_{d}^{KK}");
@@ -5281,8 +5281,8 @@ void MixingModel::DefineParameters()
     AddParameter("d_dskpipi", -0.3 -M_PI, -0.3 + M_PI - 1e-12, "#delta_{D_s K #pi #pi}");
     AddParameter("k_dskpipi", 0., 1., "#kappa_{D_s K #pi #pi}");
 
-    AddParameter("PhiM12", 0.034 -M_PI, 0.034 + M_PI - 1e-12, "#phi_{M}");
-    AddParameter("PhiG12", 0.042 -M_PI, 0.042 + M_PI - 1e-12, "#phi_{#Gamma}");
+    AddParameter("PhiM12", 0.034 -2., 0.034 + 2. - 1e-12, "#phi_{M}");
+    AddParameter("PhiG12", 0.042 -2., 0.042 + 2. - 1e-12, "#phi_{#Gamma}");
 
     AddParameter("adKK", -.1, .1, "a_{d}^{KK}");
     AddParameter("adpipi", -.1, .1, "a_{d}^{#pi#pi}");
@@ -5378,8 +5378,8 @@ void MixingModel::DefineParameters()
     AddParameter("d_dmpi", 0.5 - M_PI, 0.5 + M_PI - 1e-12, "#delta_{D^{-} #pi}");
     AddParameter("beta", -M_PI, M_PI - 1e-12, "#beta");
 
-    AddParameter("PhiM12", 0.034 -M_PI, 0.034 + M_PI - 1e-12, "#phi_{M}");
-    AddParameter("PhiG12", 0.042 -M_PI, 0.042 + M_PI - 1e-12, "#phi_{#Gamma}");
+    AddParameter("PhiM12", 0.034 -2., 0.034 + 2. - 1e-12, "#phi_{M}");
+    AddParameter("PhiG12", 0.042 -2., 0.042 +2. - 1e-12, "#phi_{#Gamma}");
 
     AddParameter("adKK", -.1, .1, "a_{d}^{KK}");
     AddParameter("adpipi", -.1, .1, "a_{d}^{#pi#pi}");
@@ -5439,8 +5439,8 @@ void MixingModel::DefineParameters()
     AddParameter("dD_kskpi", 0.3 - M_PI, 0.3 + M_PI - 1e-12, "#delta^{D}_{K^{0}_S K #pi}");
     AddParameter("kD_kskpi", 0.3, 1., "#kappa_{K^{0}_S K #pi}");
 
-    AddParameter("PhiM12", 0.034 -M_PI, 0.034 + M_PI - 1e-12, "#phi_{M}");
-    AddParameter("PhiG12", 0.042 -M_PI, 0.042 + M_PI - 1e-12, "#phi_{#Gamma}");
+    AddParameter("PhiM12", 0.034 -2., 0.034 + 2. - 1e-12, "#phi_{M}");
+    AddParameter("PhiG12", 0.042 -2., 0.042 + 2. - 1e-12, "#phi_{#Gamma}");
 
     AddParameter("adKK", -.1, .1, "a_{d}^{KK}");
     AddParameter("adpipi", -.1, .1, "a_{d}^{#pi#pi}");

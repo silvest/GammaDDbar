@@ -23,6 +23,7 @@ int main(int argc, char ** argv)
   // combination = 1 Neutral B0d
   // combination = 2 Neutral B0s
   // combination = 3 All_modes
+  // combination = 4 only D mixing data 
   // variables_filename = name of the variables for which we want the histograms
 
   //----------------------------------------------------------------------------------------------------------------------------------
