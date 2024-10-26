@@ -63,7 +63,7 @@ public:
   r_dkpipi, d_dkpipi, k_dkpipi, r_dpipipi, d_dpipipi, k_dpipipi, //6
   l_dsk, d_dsk, phis, //3
   l_dskpipi, d_dskpipi, k_dskpipi, //3
-  l_dmpi, d_dmpi, beta, // 3
+  l_dmpi, d_dmpi, beta, phi_d, // 3
   PhiM12, PhiG12, AD, adKK, adpipi, DYKKmDYpipi, tavepitaggedOverTauD, tavemutaggedOverTauD, DeltatmutaggedOverTauD, DeltatpitaggedOverTauD, tKKCDp, tKKCDs, //12
   //59 total parameters
   F_kkpipi, //airXiv 20301.10328

@@ -3185,10 +3185,10 @@ void MixingModel::Add_NeutralBd_meas()
   // Observables 1:
   meas.insert(pair<string, dato>("UID25", dato(0.934, 0.0075, 0.024))); // k_dkstz
 
-  // CKM angle beta
-  //HFLAV 2024 https://hflav-eos.web.cern.ch/hflav-eos/triangle/moriond2024/
+  // sin(2beta)
+  // https://indico.cern.ch/event/1291157/contributions/5903548/attachments/2900988/5087304/bona-utfit.pdf
   // Observables 1:
-  meas.insert(pair<string, dato>("UID27", dato(0.3953, 0.0078, 0.))); // beta
+  meas.insert(pair<string, dato>("UID27", dato(0.699, 0.015, 0.))); // sin(phi_d=2beta)
 
   //----------------------------------------------------------------------------------------------------------------------------------
 
@@ -4220,9 +4220,9 @@ void MixingModel::Add_NeutralBs_meas()
   //-------------------------------------  Other useful inputs for the Time Dependent B0 Decay and mixing parameters -------------------------------------------------------------------------
 
   // phis
-  // PDG-like average CMS, LHCb, ATLAS 2024
+  // https://hflav-eos.web.cern.ch/hflav-eos/osc/HFLAV_2024/
   // Observables 1:
-    meas.insert(pair<string, dato>("UID26", dato(-0.057, 0.015, 0.))); // phis = - 2 beta_s
+    meas.insert(pair<string, dato>("UID26", dato(-0.060, 0.014, 0.))); // phis = - 2 beta_s J/psi-phi only
   // phis
   // https://arxiv.org/pdf/2308.01468
   // Observables 1:
@@ -5186,7 +5186,7 @@ void MixingModel::DefineParameters()
   else if (comb == 1)
   { //-------- Adding model parameters for the Neutral-Bd modes --------------------------------
 
-    AddParameter("g", -0.5,  -0.5 + M_PI + 1e-12, "#gamma");
+    AddParameter("g", -0.8, -0.8+M_PI, "#gamma");
     AddParameter("x12", 0.5e-3, 8.e-3, "x_{12}");
     AddParameter("y12", 3e-3, 9e-3, "y_{12}");
 
@@ -5214,7 +5214,7 @@ void MixingModel::DefineParameters()
 
     AddParameter("l_dmpi", 0., 0.2, "#lambda_{D^{-} #pi}");
     AddParameter("d_dmpi", 0.5 - M_PI, 0.5 + M_PI - 1e-12, "#delta_{D^{-} #pi}");
-    AddParameter("beta", -M_PI, M_PI -1e-12, "#beta");
+    AddParameter("phi_d", 0.75-2., 0.75+2., "#phi_d");
 
     AddParameter("PhiM12", -2., 2., "#phi_{M}");
     AddParameter("PhiG12", -2., 2., "#phi_{#Gamma}");
@@ -5376,10 +5376,10 @@ void MixingModel::DefineParameters()
 
     AddParameter("l_dmpi", 0., 0.4, "#lambda_{D^{-} #pi}");
     AddParameter("d_dmpi", 0.5 - M_PI, 0.5 + M_PI - 1e-12, "#delta_{D^{-} #pi}");
-    AddParameter("beta", -M_PI, M_PI - 1e-12, "#beta");
+    AddParameter("phi_d", 0.7-M_PI, 0.7+M_PI - 1e-12, "#phi_d");
 
-    AddParameter("PhiM12", 0.034 -2., 0.034 + 2. - 1e-12, "#phi_{M}");
-    AddParameter("PhiG12", 0.042 -2., 0.042 +2. - 1e-12, "#phi_{#Gamma}");
+    AddParameter("PhiM12", 0.034 - M_PI, 0.034 + M_PI - 1e-12, "#phi_{M}");
+    AddParameter("PhiG12", 0.042 - M_PI, 0.042 + M_PI - 1e-12, "#phi_{#Gamma}");
 
     AddParameter("adKK", -.1, .1, "a_{d}^{KK}");
     AddParameter("adpipi", -.1, .1, "a_{d}^{#pi#pi}");
@@ -5439,8 +5439,8 @@ void MixingModel::DefineParameters()
     AddParameter("dD_kskpi", 0.3 - M_PI, 0.3 + M_PI - 1e-12, "#delta^{D}_{K^{0}_S K #pi}");
     AddParameter("kD_kskpi", 0.3, 1., "#kappa_{K^{0}_S K #pi}");
 
-    AddParameter("PhiM12", 0.034 -2., 0.034 + 2. - 1e-12, "#phi_{M}");
-    AddParameter("PhiG12", 0.042 -2., 0.042 + 2. - 1e-12, "#phi_{#Gamma}");
+    AddParameter("PhiM12", 0.034 - M_PI, 0.034 + M_PI - 1e-12, "#phi_{M}");
+    AddParameter("PhiG12", 0.042 - M_PI, 0.042 + M_PI - 1e-12, "#phi_{#Gamma}");
 
     AddParameter("adKK", -.1, .1, "a_{d}^{KK}");
     AddParameter("adpipi", -.1, .1, "a_{d}^{#pi#pi}");
@@ -6087,11 +6087,10 @@ double MixingModel::Calculate_neutralBdobservables()
   //----------------------------------------------- Calculating time dependent B0d observables -------------------------------------------------------------------------
 
 
-  s_dmpi_uid12 = -(2 * l_dmpi * sin(d_dmpi - (2 * beta + g))) / (1 + l_dmpi * l_dmpi);
-  sb_dmpi_uid12 = (2 * l_dmpi * sin(d_dmpi + (2 * beta + g))) / (1 + l_dmpi * l_dmpi);
+  s_dmpi_uid12 = -(2 * l_dmpi * sin(d_dmpi - (phi_d + g))) / (1 + l_dmpi * l_dmpi);
+  sb_dmpi_uid12 = (2 * l_dmpi * sin(d_dmpi + (phi_d + g))) / (1 + l_dmpi * l_dmpi);
 
 
-  beta_uid27 = beta;
 
   //----------------------------------------------- Contribution to the LogLikelihood -------------------------------------------------------------------------
 
@@ -6170,7 +6169,7 @@ double MixingModel::Calculate_neutralBdobservables()
 
   ll2 += meas.at("UID25").logweight(k_dkstz_uid25);
 
-  ll2 += meas.at("UID27").logweight(beta_uid27);
+  ll2 += meas.at("UID27").logweight(sin(phi_d));
 
   return ll2;
 }
@@ -6671,7 +6670,7 @@ double MixingModel::Calculate_old_observables()
 
   // 3rd Block
   double epsI = 2.228 * sin(43.5 * M_PI / 180.) * 1.e-3; // values taken from PDG: https://pdglive.lbl.gov/ParticleGroup.action?init=0&node=MXXX020
-  double RCKM = 0.00370 * 0.04194 / 0.2251 / 0.97345 * sin(g); // values taken from UTfit: http://www.utfit.org/UTfit/ResultsSummer2023SM
+  double RCKM = 0.00384 * 0.04120 / 0.2251 / 0.97345 * sin(g); // values taken from https://indico.cern.ch/event/1291157/contributions/5903548/attachments/2900988/5087304/bona-utfit.pdf
   corr.ResizeTo(4);
   corr(0) = x;
   corr(1) = y;
@@ -6917,7 +6916,7 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     // 13. PDF: dmpi (UID12)
     l_dmpi = parameters[20];
     d_dmpi = parameters[21];
-    beta = parameters[22];
+    phi_d = parameters[22];
 
     // 15. PDF: charm-kspipi (UID14)
     PhiM12 = parameters[23];
@@ -6996,7 +6995,7 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     // Time dependent B decay chain
     obs["l_dmpi"] = l_dmpi;
     obs["d_dmpi"] = d_dmpi * r2d;
-    obs["beta"] = beta * r2d;
+    obs["beta"] = phi_d*0.5 * r2d;
 
     // Time dependent D decay and mixing
     obs["PhiM12"] = PhiM12 * r2d;
@@ -7242,7 +7241,7 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     // 13. PDF: dmpi (UID12)
     l_dmpi = parameters[44];
     d_dmpi = parameters[45];
-    beta = parameters[46];
+    phi_d = parameters[46];
 
     // 15. PDF: charm-kspipi (UID14)
     PhiM12 = parameters[47];
@@ -7360,7 +7359,7 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["k_dskpipi"] = k_dskpipi;
     obs["l_dmpi"] = l_dmpi;
     obs["d_dmpi"] = d_dmpi * r2d;
-    obs["beta"] = beta * r2d;
+    obs["beta"] = phi_d*0.5 * r2d;
 
     // Time dependent D decay and mixing
     obs["PhiM12"] = PhiM12 * r2d;
