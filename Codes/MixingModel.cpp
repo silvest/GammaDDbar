@@ -4918,8 +4918,8 @@ void MixingModel::Add_old_meas()
   CorrData.clear();
 
   CorrData.push_back(dato(0.533e-2, 0.107e-2, .045e-2)); // RD_exp_cleoc
-  CorrData.push_back(dato(0.14e-2, 0.21e-2, 0.09e-2));   // xsq_exp_cleoc
-  CorrData.push_back(dato(3.3e-2, 1.7e-2, 0.8e-2));      // y_exp_cleoc
+  CorrData.push_back(dato(0.06e-2, 0.23e-2, 0.11e-2));   // xsq_exp_cleoc
+  CorrData.push_back(dato(4.2e-2, 2.0e-2, 1.0e-2));      // y_exp_cleoc
   CorrData.push_back(dato(0.84, 0.20, 0.06));            // cd_exp_cleoc
   CorrData.push_back(dato(-0.01, 0.41, .04));            // sd_exp_cleoc
 
@@ -4955,7 +4955,7 @@ void MixingModel::Add_old_meas()
   // Observables 4:
   CorrData.clear();
 
-  CorrData.push_back(dato(0.53e-2, 0.19e-2, 0.06e-2, 0.07e-2));       // x_exp_belle_kpp
+  CorrData.push_back(dato(0.52e-2, 0.19e-2, 0.06e-2, 0.08e-2));       // x_exp_belle_kpp
   CorrData.push_back(dato(0.28e-2, 0.15e-2, 0.05e-2, 0.05e-2));       // y_exp_belle_kpp
   CorrData.push_back(dato(0.91, 0.16, 0.05, 0.06));                   // qop_exp_belle_kpp
   CorrData.push_back(dato(-6. * d2r, 11. * d2r, 3. * d2r, 4. * d2r)); // phi_exp_belle_kpp
@@ -6996,6 +6996,7 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["l_dmpi"] = l_dmpi;
     obs["d_dmpi"] = d_dmpi * r2d;
     obs["beta"] = phi_d*0.5 * r2d;
+    obs["phid"] = phi_d * r2d;
 
     // Time dependent D decay and mixing
     obs["PhiM12"] = PhiM12 * r2d;
@@ -7360,6 +7361,7 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["l_dmpi"] = l_dmpi;
     obs["d_dmpi"] = d_dmpi * r2d;
     obs["beta"] = phi_d*0.5 * r2d;
+    obs["phid"] = phi_d * r2d;
 
     // Time dependent D decay and mixing
     obs["PhiM12"] = PhiM12 * r2d;
