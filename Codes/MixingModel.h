@@ -39,6 +39,8 @@ public:
   //Histograms
   void DefineHistograms(); // Function to define the histograms to fill
 
+  void SymmetrizeUpperTriangularMatrix(TMatrixDSym& Corr); // Function to symmetrize an upper triangular matrix
+
   //Boolean variables to set the combination
   int comb; // combination variable
   // vector to copy the names of the variables to fill the relative histograms

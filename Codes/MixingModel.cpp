@@ -72,6 +72,17 @@ MixingModel::~MixingModel() { // default destructor
 };
 // ---------------------------------------------------------
 
+void MixingModel::SymmetrizeUpperTriangularMatrix(TMatrixDSym& Corr) // Function to symmetrize an upper triangular matrix
+{
+  for (int i = 0; i < Corr.GetNrows(); ++i)
+  {
+    for (int j = i + 1; j < Corr.GetNcols(); ++j)
+    {
+      Corr(j, i) = Corr(i, j);
+    }
+  }
+}
+
 // ---------------------------------------------------------
 void MixingModel::Add_ChargedB_meas()
 {
@@ -132,6 +143,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(6, 6) = 1.;
   Corr(6, 7) = -0.04;
   Corr(7, 7) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
   // Correlation Matrix (syst)
   Corr2.ResizeTo(8, 8);
   Corr2(0, 0) = 1.;
@@ -170,6 +182,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(6, 6) = 1.;
   Corr2(6, 7) = 0.26;
   Corr2(7, 7) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID0", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -207,6 +220,8 @@ void MixingModel::Add_ChargedB_meas()
   Corr(4, 4) = 1.;
   Corr(4, 5) = 0.068;
   Corr(5, 5) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
+
   // Correlation Matrix (syst)
   Corr2.ResizeTo(6, 6);
   Corr2(0, 0) = 1.;
@@ -230,6 +245,8 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(4, 4) = 1.;
   Corr2(4, 5) = 0.236;
   Corr2(5, 5) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
+
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("GLW_2301.10328", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -316,6 +333,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(9, 9) = 1.;
   Corr(9, 10) = 0.01;
   Corr(10, 10) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(11, 11);
@@ -385,6 +403,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(9, 9) = 1.;
   Corr2(9, 10) = .97;
   Corr2(10, 10) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2112.10617", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -431,6 +450,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(5, 5) = 1.;
   Corr(5, 6) = 0.06;
   Corr(6, 6) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
   // Correlation Matrix (syst)
   Corr2.ResizeTo(7, 7);
   Corr2(0, 0) = 1.;
@@ -461,6 +481,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(5, 5) = 1.;
   Corr2(5, 6) = 0.25;
   Corr2(6, 6) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID4", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -486,6 +507,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(2, 2) = 1.;
   Corr(2, 3) = 0.060;
   Corr(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (stat):
   Corr2.ResizeTo(4, 4);
@@ -499,6 +521,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(2, 2) = 1.;
   Corr2(2, 3) = 0.342;
   Corr2(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2308.05048", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -524,6 +547,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(2, 2) = 1.;
   Corr(2, 3) = 0.;
   Corr(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (stat):
   Corr2.ResizeTo(4, 4);
@@ -537,6 +561,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(2, 2) = 1.;
   Corr2(2, 3) = 0.;
   Corr2(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("Belle_PRD88_2013", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -562,6 +587,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(2, 2) = 1.;
   Corr(2, 3) = -0.032;
   Corr(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (stat):
   Corr2.ResizeTo(4, 4);
@@ -575,6 +601,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(2, 2) = 1.;
   Corr2(2, 3) = 0.;
   Corr2(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("Belle_PRL106_2011", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -621,6 +648,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(5, 5) = 1.;
   Corr(5, 6) = 0.208;
   Corr(6, 6) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
   // Correlation Matrix (syst)
   Corr2.ResizeTo(7, 7);
   Corr2(0, 0) = 1.;
@@ -651,6 +679,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(5, 5) = 1.;
   Corr2(5, 6) = -0.097;
   Corr2(6, 6) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2306.02940", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -689,6 +718,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(4, 4) = 1.;
   Corr(4, 5) = 0.095;
   Corr(5, 5) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(6, 6);
@@ -748,6 +778,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(6, 6) = 1.;
   Corr(6, 7) = -0.032;
   Corr(7, 7) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (stat):
   Corr2.ResizeTo(8, 8);
@@ -787,6 +818,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(6, 6) = 1.;
   Corr2(6, 7) = 0.;
   Corr2(7, 7) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("1908.09499", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -825,6 +857,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(4, 4) = 1.;
   Corr(4, 5) = 0.080;
   Corr(5, 5) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
   // Correlation Matrix (syst)
   Corr2.ResizeTo(6, 6);
   Corr2(0, 0) = 1.;
@@ -848,6 +881,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(4, 4) = 1.;
   Corr2(4, 5) = 0.638;
   Corr2(5, 5) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
   // Correlation Matrix (syst)
   Corr3.ResizeTo(6, 6);
   Corr3(0, 0) = 1.;
@@ -871,6 +905,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr3(4, 4) = 1.;
   Corr3(4, 5) = 0.622;
   Corr3(5, 5) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr3);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2110.12125", CorrelatedGaussianObservables(CorrData, Corr, Corr2, Corr3)));
 
@@ -908,6 +943,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(4, 4) = 1.;
   Corr(4, 5) = 0.014;
   Corr(5, 5) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
   // Correlation Matrix (syst)
   Corr2.ResizeTo(6, 6);
   Corr2(0, 0) = 1.;
@@ -931,6 +967,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(4, 4) = 1.;
   Corr2(4, 5) = -0.057;
   Corr2(5, 5) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("GGSZ_2301.10328", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -1072,7 +1109,7 @@ void MixingModel::Add_ChargedB_meas()
     Corr(20,20) = 1.;
     Corr(20,21) = -0.144;
     Corr(21,21) = 1.;
-
+    SymmetrizeUpperTriangularMatrix(Corr);
 
     // Correlation Matrix (syst)
     Corr2.ResizeTo(22, 22);
@@ -1154,6 +1191,7 @@ void MixingModel::Add_ChargedB_meas()
     Corr2(20,20) = 1.;
     Corr2(20,21) = -0.055;
     Corr2(21,21) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr2);
 
     // Correlation Matrix (syst)
     Corr3.ResizeTo(22, 22);
@@ -1417,6 +1455,7 @@ void MixingModel::Add_ChargedB_meas()
     Corr3(20,20) = 1.;
     Corr3(20,21) = -0.15;
     Corr3(21,21) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr3);
 
 
     corrmeas.insert(pair<string, CorrelatedGaussianObservables>("GGSZ_LHCb_Cb", CorrelatedGaussianObservables(CorrData, Corr, Corr2, Corr3)));
@@ -1623,6 +1662,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(16, 16) = 1.;
   Corr(16, 17) = -0.28;
   Corr(17,17) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(18, 18);
@@ -1797,6 +1837,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(16, 16) = 1.;
   Corr2(16, 17) = 0.43;
   Corr2(17, 17) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID5", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -1822,6 +1863,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(2, 2) = 1.;
   Corr(2, 3) = 0.;
   Corr(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (stat):
   Corr2.ResizeTo(4, 4);
@@ -1835,6 +1877,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(2, 2) = 1.;
   Corr2(2, 3) = 0.;
   Corr2(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("Belle_PRD73_2006", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -1890,6 +1933,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(6, 6) = 1.;
   Corr(6, 7) = 0.08;
   Corr(7, 7) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (stat):
   Corr2.ResizeTo(8, 8);
@@ -1929,6 +1973,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(6, 6) = 1.;
   Corr2(6, 7) = 0.;
   Corr2(7, 7) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("Belle_PRD81_2010", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -2033,6 +2078,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(10, 10) = 1.;
   Corr(10, 11) = 0.029;
   Corr(11, 11) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(12, 12);
@@ -2114,6 +2160,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(10, 10) = 1.;
   Corr2(10, 11) = 0.0;
   Corr2(11, 11) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCB-PAPER-2024-023-GLWADS", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -2209,6 +2256,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr(9, 9) = 1.;
   Corr(9, 10) = 0.0;
   Corr(10, 10) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(11, 11);
@@ -2278,6 +2326,7 @@ void MixingModel::Add_ChargedB_meas()
   Corr2(9, 9) = 1.;
   Corr2(9, 10) = 0.;
   Corr2(10, 10) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID9", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -2396,6 +2445,7 @@ void MixingModel::Add_NeutralBd_meas()
     Corr(10, 10) = 1.;
     Corr(10, 11) = 0.0;
     Corr(11, 11) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr);
 
     // Correlation Matrix (syst)
     Corr2.ResizeTo(12, 12);
@@ -2477,6 +2527,7 @@ void MixingModel::Add_NeutralBd_meas()
     Corr2(10, 10) = 1.;
     Corr2(10, 11) = -0.03;
     Corr2(11, 11) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr2);
 
     corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2401.17934Bd", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
   }
@@ -2505,6 +2556,7 @@ void MixingModel::Add_NeutralBd_meas()
     Corr(2, 2) = 1.;
     Corr(2, 3) = 0.;
     Corr(3, 3) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr);
 
     // Correlation Matrix (syst)
     Corr2.ResizeTo(4, 4);
@@ -2518,6 +2570,7 @@ void MixingModel::Add_NeutralBd_meas()
     Corr2(2, 2) = 1.;
     Corr2(2, 3) = -0.07;
     Corr2(3, 3) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr2);
 
     // Correlation Matrix (ext)
     Corr3.ResizeTo(4, 4);
@@ -2531,6 +2584,7 @@ void MixingModel::Add_NeutralBd_meas()
     Corr3(2, 2) = 1.;
     Corr3(2, 3) = -0.04;
     Corr3(3, 3) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr3);
 
     corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2309.05514", CorrelatedGaussianObservables(CorrData, Corr, Corr2, Corr3)));
   }
@@ -2692,6 +2746,7 @@ void MixingModel::Add_NeutralBd_meas()
     Corr(24, 24) = 1.;
     Corr(24, 25) = 0.;
     Corr(25, 25) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr);
 
 
     // Correlation Matrix (syst)
@@ -2786,6 +2841,7 @@ void MixingModel::Add_NeutralBd_meas()
     Corr2(24, 24) = 1.;
     Corr2(24, 25) = -0.07;
     Corr2(25, 25) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr2);
 
     // Correlation Matrix (syst)
     Corr3.ResizeTo(26, 26);
@@ -3147,6 +3203,7 @@ void MixingModel::Add_NeutralBd_meas()
     Corr3(24, 24) = 1.;
     Corr3(24, 25) = -0.04;
     Corr3(25, 25) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr3);
 
     corrmeas.insert(pair<string, CorrelatedGaussianObservables>("DKst0Pcomb", CorrelatedGaussianObservables(CorrData, Corr, Corr2, Corr3)));
   }
@@ -3167,12 +3224,14 @@ void MixingModel::Add_NeutralBd_meas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = 0.6;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(2, 2);
   Corr2(0, 0) = 1.;
   Corr2(0, 1) = -0.41;
   Corr2(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID12", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -3304,6 +3363,7 @@ void MixingModel::Add_NeutralBs_meas()
     Corr(10, 10) = 1.;
     Corr(10, 11) = -0.01;
     Corr(11, 11) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr);
 
     // Correlation Matrix (syst)
     Corr2.ResizeTo(12, 12);
@@ -3385,6 +3445,7 @@ void MixingModel::Add_NeutralBs_meas()
     Corr2(10, 10) = 1.;
     Corr2(10, 11) = -0.03;
     Corr2(11, 11) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr2);
 
     corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2401.17934Bs", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -3745,6 +3806,7 @@ void MixingModel::Add_NeutralBs_meas()
     Corr(22, 22) = 1.;
     Corr(22, 23) = -0.01;
     Corr(23, 23) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr);
 
 
 
@@ -4057,6 +4119,7 @@ void MixingModel::Add_NeutralBs_meas()
     Corr2(22, 22) = 1.;
     Corr2(22, 23) = -0.03;
     Corr2(23, 23) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr2);
 
     corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2401.17934", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4093,6 +4156,7 @@ void MixingModel::Add_NeutralBs_meas()
   Corr(3, 3) = 1.;
   Corr(3, 4) = 0.001;
   Corr(4, 4) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(5, 5);
@@ -4111,6 +4175,7 @@ void MixingModel::Add_NeutralBs_meas()
   Corr2(3, 3) = 1.;
   Corr2(3, 4) = 0.02;
   Corr2(4, 4) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("BSDSKRun1", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4142,6 +4207,7 @@ void MixingModel::Add_NeutralBs_meas()
   Corr(3, 3) = 1.;
   Corr(3, 4) = 0.006;
   Corr(4, 4) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(5, 5);
@@ -4160,6 +4226,7 @@ void MixingModel::Add_NeutralBs_meas()
   Corr2(3, 3) = 1.;
   Corr2(3, 4) = 0.085;
   Corr2(4, 4) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("BSDSKRun2", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4194,6 +4261,7 @@ void MixingModel::Add_NeutralBs_meas()
   Corr(3, 3) = 1.;
   Corr(3, 4) = 0.014;
   Corr(4, 4) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(5, 5);
@@ -4212,6 +4280,7 @@ void MixingModel::Add_NeutralBs_meas()
   Corr2(3, 3) = 1.;
   Corr2(3, 4) = -0.278;
   Corr2(4, 4) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID11", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4261,6 +4330,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr(1, 1) = 1.;
   Corr(1, 2) = 0.36;
   Corr(2, 2) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   Corr2.ResizeTo(3, 3);
   Corr2(0, 0) = 1.;
@@ -4269,6 +4339,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr2(1, 1) = 1.;
   Corr2(1, 2) = 1.;
   Corr2(2, 2) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("1405.2797_1610.09476_Acp", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4311,6 +4382,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr(1, 1) = 1.;
   Corr(1, 2) = 0.25;
   Corr(2, 2) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(3, 3);
@@ -4330,11 +4402,13 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = 0.05;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   Corr2.ResizeTo(2, 2);
   Corr2(0, 0) = 1.;
   Corr2(0, 1) = 0.28;
   Corr2(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("ACPKK", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4424,6 +4498,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr(3, 3) = 1.;
   Corr(3, 4) = -0.967;
   Corr(4, 4) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(5, 5);
@@ -4442,6 +4517,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr2(3, 3) = 1.;
   Corr2(3, 4) = 0.;
   Corr2(4, 4) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID30", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4509,6 +4585,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr(7, 7) = 1.;
   Corr(7, 8) = -94.3e-2;
   Corr(8, 8) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(9, 9);
@@ -4530,12 +4607,14 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = 0.38;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(2, 2);
   Corr2(0, 0) = 1.;
   Corr2(0, 1) = 0.16;
   Corr2(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("BESIII_Adk", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4550,6 +4629,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = 0.02;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("BESIII_rDkpi_polar", CorrelatedGaussianObservables(CorrData, Corr)));
 
@@ -4577,6 +4657,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr(2, 2) = 1.;
   Corr(2, 3) = -0.13;
   Corr(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(4, 4);
@@ -4590,6 +4671,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr2(2, 2) = 1.;
   Corr2(2, 3) = 0.14;
   Corr2(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID14", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4614,6 +4696,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr(2, 2) = 1.;
   Corr(2, 3) = 0.07;
   Corr(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(4, 4);
@@ -4627,6 +4710,7 @@ void MixingModel::Add_time_dependent_Dmeas()
   Corr2(2, 2) = 1.;
   Corr2(2, 3) = 0.33;
   Corr2(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCb_kspp_Au2022", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4659,12 +4743,14 @@ void MixingModel::Add_other_meas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = 0.;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(2, 2);
   Corr2(0, 0) = 1.;
   Corr2(0, 1) = 0.;
   Corr2(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID21", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4681,12 +4767,14 @@ void MixingModel::Add_other_meas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = 0.;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(2, 2);
   Corr2(0, 0) = 1.;
   Corr2(0, 1) = 0.;
   Corr2(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("2409.07197_F_BESIII", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4748,6 +4836,7 @@ void MixingModel::Add_other_meas()
   Corr(4, 4) = 1.;
   Corr(4, 5) = -0.12;
   Corr(5, 5) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(6, 6);
@@ -4772,6 +4861,7 @@ void MixingModel::Add_other_meas()
   Corr2(4, 4) = 1.;
   Corr2(4, 5) = 0.;
   Corr2(5, 5) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID19", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4802,6 +4892,7 @@ void MixingModel::Add_other_meas()
   Corr(1, 1) = 1.;
   Corr(1, 2) = -0.5;
   Corr(2, 2) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(3, 3);
@@ -4811,6 +4902,7 @@ void MixingModel::Add_other_meas()
   Corr2(1, 1) = 1.;
   Corr2(1, 2) = 0.;
   Corr2(2, 2) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID23", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -4846,6 +4938,7 @@ void MixingModel::Add_old_meas()
   Corr(1, 1) = 1.;
   Corr(1, 2) = -0.94;
   Corr(2, 2) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kpi_babar_plus", CorrelatedGaussianObservables(CorrData, Corr)));
 
@@ -4867,6 +4960,7 @@ void MixingModel::Add_old_meas()
   Corr(1, 1) = 1.;
   Corr(1, 2) = -0.94;
   Corr(2, 2) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kpi_babar_minus", CorrelatedGaussianObservables(CorrData, Corr)));
 
@@ -4888,6 +4982,7 @@ void MixingModel::Add_old_meas()
   Corr(1, 1) = 1.;
   Corr(1, 2) = -0.909;
   Corr(2, 2) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kpi_belle_plus",
                                                               CorrelatedGaussianObservables(CorrData, Corr)));
@@ -4908,6 +5003,7 @@ void MixingModel::Add_old_meas()
   Corr(1, 1) = 1.;
   Corr(1, 2) = -0.909;
   Corr(2, 2) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kpi_belle_minus", CorrelatedGaussianObservables(CorrData, Corr)));
 
@@ -4940,6 +5036,7 @@ void MixingModel::Add_old_meas()
   Corr(3, 3) = 1.;
   Corr(3, 4) = 0.04;
   Corr(4, 4) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("cleoc", CorrelatedGaussianObservables(CorrData, Corr)));
 
@@ -4972,6 +5069,7 @@ void MixingModel::Add_old_meas()
   Corr(2, 2) = 1.;
   Corr(2, 3) = 0.044;
   Corr(3, 3) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kpp_belle", CorrelatedGaussianObservables(CorrData, Corr)));
 
@@ -4988,12 +5086,14 @@ void MixingModel::Add_old_meas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = 0.37;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   // Correlation Matrix (syst)
   Corr2.ResizeTo(2, 2);
   Corr2(0, 0) = 1.;
   Corr2(0, 1) = 0.;
   Corr2(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr2);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID13", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
@@ -5011,6 +5111,7 @@ void MixingModel::Add_old_meas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = 0.0615;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kppkk", CorrelatedGaussianObservables(CorrData, Corr)));
 
@@ -5033,6 +5134,7 @@ void MixingModel::Add_old_meas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = -0.006;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kppp0_Babar", CorrelatedGaussianObservables(CorrData, Corr)));
 
@@ -5053,6 +5155,7 @@ void MixingModel::Add_old_meas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = -0.69;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kpp_babar_plus", CorrelatedGaussianObservables(CorrData, Corr)));
 
@@ -5069,6 +5172,7 @@ void MixingModel::Add_old_meas()
   Corr(0, 0) = 1.;
   Corr(0, 1) = -0.66;
   Corr(1, 1) = 1.;
+  SymmetrizeUpperTriangularMatrix(Corr);
 
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("kpp_babar_minus", CorrelatedGaussianObservables(CorrData, Corr)));
 
