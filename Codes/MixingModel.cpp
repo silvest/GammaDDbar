@@ -8288,6 +8288,29 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["M12"] = 0.5 * x12 / tau ; // ps^-1
     obs["G12"] = y12 / tau ;
     obs["ImM12"] = 0.5 * x12 / tau * sin(PhiM12);
+
+
+    // Other parameters
+    obs["DYKKmDYpipi"] = DYKKmDYpipi*1000; // permille
+    obs["tavepitaggedOverTauD"] = tavepitaggedOverTauD;
+    obs["tavemutaggedOverTauD"] = tavemutaggedOverTauD;
+    obs["DeltatmutaggedOverTauD"] = DeltatmutaggedOverTauD;
+    obs["DeltatpitaggedOverTauD"] = DeltatpitaggedOverTauD;
+    obs["tKKCDp"] = tKKCDp*1e12;
+    obs["tKKCDs"] = tKKCDs*1e12;
+    obs["tauKK_DAcp_Run1_sl"] = tauKK_DAcp_Run1_sl;
+    obs["taupipi_DAcp_Run1_sl"] = taupipi_DAcp_Run1_sl;
+    obs["tauKK_Acp_Run1_sl"] = tauKK_Acp_Run1_sl;
+    obs["tauKK_DAcp_Run1_pi"] = tauKK_DAcp_Run1_pi;
+    obs["taupipi_DAcp_Run1_pi"] = taupipi_DAcp_Run1_pi;
+    obs["tauKK_Acp_Run1_pi"] = tauKK_Acp_Run1_pi;
+    obs["tauKK_Acp_CDF"] = tauKK_Acp_CDF;
+    obs["taupipi_Acp_CDF"] = taupipi_Acp_CDF;
+    obs["l_dstarmpi"] = l_dstarmpi;
+    obs["d_dstarmpi"] = d_dstarmpi*180./M_PI;
+    obs["l_dmrho"] = l_dmrho;
+    obs["d_dmrho"] = d_dmrho*180./M_PI;
+
   }
   else if (comb == 4)
   {
