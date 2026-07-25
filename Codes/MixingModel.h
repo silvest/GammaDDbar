@@ -85,6 +85,7 @@ public:
   //Combination Observables
   double  acp_dk_uid0, acp_dpi_uid0, afav_dk_uid0, rcp_uid0, rm_dk_uid0, rm_dpi_uid0, rp_dk_uid0, rp_dpi_uid0, //UID0
   rp_dk_211210617, rm_dk_211210617, acp_dk_kkpi0_211210617, acp_dk_pipipi0_211210617, acp_dpi_kkpi0_211210617, acp_dpi_pipipi0_211210617, afav_dk_kpipi0_211210617, rp_dpi_211210617, rm_dpi_211210617, rcp_kkpi0_211210617, rcp_pipipi0_211210617, //2112.10617
+  x_dk, y_dk, x_dpi, y_dpi, 
   xm_dk_uid3, ym_dk_uid3, xp_dk_uid3, yp_dk_uid3, xi_x_dpi_uid3, xi_y_dpi_uid3, //UID3
   afav_dpi_kskpi_uid4, asup_dpi_kskpi_uid4, afav_dk_kskpi_uid4, asup_dk_kskpi_uid4, rfavsup_dpi_kskpi_uid4, rfav_dkdpi_kskpi_uid4, rsup_dkdpi_kskpi_uid4, //UID4
   acp_dstk_dg_uid5, acp_dstk_dp_uid5, afav_dstk_dg_uid5, afav_dstk_dp_uid5, rcp_dg_uid5, rcp_dp_uid5, rm_dstk_dg_uid5, rm_dstk_dp_uid5,  rp_dstk_dg_uid5, rp_dstk_dp_uid5, acp_dstpi_dg_uid5, acp_dstpi_dp_uid5,
