@@ -19,7 +19,16 @@ class MixingModel : public BCModel {
 public:
 
   // Constructors and destructor
-  MixingModel(vector<string> nParam, int combination);
+  enum class K3piInputMode { ConservativeSummaries, QuadraticReference };
+  enum class K3piSummaryErrors { AverageSides, LargerSide };
+
+  // Default: full 18D Run-2 CPV Gaussian + weighted 4D/8D hadronic summaries.
+  // Reference: original inclusive UID19 + Run-2 Q+/Q- marginal, no bin parameters.
+  // UID18 is excluded in both modes. Weight is fixed configuration, not a fit parameter.
+  MixingModel(vector<string> nParam, int combination,
+              K3piInputMode k3piMode = K3piInputMode::ConservativeSummaries,
+              double inclusiveHadronicWeight = 0.5,
+              K3piSummaryErrors summaryErrors = K3piSummaryErrors::AverageSides);
   ~MixingModel();
 
   // Methods to overload, see file MixingModel.cpp
@@ -75,6 +84,10 @@ public:
   tauKK_DAcp_Run1_pi, taupipi_DAcp_Run1_pi, tauKK_Acp_Run1_pi,
   tauKK_Acp_CDF, taupipi_Acp_CDF;
 
+  // Four-bin D -> K3pi hadronic nuisance parameters for arXiv:2510.04963
+  double rD_k3pi_bin[4]{}, dD_k3pi_bin[4]{}, kD_k3pi_bin[4]{};
+
+
   //old parameter
   double Rd, Rdkp, d; // rdkpi^2
 
@@ -107,7 +120,6 @@ public:
   xcp_uid15, ycp_uid15, dx_uid15, dy_uid15, //UID15
   Rdp_uid16, yp_uid16, xpsq_uid16, Rdm_uid16, ym_uid16, xmsq_uid16, //UID16
   dtotau_uid17, dacp_uid17, //UID17
-  k3pi_uid18, //UID18
   kD_k3pi_uid19, dD_k3pi_uid19, kD_kpipi0_uid19, dD_kpipi0_uid19, rD_k3pi_uid19, rD_kpipi0_uid19, //UID19
   F_pipipipi_uid20, //UID20
   F_pipipi0_uid21, F_kkpi0_uid21, //UID21
@@ -184,6 +196,11 @@ public:
   double x_minus(double delta_D);
 
 private:
+  K3piInputMode k3piMode;
+  double inclusiveHadronicWeight;
+  K3piSummaryErrors summaryErrors;
+  void Add_K3pi_hadronic_summaries();
+  double Calculate_K3pi_hadronic_summaries();
   double d2r, r2d;
   double tau; // Mean lifetime
 

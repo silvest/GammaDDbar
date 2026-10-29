@@ -4,12 +4,32 @@
 #include <BAT/BCGaussianPrior.h>
 
 #include <TRandom3.h>
+#include <stdexcept>
+#include <algorithm>
 using namespace std;
 
 // ---------------------------------------------------------
 
-MixingModel::MixingModel(std::vector<string> nParam, int combination) : BCModel(), histos(obs)
+MixingModel::MixingModel(std::vector<string> nParam, int combination,
+                         K3piInputMode mode, double weight, K3piSummaryErrors errors)
+    : BCModel(), histos(obs), k3piMode(mode), inclusiveHadronicWeight(weight),
+      summaryErrors(errors)
 {
+
+  if (combination < 0 || combination > 4)
+    throw std::invalid_argument("MixingModel combination must be in [0,4]");
+  if (mode != K3piInputMode::ConservativeSummaries && mode != K3piInputMode::QuadraticReference)
+    throw std::invalid_argument("Invalid K3pi input mode");
+  if (!std::isfinite(weight) || weight <= 0. || weight >= 1.)
+    throw std::invalid_argument("K3pi inclusive hadronic weight must lie strictly between zero and one");
+  if (errors != K3piSummaryErrors::AverageSides && errors != K3piSummaryErrors::LargerSide)
+    throw std::invalid_argument("Invalid K3pi summary error prescription");
+  if (mode == K3piInputMode::QuadraticReference) {
+    for (const auto& name : nParam)
+      if (name.find("rD_k3pi_bin") == 0 || name.find("dD_k3pi_bin") == 0 ||
+          name.find("kD_k3pi_bin") == 0)
+        throw std::invalid_argument("K3pi bin histograms are unavailable in QuadraticReference mode");
+  }
 
   //------------------------------------------ Setting the auxiliary variables --------------------------------------------------------------------------
 
@@ -5118,6 +5138,107 @@ void MixingModel::Add_time_dependent_Dmeas()
   corrmeas.insert(pair<string, CorrelatedGaussianObservables>("LHCb_kspp_Au2022", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
 
+  //-------------------------------------- D -> K3pi, LHCb Run 2 CPV -------------------------------------------------------------------------
+  // arXiv:2510.04963, Table 4 with statistical/systematic correlations from Tables 12/13.
+  // IMPORTANT: this is the measurement-level likelihood chi2_mix only.  Do NOT add the
+  // interpreted (x,y,Delta x,Delta y) result of Table 9 on top of it.
+  // Observable order:
+  //   Q+, r1+,r2+,r3+,r4+, (kappa y'+)1..4,
+  //   Q-, r1-,r2-,r3-,r4-, (kappa y'-)1..4,
+  // with Q+/- = (x+/-)^2 + (y+/-)^2.
+  CorrData.clear();
+  CorrData.push_back(dato( 6.1e-5, 4.2e-5, 1.3e-5));   // Q+
+  CorrData.push_back(dato( 5.662e-2, 0.066e-2, 0.029e-2)); // r1+
+  CorrData.push_back(dato( 6.036e-2, 0.066e-2, 0.030e-2)); // r2+
+  CorrData.push_back(dato( 5.762e-2, 0.068e-2, 0.031e-2)); // r3+
+  CorrData.push_back(dato( 4.590e-2, 0.075e-2, 0.044e-2)); // r4+
+  CorrData.push_back(dato(-4.16e-3, 1.08e-3, 0.29e-3)); // (kappa y'+)1
+  CorrData.push_back(dato(-4.97e-3, 1.05e-3, 0.32e-3)); // (kappa y'+)2
+  CorrData.push_back(dato(-3.39e-3, 1.08e-3, 0.34e-3)); // (kappa y'+)3
+  CorrData.push_back(dato( 0.51e-3, 1.24e-3, 0.41e-3)); // (kappa y'+)4
+  CorrData.push_back(dato( 6.8e-5, 4.2e-5, 1.3e-5));   // Q-
+  CorrData.push_back(dato( 5.625e-2, 0.066e-2, 0.029e-2)); // r1-
+  CorrData.push_back(dato( 5.884e-2, 0.067e-2, 0.030e-2)); // r2-
+  CorrData.push_back(dato( 5.794e-2, 0.067e-2, 0.031e-2)); // r3-
+  CorrData.push_back(dato( 4.648e-2, 0.074e-2, 0.044e-2)); // r4-
+  CorrData.push_back(dato(-4.30e-3, 1.08e-3, 0.29e-3)); // (kappa y'-)1
+  CorrData.push_back(dato(-6.53e-3, 1.08e-3, 0.32e-3)); // (kappa y'-)2
+  CorrData.push_back(dato(-2.87e-3, 1.06e-3, 0.34e-3)); // (kappa y'-)3
+  CorrData.push_back(dato( 0.84e-3, 1.21e-3, 0.42e-3)); // (kappa y'-)4
+
+  // Lower-triangular correlation coefficients, row by row.
+  static const double corr2510StatLower[171] = {
+      1.000, 0.651, 1.000, 0.608, 0.427, 1.000, 0.628, 0.437, 0.411,
+      1.000, 0.716, 0.490, 0.459, 0.472, 1.000, 0.873, 0.897, 0.553,
+      0.569, 0.645, 1.000, 0.847, 0.575, 0.891, 0.554, 0.627, 0.764,
+      1.000, 0.861, 0.583, 0.545, 0.891, 0.636, 0.775, 0.753, 1.000,
+      0.910, 0.611, 0.571, 0.588, 0.904, 0.815, 0.792, 0.804, 1.000,
+      -0.114, -0.063, -0.059, -0.061, -0.071, -0.087, -0.083, -0.086, -0.094,
+      1.000, -0.061, -0.057, -0.056, -0.055, -0.055, -0.062, -0.062, -0.061,
+      -0.061, 0.663, 1.000, -0.056, -0.056, -0.055, -0.054, -0.053, -0.059,
+      -0.059, -0.058, -0.057, 0.620, 0.424, 1.000, -0.060, -0.055, -0.054,
+      -0.054, -0.053, -0.059, -0.059, -0.059, -0.059, 0.638, 0.436, 0.409,
+      1.000, -0.070, -0.056, -0.054, -0.054, -0.059, -0.066, -0.066, -0.066,
+      -0.068, 0.731, 0.489, 0.457, 0.471, 1.000, -0.085, -0.062, -0.059,
+      -0.060, -0.066, -0.080, -0.079, -0.079, -0.082, 0.889, 0.898, 0.551,
+      0.568, 0.644, 1.000, -0.083, -0.062, -0.059, -0.059, -0.065, -0.079,
+      -0.079, -0.078, -0.080, 0.859, 0.572, 0.895, 0.551, 0.624, 0.760,
+      1.000, -0.085, -0.061, -0.058, -0.059, -0.066, -0.079, -0.079, -0.079,
+      -0.081, 0.879, 0.583, 0.544, 0.890, 0.637, 0.775, 0.751, 1.000,
+      -0.091, -0.061, -0.058, -0.059, -0.068, -0.082, -0.081, -0.081, -0.086,
+      0.929, 0.611, 0.569, 0.588, 0.903, 0.815, 0.789, 0.805, 1.000
+  };
+  static const double corr2510SystLower[171] = {
+      1.000, 0.620, 1.000, 0.653, 0.422, 1.000, 0.582, 0.367, 0.404,
+      1.000, 0.689, 0.436, 0.447, 0.449, 1.000, 0.862, 0.893, 0.565,
+      0.496, 0.603, 1.000, 0.883, 0.548, 0.902, 0.520, 0.608, 0.766,
+      1.000, 0.851, 0.517, 0.561, 0.868, 0.612, 0.725, 0.755, 1.000,
+      0.919, 0.564, 0.591, 0.553, 0.890, 0.792, 0.810, 0.795, 1.000,
+      1.000, 0.620, 0.653, 0.582, 0.689, 0.862, 0.883, 0.851, 0.919,
+      1.000, 0.620, 1.000, 0.422, 0.367, 0.436, 0.894, 0.548, 0.517,
+      0.564, 0.620, 1.000, 0.654, 0.422, 1.000, 0.404, 0.447, 0.565,
+      0.903, 0.561, 0.592, 0.654, 0.422, 1.000, 0.582, 0.367, 0.405,
+      1.000, 0.449, 0.496, 0.519, 0.868, 0.553, 0.582, 0.367, 0.404,
+      1.000, 0.689, 0.436, 0.447, 0.449, 1.000, 0.603, 0.608, 0.612,
+      0.890, 0.689, 0.436, 0.447, 0.449, 1.000, 0.862, 0.893, 0.565,
+      0.496, 0.603, 1.000, 0.766, 0.725, 0.792, 0.862, 0.893, 0.565,
+      0.496, 0.603, 1.000, 0.883, 0.548, 0.902, 0.519, 0.607, 0.766,
+      1.000, 0.755, 0.810, 0.883, 0.548, 0.902, 0.519, 0.607, 0.766,
+      1.000, 0.851, 0.517, 0.561, 0.868, 0.612, 0.725, 0.755, 1.000,
+      0.795, 0.851, 0.517, 0.562, 0.868, 0.612, 0.725, 0.755, 1.000,
+      0.919, 0.564, 0.591, 0.553, 0.890, 0.792, 0.810, 0.795, 1.000,
+      0.919, 0.564, 0.592, 0.553, 0.890, 0.792, 0.810, 0.795, 1.000
+  };
+
+  Corr.ResizeTo(18, 18);
+  Corr2.ResizeTo(18, 18);
+  int k2510 = 0;
+  for (int i2510 = 0; i2510 < 18; ++i2510) {
+    for (int j2510 = 0; j2510 <= i2510; ++j2510) {
+      Corr(i2510, j2510) = Corr(j2510, i2510) = corr2510StatLower[k2510];
+      Corr2(i2510, j2510) = Corr2(j2510, i2510) = corr2510SystLower[k2510];
+      ++k2510;
+    }
+  }
+
+  if (k3piMode == K3piInputMode::ConservativeSummaries) {
+    corrmeas.insert(pair<string, CorrelatedGaussianObservables>(
+        "LHCb_2510.04963_CPV", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+  } else {
+    // Gaussian MARGINAL on entries 0 and 9, not a conditional likelihood.
+    const int qIndex[2] = {0, 9};
+    vector<dato> qData{CorrData[0], CorrData[9]};
+    TMatrixDSym qStat(2), qSyst(2);
+    for (int i = 0; i < 2; ++i)
+      for (int j = 0; j < 2; ++j) {
+        qStat(i,j) = Corr(qIndex[i], qIndex[j]);
+        qSyst(i,j) = Corr2(qIndex[i], qIndex[j]);
+      }
+    corrmeas.insert(pair<string, CorrelatedGaussianObservables>(
+        "LHCb_2510.04963_Qpm", CorrelatedGaussianObservables(qData, qStat, qSyst)));
+  }
+
+
   //---------------------------------------------------------------------------------------------------------------
 
 
@@ -5213,69 +5334,76 @@ void MixingModel::Add_other_meas()
 
   //-------------------------------------- D -> K3pi & D -> Kpipi0 -------------------------------------------------------------------------
 
-  // D -> K3pi decay parameters, LHCb + BESIII + Cleo-C combo
-  // https://arxiv.org/pdf/2103.05988
-  // Observables 6:
-  CorrData.clear();
-  CorrData.push_back(dato(0.445, 0.095, 0.));        // kD_k3pi
-  CorrData.push_back(dato(166 * d2r, 23 * d2r, 0.)); // dD_k3pi
-  CorrData.push_back(dato(0.79, 0.04, 0.));          // kD_kpipi0
-  CorrData.push_back(dato(196 * d2r, 11 * d2r, 0.)); // dD_kpipi0
-  CorrData.push_back(dato(0.0550, 0.0007, 0.));      // rD_k3pi
-  CorrData.push_back(dato(0.0441, 0.0011, 0.));      // rD_kpipi0
+  if (k3piMode == K3piInputMode::ConservativeSummaries) {
+    Add_K3pi_hadronic_summaries();
+  } else {
+    // Validation reference: reproduce the ORIGINAL UID19 numbers, including
+    // their original Gaussian approximation. Do not use this with the new summaries.
+    // D -> K3pi decay parameters, LHCb + BESIII + Cleo-C combo
+    // https://arxiv.org/pdf/2103.05988
+    // Observables 6:
+    CorrData.clear();
+    CorrData.push_back(dato(0.445, 0.095, 0.));        // kD_k3pi
+    CorrData.push_back(dato(166 * d2r, 23 * d2r, 0.)); // dD_k3pi
+    CorrData.push_back(dato(0.79, 0.04, 0.));          // kD_kpipi0
+    CorrData.push_back(dato(196 * d2r, 11 * d2r, 0.)); // dD_kpipi0
+    CorrData.push_back(dato(0.0550, 0.0007, 0.));      // rD_k3pi
+    CorrData.push_back(dato(0.0441, 0.0011, 0.));      // rD_kpipi0
 
-  // Correlation Matrix (stat):
-  Corr.ResizeTo(6, 6);
-  Corr(0, 0) = 1.;
-  Corr(0, 1) = -0.75;
-  Corr(0, 2) = 0.;
-  Corr(0, 3) = -0.07;
-  Corr(0, 4) = 0.52;
-  Corr(0, 5) = -0.06;
-  Corr(1, 1) = 1.;
-  Corr(1, 2) = 0.03;
-  Corr(1, 3) = 0.17;
-  Corr(1, 4) = -0.42;
-  Corr(1, 5) = 0.01;
-  Corr(2, 2) = 1.;
-  Corr(2, 3) = 0.19;
-  Corr(2, 4) = -0.01;
-  Corr(2, 5) = -0.01;
-  Corr(3, 3) = 1.;
-  Corr(3, 4) = -0.02;
-  Corr(3, 5) = 0.25;
-  Corr(4, 4) = 1.;
-  Corr(4, 5) = -0.12;
-  Corr(5, 5) = 1.;
-  SymmetrizeUpperTriangularMatrix(Corr);
+    // Correlation Matrix (stat):
+    Corr.ResizeTo(6, 6);
+    Corr(0, 0) = 1.;
+    Corr(0, 1) = -0.75;
+    Corr(0, 2) = 0.;
+    Corr(0, 3) = -0.07;
+    Corr(0, 4) = 0.52;
+    Corr(0, 5) = -0.06;
+    Corr(1, 1) = 1.;
+    Corr(1, 2) = 0.03;
+    Corr(1, 3) = 0.17;
+    Corr(1, 4) = -0.42;
+    Corr(1, 5) = 0.01;
+    Corr(2, 2) = 1.;
+    Corr(2, 3) = 0.19;
+    Corr(2, 4) = -0.01;
+    Corr(2, 5) = -0.01;
+    Corr(3, 3) = 1.;
+    Corr(3, 4) = -0.02;
+    Corr(3, 5) = 0.25;
+    Corr(4, 4) = 1.;
+    Corr(4, 5) = -0.12;
+    Corr(5, 5) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr);
 
-  // Correlation Matrix (syst)
-  Corr2.ResizeTo(6, 6);
-  Corr2(0, 0) = 1.;
-  Corr2(0, 1) = 0.;
-  Corr2(0, 2) = 0.;
-  Corr2(0, 3) = 0.;
-  Corr2(0, 4) = 0.;
-  Corr2(0, 5) = 0.;
-  Corr2(1, 1) = 1.;
-  Corr2(1, 2) = 0.;
-  Corr2(1, 3) = 0.;
-  Corr2(1, 4) = 0.;
-  Corr2(1, 5) = 0.;
-  Corr2(2, 2) = 1.;
-  Corr2(2, 3) = 0.;
-  Corr2(2, 4) = 0.;
-  Corr2(2, 5) = 0.;
-  Corr2(3, 3) = 1.;
-  Corr2(3, 4) = 0.;
-  Corr2(3, 5) = 0.;
-  Corr2(4, 4) = 1.;
-  Corr2(4, 5) = 0.;
-  Corr2(5, 5) = 1.;
-  SymmetrizeUpperTriangularMatrix(Corr2);
+    // Correlation Matrix (syst)
+    Corr2.ResizeTo(6, 6);
+    Corr2(0, 0) = 1.;
+    Corr2(0, 1) = 0.;
+    Corr2(0, 2) = 0.;
+    Corr2(0, 3) = 0.;
+    Corr2(0, 4) = 0.;
+    Corr2(0, 5) = 0.;
+    Corr2(1, 1) = 1.;
+    Corr2(1, 2) = 0.;
+    Corr2(1, 3) = 0.;
+    Corr2(1, 4) = 0.;
+    Corr2(1, 5) = 0.;
+    Corr2(2, 2) = 1.;
+    Corr2(2, 3) = 0.;
+    Corr2(2, 4) = 0.;
+    Corr2(2, 5) = 0.;
+    Corr2(3, 3) = 1.;
+    Corr2(3, 4) = 0.;
+    Corr2(3, 5) = 0.;
+    Corr2(4, 4) = 1.;
+    Corr2(4, 5) = 0.;
+    Corr2(5, 5) = 1.;
+    SymmetrizeUpperTriangularMatrix(Corr2);
 
-  corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID19", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
+    corrmeas.insert(pair<string, CorrelatedGaussianObservables>("UID19", CorrelatedGaussianObservables(CorrData, Corr, Corr2)));
 
+
+  }
 
   //---------------------------------------------------------------------------------------------------------------
 
@@ -5592,10 +5720,8 @@ void MixingModel::Add_old_meas()
 
   //-------------------------------------- D -> K3pi -------------------------------------------------------------------------
 
-  // x^2 + y^2 NO CPV
-  // https://arxiv.org/pdf/1602.07224
-  // Observables 1:
-  meas.insert(pair<string, dato>("UID18", dato(0.000048, 0.000018, 0.))); // k3pi // informations about x,y 0.25 * (x^2 + y^2)
+  // UID18 is intentionally omitted in BOTH modes. The summaries inherit
+  // external information; no independent Run-1 factor is added without decombination.
 
 
   //-------------------------------------- D -> Klnu_l -------------------------------------------------------------------------
@@ -5695,6 +5821,24 @@ void MixingModel::DefineParameters()
     AddParameter("tauKK_Acp_CDF",2.3,3.,"#tau^{CDF}_{#Delta Acp}(KK)");
     AddParameter("taupipi_Acp_CDF",2.1,2.8,"#tau^{CDF}_{#Delta Acp}(#pi#pi)");
 
+
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      // Four-bin D -> K3pi hadronic nuisance parameters needed by arXiv:2510.04963.
+      // They are intentionally appended, so all pre-existing parameter indices are unchanged.
+      AddParameter("rD_k3pi_bin1", 0.03, 0.08, "r^{D,1}_{K3#pi}");
+      AddParameter("rD_k3pi_bin2", 0.03, 0.08, "r^{D,2}_{K3#pi}");
+      AddParameter("rD_k3pi_bin3", 0.03, 0.08, "r^{D,3}_{K3#pi}");
+      AddParameter("rD_k3pi_bin4", 0.03, 0.08, "r^{D,4}_{K3#pi}");
+      AddParameter("dD_k3pi_bin1", 2.2 - M_PI, 2.2 + M_PI - 1e-12, "#delta^{D,1}_{K3#pi}");
+      AddParameter("dD_k3pi_bin2", 2.4 - M_PI, 2.4 + M_PI - 1e-12, "#delta^{D,2}_{K3#pi}");
+      AddParameter("dD_k3pi_bin3", 2.9 - M_PI, 2.9 + M_PI - 1e-12, "#delta^{D,3}_{K3#pi}");
+      AddParameter("dD_k3pi_bin4", 5.1 - M_PI, 5.1 + M_PI - 1e-12, "#delta^{D,4}_{K3#pi}");
+      AddParameter("kD_k3pi_bin1", 0., 1., "#kappa^{D,1}_{K3#pi}");
+      AddParameter("kD_k3pi_bin2", 0., 1., "#kappa^{D,2}_{K3#pi}");
+      AddParameter("kD_k3pi_bin3", 0., 1., "#kappa^{D,3}_{K3#pi}");
+      AddParameter("kD_k3pi_bin4", 0., 1., "#kappa^{D,4}_{K3#pi}");
+    }
+
     SetPriorConstantAll();
 
   }
@@ -5768,6 +5912,24 @@ void MixingModel::DefineParameters()
 
 
 
+
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      // Four-bin D -> K3pi hadronic nuisance parameters needed by arXiv:2510.04963.
+      // They are intentionally appended, so all pre-existing parameter indices are unchanged.
+      AddParameter("rD_k3pi_bin1", 0.03, 0.08, "r^{D,1}_{K3#pi}");
+      AddParameter("rD_k3pi_bin2", 0.03, 0.08, "r^{D,2}_{K3#pi}");
+      AddParameter("rD_k3pi_bin3", 0.03, 0.08, "r^{D,3}_{K3#pi}");
+      AddParameter("rD_k3pi_bin4", 0.03, 0.08, "r^{D,4}_{K3#pi}");
+      AddParameter("dD_k3pi_bin1", 2.2 - M_PI, 2.2 + M_PI - 1e-12, "#delta^{D,1}_{K3#pi}");
+      AddParameter("dD_k3pi_bin2", 2.4 - M_PI, 2.4 + M_PI - 1e-12, "#delta^{D,2}_{K3#pi}");
+      AddParameter("dD_k3pi_bin3", 2.9 - M_PI, 2.9 + M_PI - 1e-12, "#delta^{D,3}_{K3#pi}");
+      AddParameter("dD_k3pi_bin4", 5.1 - M_PI, 5.1 + M_PI - 1e-12, "#delta^{D,4}_{K3#pi}");
+      AddParameter("kD_k3pi_bin1", 0., 1., "#kappa^{D,1}_{K3#pi}");
+      AddParameter("kD_k3pi_bin2", 0., 1., "#kappa^{D,2}_{K3#pi}");
+      AddParameter("kD_k3pi_bin3", 0., 1., "#kappa^{D,3}_{K3#pi}");
+      AddParameter("kD_k3pi_bin4", 0., 1., "#kappa^{D,4}_{K3#pi}");
+    }
+
     SetPriorConstantAll();
 
   }
@@ -5836,6 +5998,24 @@ void MixingModel::DefineParameters()
     // tau CDF
     AddParameter("tauKK_Acp_CDF",2.3,3.,"#tau^{CDF}_{#Delta Acp}(KK)");
     AddParameter("taupipi_Acp_CDF",2.1,2.8,"#tau^{CDF}_{#Delta Acp}(#pi#pi)");
+
+
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      // Four-bin D -> K3pi hadronic nuisance parameters needed by arXiv:2510.04963.
+      // They are intentionally appended, so all pre-existing parameter indices are unchanged.
+      AddParameter("rD_k3pi_bin1", 0.03, 0.08, "r^{D,1}_{K3#pi}");
+      AddParameter("rD_k3pi_bin2", 0.03, 0.08, "r^{D,2}_{K3#pi}");
+      AddParameter("rD_k3pi_bin3", 0.03, 0.08, "r^{D,3}_{K3#pi}");
+      AddParameter("rD_k3pi_bin4", 0.03, 0.08, "r^{D,4}_{K3#pi}");
+      AddParameter("dD_k3pi_bin1", 2.2 - M_PI, 2.2 + M_PI - 1e-12, "#delta^{D,1}_{K3#pi}");
+      AddParameter("dD_k3pi_bin2", 2.4 - M_PI, 2.4 + M_PI - 1e-12, "#delta^{D,2}_{K3#pi}");
+      AddParameter("dD_k3pi_bin3", 2.9 - M_PI, 2.9 + M_PI - 1e-12, "#delta^{D,3}_{K3#pi}");
+      AddParameter("dD_k3pi_bin4", 5.1 - M_PI, 5.1 + M_PI - 1e-12, "#delta^{D,4}_{K3#pi}");
+      AddParameter("kD_k3pi_bin1", 0., 1., "#kappa^{D,1}_{K3#pi}");
+      AddParameter("kD_k3pi_bin2", 0., 1., "#kappa^{D,2}_{K3#pi}");
+      AddParameter("kD_k3pi_bin3", 0., 1., "#kappa^{D,3}_{K3#pi}");
+      AddParameter("kD_k3pi_bin4", 0., 1., "#kappa^{D,4}_{K3#pi}");
+    }
 
     SetPriorConstantAll();
   }
@@ -5943,6 +6123,24 @@ void MixingModel::DefineParameters()
     AddParameter("d_dmrho",   -1.51-M_PI,  -1.51+M_PI, "#delta_{D^{-} #rho}");
 
 
+
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      // Four-bin D -> K3pi hadronic nuisance parameters needed by arXiv:2510.04963.
+      // They are intentionally appended, so all pre-existing parameter indices are unchanged.
+      AddParameter("rD_k3pi_bin1", 0.03, 0.08, "r^{D,1}_{K3#pi}");
+      AddParameter("rD_k3pi_bin2", 0.03, 0.08, "r^{D,2}_{K3#pi}");
+      AddParameter("rD_k3pi_bin3", 0.03, 0.08, "r^{D,3}_{K3#pi}");
+      AddParameter("rD_k3pi_bin4", 0.03, 0.08, "r^{D,4}_{K3#pi}");
+      AddParameter("dD_k3pi_bin1", 2.2 - M_PI, 2.2 + M_PI - 1e-12, "#delta^{D,1}_{K3#pi}");
+      AddParameter("dD_k3pi_bin2", 2.4 - M_PI, 2.4 + M_PI - 1e-12, "#delta^{D,2}_{K3#pi}");
+      AddParameter("dD_k3pi_bin3", 2.9 - M_PI, 2.9 + M_PI - 1e-12, "#delta^{D,3}_{K3#pi}");
+      AddParameter("dD_k3pi_bin4", 5.1 - M_PI, 5.1 + M_PI - 1e-12, "#delta^{D,4}_{K3#pi}");
+      AddParameter("kD_k3pi_bin1", 0., 1., "#kappa^{D,1}_{K3#pi}");
+      AddParameter("kD_k3pi_bin2", 0., 1., "#kappa^{D,2}_{K3#pi}");
+      AddParameter("kD_k3pi_bin3", 0., 1., "#kappa^{D,3}_{K3#pi}");
+      AddParameter("kD_k3pi_bin4", 0., 1., "#kappa^{D,4}_{K3#pi}");
+    }
+
     SetPriorConstantAll();
 
   }
@@ -5999,6 +6197,24 @@ void MixingModel::DefineParameters()
     AddParameter("tauKK_Acp_CDF",2.3,3.,"#tau^{CDF}_{#Delta Acp}(KK)");
     AddParameter("taupipi_Acp_CDF",2.1,2.8,"#tau^{CDF}_{#Delta Acp}(#pi#pi)");
 
+
+
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      // Four-bin D -> K3pi hadronic nuisance parameters needed by arXiv:2510.04963.
+      // They are intentionally appended, so all pre-existing parameter indices are unchanged.
+      AddParameter("rD_k3pi_bin1", 0.03, 0.08, "r^{D,1}_{K3#pi}");
+      AddParameter("rD_k3pi_bin2", 0.03, 0.08, "r^{D,2}_{K3#pi}");
+      AddParameter("rD_k3pi_bin3", 0.03, 0.08, "r^{D,3}_{K3#pi}");
+      AddParameter("rD_k3pi_bin4", 0.03, 0.08, "r^{D,4}_{K3#pi}");
+      AddParameter("dD_k3pi_bin1", 2.2 - M_PI, 2.2 + M_PI - 1e-12, "#delta^{D,1}_{K3#pi}");
+      AddParameter("dD_k3pi_bin2", 2.4 - M_PI, 2.4 + M_PI - 1e-12, "#delta^{D,2}_{K3#pi}");
+      AddParameter("dD_k3pi_bin3", 2.9 - M_PI, 2.9 + M_PI - 1e-12, "#delta^{D,3}_{K3#pi}");
+      AddParameter("dD_k3pi_bin4", 5.1 - M_PI, 5.1 + M_PI - 1e-12, "#delta^{D,4}_{K3#pi}");
+      AddParameter("kD_k3pi_bin1", 0., 1., "#kappa^{D,1}_{K3#pi}");
+      AddParameter("kD_k3pi_bin2", 0., 1., "#kappa^{D,2}_{K3#pi}");
+      AddParameter("kD_k3pi_bin3", 0., 1., "#kappa^{D,3}_{K3#pi}");
+      AddParameter("kD_k3pi_bin4", 0., 1., "#kappa^{D,4}_{K3#pi}");
+    }
 
     SetPriorConstantAll();
   }
@@ -7236,6 +7452,39 @@ double MixingModel::Calculate_time_dependent_Dobservables()
 
   ll3 += corrmeas.at("LHCb_kspp_Au2022").logweight(corr);
 
+  // LHCb Run-2 D -> K3pi CPV measurement, arXiv:2510.04963.
+  // x_CP +/- Delta x and y_CP +/- Delta y are precisely the x+/- and y+/-
+  // entering Eqs. (3)-(4) of the paper.  With AD=0 the DCS amplitude ratio
+  // is common to the CP-conjugate samples: r_i+ = r_i- = r_i.
+  const double x2510p = xcp + dx;
+  const double y2510p = ycp + dy;
+  const double x2510m = xcp - dx;
+  const double y2510m = ycp - dy;
+
+  if (k3piMode == K3piInputMode::ConservativeSummaries) {
+    corr.ResizeTo(18);
+    corr(0) = x2510p * x2510p + y2510p * y2510p;
+    for (int i2510 = 0; i2510 < 4; ++i2510)
+      corr(1 + i2510) = rD_k3pi_bin[i2510];
+    for (int i2510 = 0; i2510 < 4; ++i2510)
+      corr(5 + i2510) = kD_k3pi_bin[i2510] *
+                        (y2510p * cos(dD_k3pi_bin[i2510]) - x2510p * sin(dD_k3pi_bin[i2510]));
+
+    corr(9) = x2510m * x2510m + y2510m * y2510m;
+    for (int i2510 = 0; i2510 < 4; ++i2510)
+      corr(10 + i2510) = rD_k3pi_bin[i2510];
+    for (int i2510 = 0; i2510 < 4; ++i2510)
+      corr(14 + i2510) = kD_k3pi_bin[i2510] *
+                         (y2510m * cos(dD_k3pi_bin[i2510]) - x2510m * sin(dD_k3pi_bin[i2510]));
+
+    ll3 += corrmeas.at("LHCb_2510.04963_CPV").logweight(corr);
+  } else {
+    corr.ResizeTo(2);
+    corr(0) = x2510p*x2510p + y2510p*y2510p;
+    corr(1) = x2510m*x2510m + y2510m*y2510m;
+    ll3 += corrmeas.at("LHCb_2510.04963_Qpm").logweight(corr);
+  }
+
   return ll3;
 }
 // ---------------------------------------------------------
@@ -7315,14 +7564,18 @@ double MixingModel::Calculate_other_observables()
   ll4 += meas.at("FKKpipi_BESIII").logweight(F_kkpipi);
 
 
-  corr.ResizeTo(6);
-  corr(0) = kD_k3pi_uid19;
-  corr(1) = dD_k3pi_uid19;
-  corr(2) = kD_kpipi0_uid19;
-  corr(3) = dD_kpipi0_uid19;
-  corr(4) = rD_k3pi_uid19;
-  corr(5) = rD_kpipi0_uid19;
-  ll4 += corrmeas.at("UID19").logweight(corr);
+  if (k3piMode == K3piInputMode::ConservativeSummaries) {
+    ll4 += Calculate_K3pi_hadronic_summaries();
+  } else {
+    corr.ResizeTo(6);
+    corr(0) = kD_k3pi_uid19;
+    corr(1) = dD_k3pi_uid19;
+    corr(2) = kD_kpipi0_uid19;
+    corr(3) = dD_kpipi0_uid19;
+    corr(4) = rD_k3pi_uid19;
+    corr(5) = rD_kpipi0_uid19;
+    ll4 += corrmeas.at("UID19").logweight(corr);
+  }
 
 
   ll4 += meas.at("UID22").logweight(RD_kskpi_uid22);
@@ -7423,8 +7676,7 @@ double MixingModel::Calculate_old_observables()
   llo += corrmeas.at("kpp_babar_minus").logweight(corr);
 
 
-  k3pi_uid18 = 0.25 * (x * x + y * y);
-  llo += meas.at("UID18").logweight(k3pi_uid18);
+  // No standalone UID18 / LHCb Run-1 K3pi likelihood in this approximation.
 
 
   llo += meas.at("RM").logweight(rm);
@@ -7435,6 +7687,8 @@ double MixingModel::Calculate_old_observables()
 
 double MixingModel::LogLikelihood(const std::vector<double> &parameters)
 {
+  if (parameters.size() != GetNParameters())
+    throw std::invalid_argument("MixingModel parameter vector has the wrong size");
 
   double ll = 0.;
 
@@ -7519,6 +7773,23 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     tauKK_Acp_CDF = parameters[53];
     taupipi_Acp_CDF = parameters[54];
 
+
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      // arXiv:2510.04963 four-bin D -> K3pi nuisance parameters (appended indices).
+      rD_k3pi_bin[0] = parameters[55];
+      rD_k3pi_bin[1] = parameters[56];
+      rD_k3pi_bin[2] = parameters[57];
+      rD_k3pi_bin[3] = parameters[58];
+      dD_k3pi_bin[0] = parameters[59];
+      dD_k3pi_bin[1] = parameters[60];
+      dD_k3pi_bin[2] = parameters[61];
+      dD_k3pi_bin[3] = parameters[62];
+      kD_k3pi_bin[0] = parameters[63];
+      kD_k3pi_bin[1] = parameters[64];
+      kD_k3pi_bin[2] = parameters[65];
+      kD_k3pi_bin[3] = parameters[66];
+    }
+
     // General parameters
     AD = 0.; // NO direct CPV for CF/DCS
     phi12 = remainder(-PhiG12 + PhiM12, 2. * M_PI);
@@ -7557,6 +7828,20 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["rD_k3pi"] = rD_k3pi;
     obs["dD_k3pi"] = dD_k3pi * r2d;
     obs["kD_k3pi"] = kD_k3pi;
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      obs["rD_k3pi_bin1"] = rD_k3pi_bin[0];
+      obs["rD_k3pi_bin2"] = rD_k3pi_bin[1];
+      obs["rD_k3pi_bin3"] = rD_k3pi_bin[2];
+      obs["rD_k3pi_bin4"] = rD_k3pi_bin[3];
+      obs["dD_k3pi_bin1"] = dD_k3pi_bin[0] * r2d;
+      obs["dD_k3pi_bin2"] = dD_k3pi_bin[1] * r2d;
+      obs["dD_k3pi_bin3"] = dD_k3pi_bin[2] * r2d;
+      obs["dD_k3pi_bin4"] = dD_k3pi_bin[3] * r2d;
+      obs["kD_k3pi_bin1"] = kD_k3pi_bin[0];
+      obs["kD_k3pi_bin2"] = kD_k3pi_bin[1];
+      obs["kD_k3pi_bin3"] = kD_k3pi_bin[2];
+      obs["kD_k3pi_bin4"] = kD_k3pi_bin[3];
+    }
     obs["F_pipipipi"] = F_pipipipi;
     obs["rD_kpipi0"] = rD_kpipi0;
     obs["dD_kpipi0"] = dD_kpipi0 * r2d;
@@ -7674,6 +7959,23 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     l_dmrho = parameters[45];
     d_dmrho = parameters[46];
 
+
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      // arXiv:2510.04963 four-bin D -> K3pi nuisance parameters (appended indices).
+      rD_k3pi_bin[0] = parameters[47];
+      rD_k3pi_bin[1] = parameters[48];
+      rD_k3pi_bin[2] = parameters[49];
+      rD_k3pi_bin[3] = parameters[50];
+      dD_k3pi_bin[0] = parameters[51];
+      dD_k3pi_bin[1] = parameters[52];
+      dD_k3pi_bin[2] = parameters[53];
+      dD_k3pi_bin[3] = parameters[54];
+      kD_k3pi_bin[0] = parameters[55];
+      kD_k3pi_bin[1] = parameters[56];
+      kD_k3pi_bin[2] = parameters[57];
+      kD_k3pi_bin[3] = parameters[58];
+    }
+
     // General parameters
     AD = 0.; // NO direct CPV for CF/DCS
     phi12 = remainder(-PhiG12 + PhiM12, 2. * M_PI);
@@ -7708,6 +8010,20 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["rD_k3pi"] = rD_k3pi;
     obs["dD_k3pi"] = dD_k3pi * r2d;
     obs["kD_k3pi"] = kD_k3pi;
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      obs["rD_k3pi_bin1"] = rD_k3pi_bin[0];
+      obs["rD_k3pi_bin2"] = rD_k3pi_bin[1];
+      obs["rD_k3pi_bin3"] = rD_k3pi_bin[2];
+      obs["rD_k3pi_bin4"] = rD_k3pi_bin[3];
+      obs["dD_k3pi_bin1"] = dD_k3pi_bin[0] * r2d;
+      obs["dD_k3pi_bin2"] = dD_k3pi_bin[1] * r2d;
+      obs["dD_k3pi_bin3"] = dD_k3pi_bin[2] * r2d;
+      obs["dD_k3pi_bin4"] = dD_k3pi_bin[3] * r2d;
+      obs["kD_k3pi_bin1"] = kD_k3pi_bin[0];
+      obs["kD_k3pi_bin2"] = kD_k3pi_bin[1];
+      obs["kD_k3pi_bin3"] = kD_k3pi_bin[2];
+      obs["kD_k3pi_bin4"] = kD_k3pi_bin[3];
+    }
     obs["F_pipipipi"] = F_pipipipi;
     obs["rD_kpipi0"] = rD_kpipi0;
     obs["dD_kpipi0"] = dD_kpipi0 * r2d;
@@ -7820,6 +8136,23 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     tauKK_Acp_CDF = parameters[44];
     taupipi_Acp_CDF = parameters[45];
 
+
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      // arXiv:2510.04963 four-bin D -> K3pi nuisance parameters (appended indices).
+      rD_k3pi_bin[0] = parameters[46];
+      rD_k3pi_bin[1] = parameters[47];
+      rD_k3pi_bin[2] = parameters[48];
+      rD_k3pi_bin[3] = parameters[49];
+      dD_k3pi_bin[0] = parameters[50];
+      dD_k3pi_bin[1] = parameters[51];
+      dD_k3pi_bin[2] = parameters[52];
+      dD_k3pi_bin[3] = parameters[53];
+      kD_k3pi_bin[0] = parameters[54];
+      kD_k3pi_bin[1] = parameters[55];
+      kD_k3pi_bin[2] = parameters[56];
+      kD_k3pi_bin[3] = parameters[57];
+    }
+
     // General parameters
     AD = 0.; // NO direct CPV for CF/DCS
     phi12 = remainder(-PhiG12 + PhiM12, 2. * M_PI);
@@ -7854,6 +8187,20 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["rD_k3pi"] = rD_k3pi;
     obs["dD_k3pi"] = dD_k3pi * r2d;
     obs["kD_k3pi"] = kD_k3pi;
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      obs["rD_k3pi_bin1"] = rD_k3pi_bin[0];
+      obs["rD_k3pi_bin2"] = rD_k3pi_bin[1];
+      obs["rD_k3pi_bin3"] = rD_k3pi_bin[2];
+      obs["rD_k3pi_bin4"] = rD_k3pi_bin[3];
+      obs["dD_k3pi_bin1"] = dD_k3pi_bin[0] * r2d;
+      obs["dD_k3pi_bin2"] = dD_k3pi_bin[1] * r2d;
+      obs["dD_k3pi_bin3"] = dD_k3pi_bin[2] * r2d;
+      obs["dD_k3pi_bin4"] = dD_k3pi_bin[3] * r2d;
+      obs["kD_k3pi_bin1"] = kD_k3pi_bin[0];
+      obs["kD_k3pi_bin2"] = kD_k3pi_bin[1];
+      obs["kD_k3pi_bin3"] = kD_k3pi_bin[2];
+      obs["kD_k3pi_bin4"] = kD_k3pi_bin[3];
+    }
     obs["F_pipipipi"] = F_pipipipi;
     obs["rD_kpipi0"] = rD_kpipi0;
     obs["dD_kpipi0"] = dD_kpipi0 * r2d;
@@ -8012,6 +8359,23 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     d_dmrho = parameters[73];
 
 
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      // arXiv:2510.04963 four-bin D -> K3pi nuisance parameters (appended indices).
+      rD_k3pi_bin[0] = parameters[74];
+      rD_k3pi_bin[1] = parameters[75];
+      rD_k3pi_bin[2] = parameters[76];
+      rD_k3pi_bin[3] = parameters[77];
+      dD_k3pi_bin[0] = parameters[78];
+      dD_k3pi_bin[1] = parameters[79];
+      dD_k3pi_bin[2] = parameters[80];
+      dD_k3pi_bin[3] = parameters[81];
+      kD_k3pi_bin[0] = parameters[82];
+      kD_k3pi_bin[1] = parameters[83];
+      kD_k3pi_bin[2] = parameters[84];
+      kD_k3pi_bin[3] = parameters[85];
+    }
+
+
     // General parameters
     AD = 0.; // NO direct CPV for CF/DCS
     phi12 = remainder(-PhiG12 + PhiM12, 2. * M_PI);
@@ -8053,6 +8417,20 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["rD_k3pi"] = rD_k3pi;
     obs["dD_k3pi"] = dD_k3pi * r2d;
     obs["kD_k3pi"] = kD_k3pi;
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      obs["rD_k3pi_bin1"] = rD_k3pi_bin[0];
+      obs["rD_k3pi_bin2"] = rD_k3pi_bin[1];
+      obs["rD_k3pi_bin3"] = rD_k3pi_bin[2];
+      obs["rD_k3pi_bin4"] = rD_k3pi_bin[3];
+      obs["dD_k3pi_bin1"] = dD_k3pi_bin[0] * r2d;
+      obs["dD_k3pi_bin2"] = dD_k3pi_bin[1] * r2d;
+      obs["dD_k3pi_bin3"] = dD_k3pi_bin[2] * r2d;
+      obs["dD_k3pi_bin4"] = dD_k3pi_bin[3] * r2d;
+      obs["kD_k3pi_bin1"] = kD_k3pi_bin[0];
+      obs["kD_k3pi_bin2"] = kD_k3pi_bin[1];
+      obs["kD_k3pi_bin3"] = kD_k3pi_bin[2];
+      obs["kD_k3pi_bin4"] = kD_k3pi_bin[3];
+    }
     obs["F_pipipipi"] = F_pipipipi;
     obs["rD_kpipi0"] = rD_kpipi0;
     obs["dD_kpipi0"] = dD_kpipi0 * r2d;
@@ -8198,6 +8576,23 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     taupipi_Acp_CDF = parameters[35];
 
 
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      // arXiv:2510.04963 four-bin D -> K3pi nuisance parameters (appended indices).
+      rD_k3pi_bin[0] = parameters[36];
+      rD_k3pi_bin[1] = parameters[37];
+      rD_k3pi_bin[2] = parameters[38];
+      rD_k3pi_bin[3] = parameters[39];
+      dD_k3pi_bin[0] = parameters[40];
+      dD_k3pi_bin[1] = parameters[41];
+      dD_k3pi_bin[2] = parameters[42];
+      dD_k3pi_bin[3] = parameters[43];
+      kD_k3pi_bin[0] = parameters[44];
+      kD_k3pi_bin[1] = parameters[45];
+      kD_k3pi_bin[2] = parameters[46];
+      kD_k3pi_bin[3] = parameters[47];
+    }
+
+
     // General parameters
     AD = 0.; // NO direct CPV for CF/DCS
     phi12 = remainder(-PhiG12 + PhiM12, 2. * M_PI);
@@ -8229,6 +8624,20 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
     obs["rD_k3pi"] = rD_k3pi;
     obs["dD_k3pi"] = dD_k3pi * r2d;
     obs["kD_k3pi"] = kD_k3pi;
+    if (k3piMode == K3piInputMode::ConservativeSummaries) {
+      obs["rD_k3pi_bin1"] = rD_k3pi_bin[0];
+      obs["rD_k3pi_bin2"] = rD_k3pi_bin[1];
+      obs["rD_k3pi_bin3"] = rD_k3pi_bin[2];
+      obs["rD_k3pi_bin4"] = rD_k3pi_bin[3];
+      obs["dD_k3pi_bin1"] = dD_k3pi_bin[0] * r2d;
+      obs["dD_k3pi_bin2"] = dD_k3pi_bin[1] * r2d;
+      obs["dD_k3pi_bin3"] = dD_k3pi_bin[2] * r2d;
+      obs["dD_k3pi_bin4"] = dD_k3pi_bin[3] * r2d;
+      obs["kD_k3pi_bin1"] = kD_k3pi_bin[0];
+      obs["kD_k3pi_bin2"] = kD_k3pi_bin[1];
+      obs["kD_k3pi_bin3"] = kD_k3pi_bin[2];
+      obs["kD_k3pi_bin4"] = kD_k3pi_bin[3];
+    }
     obs["F_pipipipi"] = F_pipipipi;
     obs["rD_kpipi0"] = rD_kpipi0;
     obs["dD_kpipi0"] = dD_kpipi0 * r2d;
@@ -8264,6 +8673,86 @@ double MixingModel::LogLikelihood(const std::vector<double> &parameters)
   return ll;
 }
 // ---------------------------------------------------------
+
+
+// Published summary approximation, not a reconstruction of threshold yields.
+// Sources: 2103.05988v3, Tables 18 (BESIII+CLEO), 19, 21 and 22.
+void MixingModel::Add_K3pi_hadronic_summaries()
+{
+  const auto sigma = [this](double lower, double upper) {
+    return summaryErrors == K3piSummaryErrors::LargerSide
+        ? std::max(lower, upper) : 0.5*(lower + upper);
+  };
+  // 4D MARGINAL: kappa(K3pi), delta(K3pi), kappa(Kpipi0), delta(Kpipi0).
+  // Amplitude-ratio entries are omitted, not fixed or conditioned upon.
+  vector<dato> inclusive;
+  inclusive.push_back(dato(0.49, sigma(0.10, 0.11)));
+  inclusive.push_back(dato(154.*d2r, sigma(14., 22.)*d2r));
+  inclusive.push_back(dato(0.79, 0.04));
+  inclusive.push_back(dato(196.*d2r, 11.*d2r));
+  TMatrixDSym incCorr(4);
+  incCorr.UnitMatrix();
+  incCorr(0,1) = -0.78;
+  incCorr(0,2) =  0.04;
+  incCorr(0,3) = -0.07;
+  incCorr(1,2) =  0.15;
+  incCorr(1,3) = -0.15;
+  incCorr(2,3) =  0.23;
+  SymmetrizeUpperTriangularMatrix(incCorr);
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>(
+      "K3pi_threshold_inclusive4", CorrelatedGaussianObservables(inclusive, incCorr)));
+
+  // 8D order: kappa1,delta1,kappa2,delta2,kappa3,delta3,kappa4,delta4.
+  // Table 21 prints delta1 = 117 +14/-9 degrees in arXiv v3; use that value.
+  vector<dato> binned;
+  binned.push_back(dato(0.66, sigma(0.21,0.18)));
+  binned.push_back(dato(117.*d2r, sigma(9.,14.)*d2r));
+  binned.push_back(dato(0.85, sigma(0.21,0.14)));
+  binned.push_back(dato(145.*d2r, sigma(14.,23.)*d2r));
+  binned.push_back(dato(0.78, sigma(0.12,0.12)));
+  binned.push_back(dato(160.*d2r, sigma(20.,19.)*d2r));
+  binned.push_back(dato(0.25, sigma(0.25,0.16)));
+  binned.push_back(dato(288.*d2r, sigma(29.,15.)*d2r));
+  static const double upper[36] = {
+      1., -.40, -.53, .51, -.04, .17, -.02, -.04,
+      1., .12, -.04, .02, .10, .01, .03,
+      1., -.80, -.22, -.02, -.11, -.12,
+      1., .21, .14, .10, .15,
+      1., -.34, .11, .23,
+      1., -.03, -.17,
+      1., -.63,
+      1.
+  };
+  TMatrixDSym binCorr(8);
+  int k = 0;
+  for (int i = 0; i < 8; ++i)
+    for (int j = i; j < 8; ++j) binCorr(i,j) = upper[k++];
+  SymmetrizeUpperTriangularMatrix(binCorr);
+  corrmeas.insert(pair<string, CorrelatedGaussianObservables>(
+      "K3pi_threshold_binned8", CorrelatedGaussianObservables(binned, binCorr)));
+}
+
+double MixingModel::Calculate_K3pi_hadronic_summaries()
+{
+  const TVectorD& incMean = corrmeas.at("K3pi_threshold_inclusive4").getObs();
+  TVectorD inclusive(4);
+  inclusive(0) = kD_k3pi;
+  inclusive(1) = incMean(1) + remainder(dD_k3pi - incMean(1), 2.*M_PI);
+  inclusive(2) = kD_kpipi0;
+  inclusive(3) = incMean(3) + remainder(dD_kpipi0 - incMean(3), 2.*M_PI);
+  const TVectorD& binMean = corrmeas.at("K3pi_threshold_binned8").getObs();
+  TVectorD binned(8);
+  for (int i = 0; i < 4; ++i) {
+    binned(2*i) = kD_k3pi_bin[i];
+    binned(2*i+1) = binMean(2*i+1) + remainder(dD_k3pi_bin[i] - binMean(2*i+1), 2.*M_PI);
+  }
+  // Unknown cross-covariance is NOT assumed zero at full precision.
+  // For fixed 0<w<1, diag(Vinc/w,Vbin/(1-w)) bounds every admissible joint
+  // covariance with these Gaussian marginals. At w=1/2 both blocks inflate x2.
+  // This does not remove inherited external-prior overlap with the rest of the fit.
+  return inclusiveHadronicWeight * corrmeas.at("K3pi_threshold_inclusive4").logweight(inclusive)
+       + (1.-inclusiveHadronicWeight) * corrmeas.at("K3pi_threshold_binned8").logweight(binned);
+}
 
 void MixingModel::MCMCUserIterationInterface()
 {

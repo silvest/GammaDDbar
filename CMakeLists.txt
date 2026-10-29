@@ -102,6 +102,9 @@ set(CMAKE_CXX_FLAGS "-Wall ${BAT_CFLAGS} ${ROOT_CFLAGS}")
 set(CMAKE_CXX_LINK_FLAGS "")
 set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -L${BAT_LIB_PATH}")
 
+# The parallel BAT build uses MPI even for a one-process invocation.
+find_package(MPI REQUIRED COMPONENTS CXX)
+
 # Add the source files in the "Codes" directory
 file(GLOB SOURCES "Codes/*.cpp")
 
@@ -113,6 +116,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 # Link against the libraries
 target_link_libraries(${PROJECT_NAME} ${BAT_LIBS})
 target_link_libraries(${PROJECT_NAME} ${ROOT_LIBS})
+target_link_libraries(${PROJECT_NAME} MPI::MPI_CXX)
 
 
 INSTALL(TARGETS GammaDDbar DESTINATION bin COMPONENT executable)

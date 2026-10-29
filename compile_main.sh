@@ -1,15 +1,20 @@
-codes_folder="$PWD/Codes" ## path to the folder containing the script
+#!/bin/sh
+set -eu
 
-Nchains=$1 ## Number of chains
-Nevents_pre=$2 ## Number of events per chain to run to thermalize the MCMC
-Nevents=$3 ## Number of events per chain used to do the statistics
-output_filename=$4 ## Name of the output folder
-Comb_type=$5 ## 0, 1, 2, 3 Charged, B0d, B0s, All
-variables_folder="$PWD/Variables/$6"
-Path_to_ROOTSYS="$ROOTSYS/bin/root-config --cflags --libs"
-Path_to_BAT_config="bat-config --cflags"
-Path_to_BAT_libs="bat-config --libs"
+if [ "$#" -ne 6 ]; then
+    echo "Usage: $0 Nchains Nevents_pre Nevents output_directory combination variables_file" >&2
+    exit 2
+fi
 
-g++ -o main.x "$codes_folder/main.cpp" `$Path_to_ROOTSYS` `$Path_to_BAT_config` `$Path_to_BAT_libs` histo.o CorrelatedGaussianObservables.o MixingModel.o
+project_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+build_dir="${GAMMADDBAR_BUILD_DIR:-$project_dir/build}"
+mpi_compiler="${MPICXX:-mpicxx}"
 
-time ./main.x $Nchains $Nevents_pre $Nevents $output_filename $Comb_type $variables_folder
+# CMake handles quoted ROOT/BAT flags and links the selected MPI installation.
+# Reuse a configured build directory to preserve ROOT_CONFIG_DIR/BAT_CONFIG_DIR.
+cmake -S "$project_dir" -B "$build_dir" -DMPI_CXX_COMPILER="$mpi_compiler"
+cmake --build "$build_dir" --target GammaDDbar
+
+# set -e prevents an unsuccessful build from launching a stale executable.
+cp "$build_dir/GammaDDbar" "$project_dir/main.x"
+time "$project_dir/main.x" "$1" "$2" "$3" "$4" "$5" "$project_dir/Variables/$6"
